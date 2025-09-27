@@ -7,37 +7,57 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:title="WorkoutRepo"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:letterSpacing="0.05"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardViewWeek1"
+        android:id="@+id/cardViewWeek"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="0dp"
         app:cardCornerRadius="12dp"
         app:strokeWidth="2dp"
         app:strokeColor="@color/success_green"
         app:cardElevation="2dp"
         app:cardBackgroundColor="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonBar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintVertical_bias="0.5"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
         android:longClickable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,7 +111,7 @@
                 android:longClickable="true"
                 android:text="(Pre-Squat day prep)"
                 android:textColor="?attr/colorAccent"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:letterSpacing="0.04"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -108,7 +128,7 @@
                 android:layout_marginTop="8dp"
                 android:paddingBottom="12dp"
                 android:text="Major:"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
                 android:textColor="?attr/colorAccent"
                 app:layout_constraintTop_toBottomOf="@id/workoutType"
@@ -127,7 +147,7 @@
                 android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
                 android:text="• Quarter squats\n• Deadlift\n• Bench press\n• Overhead press"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:longClickable="true"
                 android:layout_marginVertical="0dp"
                 app:layout_constraintTop_toBottomOf="@id/major"
@@ -144,7 +164,7 @@
                 android:layout_marginVertical="8dp"
                 android:paddingBottom="12dp"
                 android:text="Minor:"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
                 android:textColor="?attr/colorAccent"
                 app:layout_constraintTop_toBottomOf="@id/workoutsMajor"
@@ -164,7 +184,7 @@
                 android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
                 android:text="• Banded warm-ups\n• Jumps\n• Pull-ups\n• Dips"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:longClickable="true"
                 android:layout_marginVertical="0dp"
                 app:layout_constraintTop_toBottomOf="@id/minor"
@@ -175,6 +195,51 @@
                 tools:ignore="TextViewEdits" /> <!-- Streak duration -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView> <!-- For cardview Date and Total-->
+    </com.google.android.material.card.MaterialCardView> <!-- For cardview Workout details -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginVertical="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardViewWeek"
+        >
+        <ImageButton
+            android:id="@+id/stravaAccess"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginVertical="6dp"
+            app:srcCompat="@drawable/strava_2"
+            android:background="@drawable/rounded_corners_strava"
+            android:elevation="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/browseWorkouts"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <ImageButton
+            android:id="@+id/browseWorkouts"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginVertical="6dp"
+            android:background="@drawable/rounded_corners"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/stravaAccess"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/lists_52dp_e3e3e3_fill0_wght200_grad200_opsz20"
+            app:layout_constraintVertical_chainStyle="packed"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Another image button To access the Page where all these workouts will be listed Along with images. And another image button Where I'll find the entire repository of the Workouts. -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
