@@ -12,7 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.WeekViewHolder> {
+
+    private final FragmentActivity activity;
 
     // real data for 7 days
     private final String[] weekDays = {
@@ -52,6 +57,10 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     // Large count to simulate infinite loop; use Integer.MAX_VALUE (or large number)
     private static final int VIRTUAL_COUNT = Integer.MAX_VALUE;
 
+    public WeekPagerAdapter(@NonNull FragmentActivity activity) {
+        this.activity = activity;
+    }
+
     @NonNull
     @Override
     public WeekViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,8 +73,8 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     public void onBindViewHolder(@NonNull WeekViewHolder holder, int position) {
         int dayIndex = position % 7;
         if (dayIndex < 0) dayIndex += 7; // safety
-        String day = weekDays[dayIndex];
 
+        String day = weekDays[dayIndex];
         Context context = holder.itemView.getContext();
 
         // Set the weekday title and workout type
@@ -80,10 +89,15 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         holder.workoutsMajor.setText(savedMajor);
         holder.workoutsMinor.setText(savedMinor);
 
+        // Remove previous listeners to avoid duplicate callbacks (important when recycling)
+        holder.workoutType.setOnLongClickListener(null);
+        holder.workoutsMajor.setOnLongClickListener(null);
+        holder.workoutsMinor.setOnLongClickListener(null);
+
         // Attach long-press editors
-        setupEditor(context, holder.workoutType, day, "workoutType");
-        setupEditor(context, holder.workoutsMajor, day, "workoutsMajor");
-        setupEditor(context, holder.workoutsMinor, day, "workoutsMinor");
+        setupEditor(holder, "workoutType", day, position);
+        setupEditor(holder, "workoutsMajor", day, position);
+        setupEditor(holder, "workoutsMinor", day, position);
     }
 
 
@@ -135,44 +149,51 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     }
 
     // Helper method for editing text fields
-    private void setupEditor(Context context, final TextView textView, final String day, final String fieldKey) {
-        textView.setOnLongClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            String label = fieldKey.equals("workoutType") ? "Workout Type" : (fieldKey.equals("workoutsMajor") ? "Major" : "Minor");
-            builder.setTitle("Edit " + day + " " + label);
+    // -------------------------
+    // Editor wiring
+    // -------------------------
+    private void setupEditor(@NonNull WeekViewHolder holder, @NonNull String fieldKey, @NonNull String day, int adapterPos) {
+        TextView targetView;
+        if (fieldKey.equals("workoutType")) targetView = holder.workoutType;
+        else if (fieldKey.equals("workoutsMajor")) targetView = holder.workoutsMajor;
+        else targetView = holder.workoutsMinor;
 
-            final EditText input = new EditText(context);
-            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-            input.setSingleLine(false);
-            input.setLines(6);
-            input.setVerticalScrollBarEnabled(true);
-            input.setPadding(40, 24, 40, 24);
+        // long press opens EditorBottomSheet
+        targetView.setOnLongClickListener(v -> {
+            // prepare editable text for the bottom sheet (no bullets)
+            String current = targetView.getText() == null ? "" : targetView.getText().toString();
+            String editable = normalizeForEdit(current);
 
-            // Prefill editor with plain lines (no bullets)
-            String currentSaved = textView.getText() == null ? "" : textView.getText().toString();
-            String editable = normalizeForEdit(currentSaved);
-            input.setText(editable);
+            EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, fieldKey, editable, adapterPos);
 
-            builder.setView(input);
-
-            builder.setPositiveButton("Save", (dialog, which) -> {
-                String userText = input.getText().toString();
-                // Normalize and add bullets only once
+            // set callback to receive edited text
+            sheet.setOnSaveListener((editedText, pos) -> {
+                // Normalize and save centrally here
                 String finalText;
                 if (fieldKey.equals("workoutType")) {
-                    // For the short italic line (workoutType) we might want to keep single-line
-                    finalText = userText.trim();
+                    finalText = editedText == null ? "" : editedText.trim();
                 } else {
-                    finalText = normalizeForSave(userText);
+                    finalText = normalizeForSave(editedText);
                 }
-                // Update UI immediately
-                textView.setText(finalText);
-                // Persist
-                WorkoutStorage.saveWorkout(context, day, fieldKey, finalText);
+
+                // persist
+                WorkoutStorage.saveWorkout(holder.itemView.getContext(), day, fieldKey, finalText);
+
+                // update the visible holder views (we have access to holder here)
+                // IMPORTANT: because RecyclerView recycles views, check that holder is still bound to same adapter position if needed.
+                // For simplicity, we update the text on this holder instance.
+                if (fieldKey.equals("workoutType")) {
+                    holder.workoutType.setText(finalText);
+                } else if (fieldKey.equals("workoutsMajor")) {
+                    holder.workoutsMajor.setText(finalText);
+                } else {
+                    holder.workoutsMinor.setText(finalText);
+                }
             });
 
-            builder.setNegativeButton("Cancel", null);
-            builder.show();
+            // show the bottom sheet using activity's fragment manager
+            FragmentManager fm = activity.getSupportFragmentManager();
+            sheet.show(fm, "editor-" + day + "-" + fieldKey);
             return true;
         });
     }

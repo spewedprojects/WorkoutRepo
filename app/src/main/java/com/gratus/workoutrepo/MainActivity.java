@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         // inside onCreate(...)
         ViewPager2 weekPager = findViewById(R.id.weekPager);
-        WeekPagerAdapter adapter = new WeekPagerAdapter();
+        WeekPagerAdapter adapter = new WeekPagerAdapter(this);
         weekPager.setAdapter(adapter);
 
         // Calculate current day index (0 = Monday, 6 = Sunday)
