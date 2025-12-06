@@ -3,9 +3,13 @@ package com.gratus.workoutrepo;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -14,6 +18,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+
+    private long backPressedTime;
+    private Toast backToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        findViewById(R.id.browseWorkouts).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, SharedPrefsViewerActivity.class))
+        );
 
         ImageButton githubicon = findViewById(R.id.githubIcon);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
@@ -73,5 +84,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // --- IMPROVED IMPLEMENTATION for double back to exit the app ---
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                    backToast.cancel();
+                    // Call finish() to close the activity
+                    finish();
+                } else {
+                    backToast = Toast.makeText(getBaseContext(), "Press BACK again to exit", Toast.LENGTH_SHORT);
+                    backToast.show();
+                }
+                backPressedTime = System.currentTimeMillis();
+            }
+        };
+        // Add the callback to the dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
+
 }
