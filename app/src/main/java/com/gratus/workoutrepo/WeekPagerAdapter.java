@@ -84,22 +84,51 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
 
         // Load saved major/minor (or defaults)
         String savedMajor = WorkoutStorage.getWorkout(context, day, "workoutsMajor", majors[dayIndex]);
-        String savedMinor = WorkoutStorage.getWorkout(context, day, "workoutsMinor", minors[dayIndex]);
-
         holder.workoutsMajor.setText(savedMajor);
+        String savedMinor = WorkoutStorage.getWorkout(context, day, "workoutsMinor", minors[dayIndex]);
         holder.workoutsMinor.setText(savedMinor);
+
+        // Load saved notes (raw stored text) and display formatted version
+        String savedNotesRaw = WorkoutStorage.getWorkout(context, day, "notes", "");
+        holder.notesDetails.setText(formatNotesForDisplay(savedNotesRaw));
+
 
         // Remove previous listeners to avoid duplicate callbacks (important when recycling)
         holder.workoutType.setOnLongClickListener(null);
         holder.workoutsMajor.setOnLongClickListener(null);
         holder.workoutsMinor.setOnLongClickListener(null);
+        holder.notesDetails.setOnLongClickListener(null); // for notes block
 
         // Attach long-press editors
         setupEditor(holder, "workoutType", day, position);
         setupEditor(holder, "workoutsMajor", day, position);
         setupEditor(holder, "workoutsMinor", day, position);
+        setupEditor(holder, "notes", day, position); // for notes block
     }
 
+    /**
+     * Convert raw stored notes (which may contain lines that start with "- ")
+     * into a display-friendly string where lines beginning with "- " become
+     * bullet lines showing "• <text>". Other lines are left as plain text.
+     */
+    private String formatNotesForDisplay(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return "";
+
+        String[] lines = raw.split("\\r?\\n", -1); // preserve empty lines
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (line.startsWith("- ")) {
+                String after = line.substring(2).trim();
+                sb.append("\u2022");            // bullet character
+                if (!after.isEmpty()) sb.append(" ").append(after);
+            } else {
+                sb.append(line);
+            }
+            if (i < lines.length - 1) sb.append("\n");
+        }
+        return sb.toString();
+    }
 
     @Override
     public int getItemCount() {
@@ -137,7 +166,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     }
 
     static class WeekViewHolder extends RecyclerView.ViewHolder {
-        TextView weekDay, workoutType, workoutsMajor, workoutsMinor;
+        TextView weekDay, workoutType, workoutsMajor, workoutsMinor, notesDetails;
 
         WeekViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -145,6 +174,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
             workoutType = itemView.findViewById(R.id.workoutType);
             workoutsMajor = itemView.findViewById(R.id.workoutsMajor);
             workoutsMinor = itemView.findViewById(R.id.workoutsMinor);
+            notesDetails = itemView.findViewById(R.id.notesDetails);
         }
     }
 
@@ -156,13 +186,21 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         TextView targetView;
         if (fieldKey.equals("workoutType")) targetView = holder.workoutType;
         else if (fieldKey.equals("workoutsMajor")) targetView = holder.workoutsMajor;
+        else if (fieldKey.equals("notes")) targetView = holder.notesDetails;
         else targetView = holder.workoutsMinor;
 
         // long press opens EditorBottomSheet
         targetView.setOnLongClickListener(v -> {
-            // prepare editable text for the bottom sheet (no bullets)
-            String current = targetView.getText() == null ? "" : targetView.getText().toString();
-            String editable = normalizeForEdit(current);
+            // prepare editable text for the bottom sheet
+            String editable;
+            if (fieldKey.equals("notes")) {
+                // For notes, prefill the editor with the raw stored value so "- " remains visible while editing
+                editable = WorkoutStorage.getWorkout(holder.itemView.getContext(), day, "notes", "");
+            } else {
+                // For other fields, compute editable text by stripping bullets
+                String current = targetView.getText() == null ? "" : targetView.getText().toString();
+                editable = normalizeForEdit(current);
+            }
 
             EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, fieldKey, editable, adapterPos);
 
@@ -171,8 +209,14 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
                 // Normalize and save centrally here
                 String finalText;
                 if (fieldKey.equals("workoutType")) {
+                    // plain text for workoutType
+                    finalText = editedText == null ? "" : editedText.trim();
+                } else if (fieldKey.equals("notes")) {
+                    // For notes: always store the raw trimmed text exactly as the user typed it.
+                    // This preserves any leading "- " the user intentionally typed.
                     finalText = editedText == null ? "" : editedText.trim();
                 } else {
+                    // for workoutsMajor/workoutsMinor we keep bullet formatting
                     finalText = normalizeForSave(editedText);
                 }
 
@@ -186,6 +230,8 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
                     holder.workoutType.setText(finalText);
                 } else if (fieldKey.equals("workoutsMajor")) {
                     holder.workoutsMajor.setText(finalText);
+                } else if (fieldKey.equals("notes")) {
+                    holder.notesDetails.setText(formatNotesForDisplay(finalText));
                 } else {
                     holder.workoutsMinor.setText(finalText);
                 }
