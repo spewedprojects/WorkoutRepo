@@ -109,25 +109,25 @@
       android:fillColor="#00000000"
       android:strokeColor="#37376f"
       android:strokeLineCap="round"/>
-  <path
-      android:pathData="M330.31,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M401.72,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M258.9,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M188.28,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M473.13,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M401.72,173.95m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
-  <path
-      android:pathData="M258.9,173.95m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"
-      android:fillColor="#bad8e0"/>
+<!--  <path-->
+<!--      android:pathData="M330.31,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M401.72,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M258.9,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M188.28,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M473.13,102.54m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M401.72,173.95m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
+<!--  <path-->
+<!--      android:pathData="M258.9,173.95m-7.74,0a7.74,7.74 0,1 1,15.48 0a7.74,7.74 0,1 1,-15.48 0"-->
+<!--      android:fillColor="#bad8e0"/>-->
 </vector>
