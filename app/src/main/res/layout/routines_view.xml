@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Routine A"
+            android:textSize="40sp"
+            android:layout_marginVertical="20dp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:textColor="?attr/colorOnSurface"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/dashed_line"/>
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="start"
+            android:text="Notes:"
+            android:textSize="18sp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:textColor="?attr/colorAccent"/>
+
+        <TextView
+            android:id="@+id/notesDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="20dp"
+            android:filterTouchesWhenObscured="false"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_italic"
+            android:hint="Long tap to add notes"
+            android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
+            android:longClickable="true"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <include layout="@layout/item_day_prefs"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/apply_routine_button"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:text="APPLY"
+            android:layout_alignParentLeft="true"
+            app:cornerRadius="8dp"
+            android:backgroundTint="?attr/colorPrimaryVariant"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_routine_button"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:text="SAVE"
+            android:layout_alignParentRight="true"
+            app:cornerRadius="8dp"
+            android:backgroundTint="?attr/colorPrimaryVariant"/>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

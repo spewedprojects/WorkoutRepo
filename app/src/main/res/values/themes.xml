@@ -23,9 +23,6 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimaryInverse">@color/black</item>
 
-        <!-- Status bar color. -->
-        <item name="android:windowLightStatusBar">true</item>
-
     </style>
 
     <style name="Theme.WorkoutRepo" parent="Base.Theme.WorkoutRepo" />

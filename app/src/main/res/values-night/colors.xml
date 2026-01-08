@@ -14,4 +14,5 @@
     <color name="dialog_bg">#32000000</color>
     <color name="success_green">#388E3C</color>
     <color name="transparent">#00000000</color>
+    <color name="big_button_bg">#10FFFFFF</color>
 </resources>
