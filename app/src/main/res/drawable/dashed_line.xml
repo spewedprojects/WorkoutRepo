@@ -3,6 +3,6 @@
     <stroke
         android:width="2dp"
         android:color="@color/black"
-        android:dashWidth="4dp"
+        android:dashWidth="5dp"
         android:dashGap="12dp"/>
 </shape>

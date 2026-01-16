@@ -28,6 +28,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
+            android:layout_marginHorizontal="9dp"
             android:background="@drawable/dashed_line"/>
 
         <TextView
@@ -58,10 +59,9 @@
             android:longClickable="true"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_day_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
-        <include layout="@layout/item_day_prefs"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -79,15 +79,26 @@
             android:layout_width="wrap_content"
             android:layout_height="52dp"
             android:text="APPLY"
-            android:layout_alignParentLeft="true"
+            app:strokeWidth="1dp"
+            android:layout_alignParentStart="true"
             app:cornerRadius="8dp"
             android:backgroundTint="?attr/colorPrimaryVariant"/>
+
+        <ImageButton
+            android:id="@+id/delete_routine_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/delete_icon_24dp"
+            android:background="@color/transparent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_routine_button"
             android:layout_width="wrap_content"
             android:layout_height="52dp"
             android:text="SAVE"
+            app:strokeWidth="1dp"
             android:layout_alignParentRight="true"
             app:cornerRadius="8dp"
             android:backgroundTint="?attr/colorPrimaryVariant"/>
