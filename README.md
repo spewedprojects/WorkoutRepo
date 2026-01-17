@@ -9,4 +9,6 @@
 Screenshots above^
 
 # Revamped WorkoutRepo with routines: [v4.0.0+](https://github.com/spewedprojects/WorkoutRepo/releases/tag/v4.0.0)
+The editing dialog remains the same.\
 Screenshots below:
+![Screenshot_20260117_184308-horz](https://github.com/user-attachments/assets/4e147777-a2e6-452f-91fa-e503e62ebbfe)
