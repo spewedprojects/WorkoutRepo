@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.browseWorkouts).setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, SharedPrefsViewerActivity.class))
+                startActivity(new Intent(MainActivity.this, RoutinesActivity.class))
         );
 
         ImageButton githubicon = findViewById(R.id.githubIcon);
@@ -101,6 +101,19 @@ public class MainActivity extends AppCompatActivity {
         };
         // Add the callback to the dispatcher
         getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // This forces the adapter to reload data from the JSON file
+        // which might have changed if you clicked "Apply" in the Routines screen
+        if (findViewById(R.id.weekPager) != null) {
+            androidx.viewpager2.widget.ViewPager2 vp = findViewById(R.id.weekPager);
+            if (vp.getAdapter() != null) {
+                vp.getAdapter().notifyDataSetChanged();
+            }
+        }
     }
 
 }

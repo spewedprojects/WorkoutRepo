@@ -8,8 +8,9 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="10dp"
-        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         android:layout_marginHorizontal="16dp"
         app:cardBackgroundColor="?attr/colorPrimaryVariant"
         app:cardElevation="2dp">
@@ -17,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginBottom="14dp"
             android:layout_marginTop="8dp">
             <TextView
                 android:id="@+id/day_title"
@@ -26,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="MONDAY"
                 android:layout_gravity="start"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_regular"/>
 
@@ -38,18 +39,51 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="4dp"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_italic"/>
 
-            <TableLayout
-                android:id="@+id/day_table"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="4dp"
-                android:stretchColumns="0,2,4">
-                <include layout="@layout/row_3cols" />
-            </TableLayout>
+                android:orientation="horizontal"
+                android:weightSum="6.5"
+                android:paddingHorizontal="4dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_light"
+                    android:text="Major"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:letterSpacing="0.03"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_light"
+                    android:text="Minor"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:letterSpacing="0.03"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_light"
+                    android:text="Notes"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:letterSpacing="0.03"/>
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/row_data"
+                layout="@layout/row_3cols"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

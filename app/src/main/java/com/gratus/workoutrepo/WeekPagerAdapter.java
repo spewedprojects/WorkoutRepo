@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.gratus.workoutrepo.utils.TextFormatUtils;
+
 public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.WeekViewHolder> {
 
     private final FragmentActivity activity;
@@ -79,18 +81,19 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
 
         // Set the weekday title and workout type
         holder.weekDay.setText(weekDays[dayIndex]);
-        holder.workoutType.setText(
-                WorkoutStorage.getWorkout(context, day, "workoutType", workoutTypes[dayIndex]));
+        String savedType = WorkoutStorage.getWorkout(context, day, "workoutType", "");
+        holder.workoutType.setText(savedType);
 
-        // Load saved major/minor (or defaults)
+        // LOAD RAW, DISPLAY FORMATTED
+        // Default fallbacks are now raw text from arrays above
         String savedMajor = WorkoutStorage.getWorkout(context, day, "workoutsMajor", majors[dayIndex]);
-        holder.workoutsMajor.setText(savedMajor);
-        String savedMinor = WorkoutStorage.getWorkout(context, day, "workoutsMinor", minors[dayIndex]);
-        holder.workoutsMinor.setText(savedMinor);
+        holder.workoutsMajor.setText(TextFormatUtils.formatBulletsForDisplay(savedMajor));
 
-        // Load saved notes (raw stored text) and display formatted version
+        String savedMinor = WorkoutStorage.getWorkout(context, day, "workoutsMinor", minors[dayIndex]);
+        holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(savedMinor));
+
         String savedNotesRaw = WorkoutStorage.getWorkout(context, day, "notes", "");
-        holder.notesDetails.setText(formatNotesForDisplay(savedNotesRaw));
+        holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(savedNotesRaw));
 
 
         // Remove previous listeners to avoid duplicate callbacks (important when recycling)
@@ -106,63 +109,10 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         setupEditor(holder, "notes", day, position); // for notes block
     }
 
-    /**
-     * Convert raw stored notes (which may contain lines that start with "- ")
-     * into a display-friendly string where lines beginning with "- " become
-     * bullet lines showing "• <text>". Other lines are left as plain text.
-     */
-    private String formatNotesForDisplay(String raw) {
-        if (raw == null || raw.trim().isEmpty()) return "";
-
-        String[] lines = raw.split("\\r?\\n", -1); // preserve empty lines
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if (line.startsWith("- ")) {
-                String after = line.substring(2).trim();
-                sb.append("\u2022");            // bullet character
-                if (!after.isEmpty()) sb.append(" ").append(after);
-            } else {
-                sb.append(line);
-            }
-            if (i < lines.length - 1) sb.append("\n");
-        }
-        return sb.toString();
-    }
 
     @Override
     public int getItemCount() {
         return VIRTUAL_COUNT;
-    }
-
-    private String normalizeForSave(String raw) {
-        // Convert CRLF to LF, trim edges, remove any existing leading bullets or hyphens
-        if (raw == null) return "";
-        String[] lines = raw.replace("\r\n", "\n").replace("\r", "\n").split("\n");
-        StringBuilder out = new StringBuilder();
-        for (String line : lines) {
-            String t = line.trim();
-            if (t.isEmpty()) continue;
-            // Remove leading bullet-like characters (•, -, *, •• etc) and whitespace
-            t = t.replaceAll("^[\\u2022\\*\\-\\s]+", "");
-            out.append("• ").append(t).append("\n");
-        }
-        return out.toString().trim(); // final text with bullets, no trailing newline
-    }
-
-    private String normalizeForEdit(String savedWithBullets) {
-        // Turn bullet lines into plain lines for the edit box (no bullets)
-        if (savedWithBullets == null) return "";
-        String[] lines = savedWithBullets.replace("\r\n", "\n").replace("\r", "\n").split("\n");
-        StringBuilder out = new StringBuilder();
-        for (String line : lines) {
-            String t = line.trim();
-            if (t.isEmpty()) continue;
-            // remove leading bullets/hyphens
-            t = t.replaceAll("^[\\u2022\\*\\-\\s]+", "");
-            out.append(t).append("\n");
-        }
-        return out.toString().trim();
     }
 
     static class WeekViewHolder extends RecyclerView.ViewHolder {
@@ -191,55 +141,53 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
 
         // long press opens EditorBottomSheet
         targetView.setOnLongClickListener(v -> {
-            // prepare editable text for the bottom sheet
-            String editable;
-            if (fieldKey.equals("notes")) {
-                // For notes, prefill the editor with the raw stored value so "- " remains visible while editing
-                editable = WorkoutStorage.getWorkout(holder.itemView.getContext(), day, "notes", "");
-            } else {
-                // For other fields, compute editable text by stripping bullets
-                String current = targetView.getText() == null ? "" : targetView.getText().toString();
-                editable = normalizeForEdit(current);
+            // GET RAW DATA FOR EDITING
+            // We read directly from storage to get the clean, unformatted text
+            String editable = WorkoutStorage.getWorkout(holder.itemView.getContext(), day, fieldKey, "");
+
+            // Fallback for defaults if empty (so user sees default text to edit)
+            if (editable.isEmpty() && !fieldKey.equals("workoutType") && !fieldKey.equals("notes")) {
+                int dayIndex = adapterPos % 7;
+                if(dayIndex < 0) dayIndex += 7;
+                if(fieldKey.equals("workoutsMajor")) editable = majors[dayIndex];
+                else if(fieldKey.equals("workoutsMinor")) editable = minors[dayIndex];
             }
 
-            EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, fieldKey, editable, adapterPos);
+            // Clean labels for the Bottom Sheet title
+            String readableField = fieldKey;
+            if(fieldKey.equals("workoutsMajor")) readableField = "Major Workouts";
+            if(fieldKey.equals("workoutsMinor")) readableField = "Minor Workouts";
+            if(fieldKey.equals("workoutType")) readableField = "Type";
+            if(fieldKey.equals("notes")) readableField = "Notes";
 
-            // set callback to receive edited text
+            // Pass 'day' as the first arg, and 'readableField' as second arg to make title "Edit MONDAY Major"
+            EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, readableField, editable, adapterPos);
+
             sheet.setOnSaveListener((editedText, pos) -> {
-                // Normalize and save centrally here
-                String finalText;
-                if (fieldKey.equals("workoutType")) {
-                    // plain text for workoutType
-                    finalText = editedText == null ? "" : editedText.trim();
-                } else if (fieldKey.equals("notes")) {
-                    // For notes: always store the raw trimmed text exactly as the user typed it.
-                    // This preserves any leading "- " the user intentionally typed.
-                    finalText = editedText == null ? "" : editedText.trim();
-                } else {
-                    // for workoutsMajor/workoutsMinor we keep bullet formatting
-                    finalText = normalizeForSave(editedText);
-                }
+                String finalText = editedText == null ? "" : editedText.trim();
 
-                // persist
+                // SAVE CLEAN DATA
+                if (fieldKey.equals("workoutsMajor") || fieldKey.equals("workoutsMinor")) {
+                    finalText = TextFormatUtils.cleanTextForStorage(finalText);
+                }
+                // Notes and Type are saved raw (Notes preserves "- ")
+
                 WorkoutStorage.saveWorkout(holder.itemView.getContext(), day, fieldKey, finalText);
 
-                // update the visible holder views (we have access to holder here)
-                // IMPORTANT: because RecyclerView recycles views, check that holder is still bound to same adapter position if needed.
-                // For simplicity, we update the text on this holder instance.
+                // UPDATE UI WITH FORMATTED DATA
                 if (fieldKey.equals("workoutType")) {
                     holder.workoutType.setText(finalText);
                 } else if (fieldKey.equals("workoutsMajor")) {
-                    holder.workoutsMajor.setText(finalText);
+                    holder.workoutsMajor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
+                } else if (fieldKey.equals("workoutsMinor")) {
+                    holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
                 } else if (fieldKey.equals("notes")) {
-                    holder.notesDetails.setText(formatNotesForDisplay(finalText));
-                } else {
-                    holder.workoutsMinor.setText(finalText);
+                    holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(finalText));
                 }
             });
 
-            // show the bottom sheet using activity's fragment manager
             FragmentManager fm = activity.getSupportFragmentManager();
-            sheet.show(fm, "editor-" + day + "-" + fieldKey);
+            sheet.show(fm, "editor");
             return true;
         });
     }

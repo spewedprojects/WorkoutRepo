@@ -8,4 +8,5 @@
 # Absolute "No-frills" WorkoutRepo: [v3.3.g](https://github.com/spewedprojects/WorkoutRepo/releases/tag/v3.3.g)
 Screenshots above^
 
-# Revamped WorkoutRepo with routines: v4.0.0+
+# Revamped WorkoutRepo with routines: [v4.0.0+](https://github.com/spewedprojects/WorkoutRepo/releases/tag/v4.0.0)
+Screenshots below:

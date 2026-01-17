@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingTop="1dp"
+    android:weightSum="6.5"
     android:paddingBottom="0dp"
+    android:baselineAligned="false"
     android:background="@drawable/cell_border">
 
     <TextView
@@ -18,7 +21,6 @@
         android:textColor="?attr/colorOnPrimary"
         android:textSize="14sp"/>
 
-    <!-- DIVIDER 1 -->
     <View
         android:layout_width="0.75dp"
         android:layout_marginHorizontal="2dp"
@@ -36,7 +38,6 @@
         android:textColor="?attr/colorOnPrimary"
         android:textSize="14sp"/>
 
-    <!-- DIVIDER 2 -->
     <View
         android:layout_width="0.75dp"
         android:layout_marginHorizontal="2dp"
@@ -53,4 +54,4 @@
         android:text="Notes"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="14sp" />
-</TableRow>
+</LinearLayout>
