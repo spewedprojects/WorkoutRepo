@@ -11,8 +11,7 @@
         android:roundIcon="@drawable/wr_app_icon_3"
         android:supportsRtl="false"
         android:theme="@style/Theme.WorkoutRepo"
-        android:appCategory="productivity"
-        tools:targetApi="26">
+        android:appCategory="productivity">
         <activity
             android:name=".MainActivity"
             android:exported="true">

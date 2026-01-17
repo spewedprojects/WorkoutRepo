@@ -44,9 +44,26 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_ADD_NEW) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_routine_ui, parent, false);
+
+            // FIX: Explicitly set RecyclerView.LayoutParams to MATCH_PARENT
+            // This prevents the ClassCastException in Release mode
+            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+            );
+            v.setLayoutParams(lp);
+
             return new AddViewHolder(v);
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.routines_view, parent, false);
+
+            // FIX: Explicitly set RecyclerView.LayoutParams here too
+            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+            );
+            v.setLayoutParams(lp);
+
             return new RoutineViewHolder(v);
         }
     }

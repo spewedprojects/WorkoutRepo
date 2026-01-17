@@ -1,15 +1,19 @@
 package com.gratus.workoutrepo.model;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Keep // Add this annotation to prevent R8 renaming
 public class Routine {
     public long timestamp; // New field for sorting
     public String id;
     public String title;
     public String notes;
     public List<DayWorkout> days;
+
 
     public Routine() {
         this.id = UUID.randomUUID().toString();

@@ -1,5 +1,8 @@
 package com.gratus.workoutrepo.model;
 
+import androidx.annotation.Keep;
+
+@Keep // Add this annotation
 public class DayWorkout {
     public String dayName; // "MONDAY", etc.
     public String workoutType;
