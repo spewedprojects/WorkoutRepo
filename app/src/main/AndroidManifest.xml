@@ -9,13 +9,13 @@
         android:icon="@drawable/wr_app_icon_3"
         android:label="@string/app_name"
         android:roundIcon="@drawable/wr_app_icon_3"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/Theme.WorkoutRepo"
-        android:appCategory="productivity">
+        android:appCategory="productivity"
+        tools:targetApi="26">
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="Front page">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,12 +25,11 @@
 
         <activity
             android:name=".SharedPrefsViewerActivity"
-            android:exported="true"
-            android:label="Workouts (table)">
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
