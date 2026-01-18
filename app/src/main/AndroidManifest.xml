@@ -13,7 +13,7 @@
         android:theme="@style/Theme.WorkoutRepo"
         android:appCategory="productivity">
         <activity
-            android:name=".MainActivity"
+            android:name="com.gratus.workoutrepo.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".RoutinesActivity"
+            android:name="com.gratus.workoutrepo.RoutinesActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -113,7 +113,12 @@ public class RoutinesActivity extends AppCompatActivity {
                 if(field.equals("title")) routine.title = text;
                 else routine.notes = text;
 
-                RoutineRepository.saveRoutineToLibrary(RoutinesActivity.this, routine);
+                // 3. FIX: Check if this is the ACTIVE routine. If so, update the buffer too! (18/01/26)
+                Routine active = RoutineRepository.getActiveRoutine(RoutinesActivity.this);
+                if (active != null && active.id.equals(routine.id)) {
+                    // Update the active buffer so the Main Page knows about the new Title/Notes
+                    RoutineRepository.saveActiveRoutine(RoutinesActivity.this, routine);
+                }
                 adapter.notifyDataSetChanged();
             });
             sheet.show(getSupportFragmentManager(), "meta_edit");

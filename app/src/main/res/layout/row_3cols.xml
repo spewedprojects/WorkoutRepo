@@ -3,55 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingTop="1dp"
-    android:weightSum="6.5"
     android:paddingBottom="0dp"
     android:baselineAligned="false"
     android:background="@drawable/cell_border">
 
-    <TextView
-        android:id="@+id/col1"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2.5"
-        android:paddingEnd="2dp"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:text="Major"
-        android:textColor="?attr/colorOnPrimary"
-        android:textSize="14sp"/>
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingStart="4dp">
+        <TextView
+            android:id="@+id/col1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingEnd="2dp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="Major"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"/>
 
-    <View
-        android:layout_width="0.75dp"
-        android:layout_marginHorizontal="2dp"
-        android:layout_height="match_parent"
-        android:background="?attr/colorAccent" />
+        <View
+            android:layout_width="0.75dp"
+            android:layout_marginHorizontal="2dp"
+            android:layout_height="match_parent"
+            android:background="?attr/colorAccent" />
+
+        <TextView
+            android:id="@+id/col2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="2dp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="Minor"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorAccent"
+        android:layout_marginVertical="2dp"/>
 
     <TextView
-        android:id="@+id/col2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:paddingHorizontal="2dp"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:text="Minor"
-        android:textColor="?attr/colorOnPrimary"
-        android:textSize="14sp"/>
-
-    <View
-        android:layout_width="0.75dp"
-        android:layout_marginHorizontal="2dp"
-        android:layout_height="match_parent"
-        android:background="?attr/colorAccent" />
-
-    <TextView
-        android:id="@+id/col3"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:paddingStart="2dp"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_light"
+        android:textStyle="bold"
+        android:text="Notes:"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="15sp"
+        android:letterSpacing="0.03"/>
+    <TextView
+        android:id="@+id/col3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:paddingStart="4dp"
+        android:paddingBottom="2dp"
         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
         android:text="Notes"
         android:textColor="?attr/colorOnPrimary"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 </LinearLayout>
