@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.model;
+package com.gratus.workoutrepo.model; //class moved
 
 import androidx.annotation.Keep;
 

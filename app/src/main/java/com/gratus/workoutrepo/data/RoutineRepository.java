@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.data;
+package com.gratus.workoutrepo.data; //class moved
 
 import android.content.Context;
 import android.content.SharedPreferences;

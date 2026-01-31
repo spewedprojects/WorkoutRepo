@@ -14,9 +14,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
-
 import java.util.Calendar;
+
+import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

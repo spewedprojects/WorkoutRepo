@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.adapters;
+package com.gratus.workoutrepo.adapters; //class moved
 
 import android.view.LayoutInflater;
 import android.view.View;

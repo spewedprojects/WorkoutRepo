@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.storage;
+package com.gratus.workoutrepo.storage; //class moved
 
 import android.content.Context;
 import com.gratus.workoutrepo.data.RoutineRepository;

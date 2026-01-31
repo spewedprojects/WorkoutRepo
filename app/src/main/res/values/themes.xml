@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.WorkoutRepo" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/text_handle_color</item> <!-- Here colorPrimary is being taken up but the select handle, therefore. -->
         <item name="colorSurface">@color/primaryVariant</item>

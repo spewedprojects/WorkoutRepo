@@ -24,4 +24,5 @@
 
     <color name="textbox_stroke_unfocused">#80FFFFFF</color>
     <color name="textbox_stroke_focused">#D9FFFFFF</color>
+
 </resources>
