@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.gson.Gson;
+import com.gratus.workoutrepo.adapters.RoutinesPagerAdapter;
 import com.gratus.workoutrepo.data.RoutineRepository;
 import com.gratus.workoutrepo.model.Routine;
 import java.io.BufferedReader;

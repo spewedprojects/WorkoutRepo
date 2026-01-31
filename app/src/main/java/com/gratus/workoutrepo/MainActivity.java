@@ -3,8 +3,6 @@ package com.gratus.workoutrepo;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -15,6 +13,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
+
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {

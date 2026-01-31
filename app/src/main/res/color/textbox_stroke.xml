@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Focused state -->
+    <item
+        android:color="@color/textbox_stroke_focused"
+        android:state_focused="true"/>
+    <!-- Default (unfocused) state -->
+    <item
+        android:color="@color/textbox_stroke_unfocused"/>
+</selector>

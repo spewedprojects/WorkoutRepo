@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="status_bar_color">#FFFFFF</color>  <!-- White -->
-    <color name="purple_200">?android:attr/textColorHintInverse</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="black_white">#FF000000</color>
+    <color name="white_black">#FFFFFFFF</color>
 
     <color name="secondary">#B2DFDB</color>
     <color name="secondaryVariant">#26A69A</color>
@@ -24,4 +18,10 @@
     <color name="success_green">#388E3C</color>
     <color name="transparent">#00000000</color>
     <color name="big_button_bg">#10000000</color>
+
+    <color name="text_handle_color">#A5000000</color>
+    <color name="text_highlight_color">#41000000</color>
+    
+    <color name="textbox_stroke_unfocused">#80000000</color>
+    <color name="textbox_stroke_focused">#DA000000</color>
 </resources>

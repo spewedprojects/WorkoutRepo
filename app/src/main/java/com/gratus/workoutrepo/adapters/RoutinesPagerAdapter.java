@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo;
+package com.gratus.workoutrepo.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.gratus.workoutrepo.R;
+import com.gratus.workoutrepo.RoutinesActivity;
 import com.gratus.workoutrepo.model.Routine;
 import com.gratus.workoutrepo.utils.TextFormatUtils;
 

@@ -3,12 +3,12 @@
     <style name="Base.Theme.WorkoutRepo" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/text_handle_color</item> <!-- Here colorPrimary is being taken up but the select handle, therefore. -->
         <item name="colorSurface">@color/primaryVariant</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurface">@color/black_white</item>
         <item name="android:textColorTertiary">@color/onPrimary2</item>
         <item name="colorPrimaryVariant">@color/primary</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/black_white</item>
         <item name="colorAccent">@color/onPrimary2</item>
         <item name="colorButtonNormal">@color/switchbutton</item>
         <item name="colorBackgroundFloating">@color/deletebutton</item>
@@ -16,12 +16,16 @@
         <item name="colorSurfaceDim">@color/dialog_bg</item>
         <item name="android:textColorHint">@color/textHintcolor</item>
         <item name="colorOnPrimarySurface">@color/barChart</item>
+
+        <item name="android:colorControlHighlight">@color/text_handle_color</item>
+        <item name="android:textColorHighlight">@color/text_highlight_color</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorSecondaryVariant">@color/secondaryVariant</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/black_white</item>
         <!-- Customize your theme here. -->
-        <item name="colorPrimaryInverse">@color/black</item>
+        <item name="colorPrimaryInverse">@color/black_white</item>
 
     </style>
 
