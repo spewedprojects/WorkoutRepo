@@ -10,8 +10,8 @@ android {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 15
-        versionName = "4.3.0" // major.minor.patch
+        versionCode = 16
+        versionName = "5.0.0" // major.minor.patch
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

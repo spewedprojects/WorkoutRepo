@@ -1,8 +1,14 @@
 package com.gratus.workoutrepo;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -18,13 +24,15 @@ import java.util.Calendar;
 
 import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private long backPressedTime;
     private Toast backToast;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        applyTheme();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -37,6 +45,29 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.browseWorkouts).setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RoutinesActivity.class))
         );
+
+        HorizontalScrollView scrollView = findViewById(R.id.btn_scroll);
+
+        scrollView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                // Get the container (LinearLayout inside the scrollview)
+                ViewGroup container = (ViewGroup) scrollView.getChildAt(0);
+
+                // Each item has fixed width (58dp in your XML)
+                int itemWidth = container.getChildAt(0).getWidth();
+                int scrollX = scrollView.getScrollX();
+
+                // Decide which item we are closer to: 0 (GitHub) or 1 (Theme container)
+                int page = (scrollX + itemWidth / 2) / itemWidth;
+                int targetX = page * itemWidth;
+
+                scrollView.post(() -> scrollView.smoothScrollTo(targetX, 0));
+                return false;
+            }
+            return false;
+        });
+
+        setupThemeButtons();
 
         ImageButton githubicon = findViewById(R.id.githubIcon);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
@@ -102,6 +133,54 @@ public class MainActivity extends AppCompatActivity {
         };
         // Add the callback to the dispatcher
         getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    /**
+     * Set up the theme toggle buttons.
+     */
+    private void setupThemeButtons() {
+        ImageButton lightButton = findViewById(R.id.btn_light);
+        ImageButton darkButton = findViewById(R.id.btn_dark);
+        ImageButton autoButton = findViewById(R.id.btn_auto);
+
+        if (lightButton == null || darkButton == null || autoButton == null) {
+            return;
+        }
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String currentTheme = prefs.getString(THEME_KEY, "auto");
+
+        updateButtonVisibility(currentTheme, lightButton, darkButton, autoButton);
+
+        lightButton.setOnClickListener(v -> setThemeAndSave("light"));
+        darkButton.setOnClickListener(v -> setThemeAndSave("dark"));
+        autoButton.setOnClickListener(v -> setThemeAndSave("auto"));
+    }
+
+    /**
+     * Update the visibility of the theme buttons based on the current theme.
+     */
+    private void updateButtonVisibility(String currentTheme, ImageButton lightButton, ImageButton darkButton, ImageButton autoButton) {
+        switch (currentTheme) {
+            case "light":
+                lightButton.setVisibility(View.GONE);
+                darkButton.setVisibility(View.VISIBLE);
+                autoButton.setVisibility(View.GONE);
+                System.out.println("LIGHT mode - GONE (Light button and Auto button), VISIBLE (Dark button)");
+                break;
+            case "dark":
+                lightButton.setVisibility(View.GONE);
+                darkButton.setVisibility(View.GONE);
+                autoButton.setVisibility(View.VISIBLE);
+                System.out.println("DARK mode - GONE (Light button and Dark button), VISIBLE (Auto button)");
+                break;
+            case "auto":
+                lightButton.setVisibility(View.VISIBLE);
+                darkButton.setVisibility(View.GONE);
+                autoButton.setVisibility(View.GONE);
+                System.out.println("AUTO mode - GONE (Dark button and Auto button), VISIBLE (Light button)");
+                break;
+        }
     }
 
     @Override

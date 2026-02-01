@@ -24,7 +24,7 @@ import com.gratus.workoutrepo.adapters.RoutinesPagerAdapter;
 import com.gratus.workoutrepo.data.RoutineRepository;
 import com.gratus.workoutrepo.model.Routine;
 
-public class RoutinesActivity extends AppCompatActivity {
+public class RoutinesActivity extends BaseActivity {
 
     private ViewPager2 viewPager;
     private RoutinesPagerAdapter adapter;
