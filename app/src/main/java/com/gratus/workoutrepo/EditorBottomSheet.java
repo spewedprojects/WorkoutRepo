@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -78,6 +81,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
         TextInputEditText editText = v.findViewById(R.id.editorEditText);
         if (!TextUtils.isEmpty(editableText)) editText.setText(editableText);
         editText.setSelection(editText.getText().length());
+        clearFocusOnKeyboardHide(editText, v);
 
         MaterialButton cancel = v.findViewById(R.id.cancelBtn);
         MaterialButton save = v.findViewById(R.id.saveBtn);
@@ -95,6 +99,18 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
         return v;
     }
+
+    // 01/02/2026 - clear focus when keyboard not visible
+    private static void clearFocusOnKeyboardHide(EditText editText, View rootView) {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+            if (!imeVisible) {
+                editText.clearFocus();
+            }
+            return insets;
+        });
+    }
+
 
     // convenience to show
     public void show(FragmentManager fm, String tag, OnSaveListener listener) {
