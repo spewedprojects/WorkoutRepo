@@ -133,11 +133,12 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     // Editor wiring
     // -------------------------
     private void setupEditor(@NonNull WeekViewHolder holder, @NonNull String fieldKey, @NonNull String day, int adapterPos) {
-        TextView targetView;
-        if (fieldKey.equals("workoutType")) targetView = holder.workoutType;
-        else if (fieldKey.equals("workoutsMajor")) targetView = holder.workoutsMajor;
-        else if (fieldKey.equals("notes")) targetView = holder.notesDetails;
-        else targetView = holder.workoutsMinor;
+        TextView targetView = switch (fieldKey) {
+            case "workoutType" -> holder.workoutType;
+            case "workoutsMajor" -> holder.workoutsMajor;
+            case "notes" -> holder.notesDetails;
+            default -> holder.workoutsMinor;
+        };
 
         // long press opens EditorBottomSheet
         targetView.setOnLongClickListener(v -> {
@@ -175,14 +176,14 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
                 WorkoutStorage.saveWorkout(holder.itemView.getContext(), day, fieldKey, finalText);
 
                 // UPDATE UI WITH FORMATTED DATA
-                if (fieldKey.equals("workoutType")) {
-                    holder.workoutType.setText(finalText);
-                } else if (fieldKey.equals("workoutsMajor")) {
-                    holder.workoutsMajor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
-                } else if (fieldKey.equals("workoutsMinor")) {
-                    holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
-                } else if (fieldKey.equals("notes")) {
-                    holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(finalText));
+                switch (fieldKey) {
+                    case "workoutType" -> holder.workoutType.setText(finalText);
+                    case "workoutsMajor" ->
+                            holder.workoutsMajor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
+                    case "workoutsMinor" ->
+                            holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
+                    case "notes" ->
+                            holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(finalText));
                 }
             });
 

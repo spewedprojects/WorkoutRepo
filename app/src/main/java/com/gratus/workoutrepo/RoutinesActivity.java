@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,7 +28,7 @@ import com.gratus.workoutrepo.model.Routine;
 
 public class RoutinesActivity extends BaseActivity {
 
-    private ViewPager2 viewPager;
+    private RecyclerView routinesRecycler; // Changed from ViewPager2
     private RoutinesPagerAdapter adapter;
     private List<Routine> loadedRoutines;
     private Routine routineToExport; // Temp holder for export
@@ -42,7 +44,14 @@ public class RoutinesActivity extends BaseActivity {
             return insets;
         });
 
-        viewPager = findViewById(R.id.routinesPager);
+        routinesRecycler = findViewById(R.id.routinesPager);
+        // 1. Setup Horizontal Layout
+        routinesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        // 2. Add "Magnet" Snapping (This makes it feel like ViewPager)
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(routinesRecycler);
+
         loadData();
     }
 
@@ -52,23 +61,14 @@ public class RoutinesActivity extends BaseActivity {
 
         // Pass the Active ID to the adapter so it can hide the delete button
         adapter = new RoutinesPagerAdapter(loadedRoutines, activeRoutine.id, actionListener);
-        viewPager.setAdapter(adapter);
+        routinesRecycler.setAdapter(adapter);
 
         // Logic to Jump to the Active Routine
         int activeIndex = -1;
         for (int i = 0; i < loadedRoutines.size(); i++) {
-            if (loadedRoutines.get(i).id.equals(activeRoutine.id)) {
-                activeIndex = i;
-                break;
+            if (activeIndex != -1) {
+                routinesRecycler.scrollToPosition(activeIndex);
             }
-        }
-
-        if (activeIndex != -1) {
-            // Jump instantly (false = no animation)
-            viewPager.setCurrentItem(activeIndex, false);
-        } else {
-            // If active routine isn't in the list (e.g. freshly migrated), go to start
-            viewPager.setCurrentItem(0, false);
         }
     }
 
@@ -132,7 +132,7 @@ public class RoutinesActivity extends BaseActivity {
             RoutineRepository.saveRoutineToLibrary(RoutinesActivity.this, newRoutine);
             loadData();
             // Scroll to the new item (2nd to last)
-            viewPager.setCurrentItem(loadedRoutines.size() - 1);
+            routinesRecycler.scrollToPosition(loadedRoutines.size() - 1);
         }
 
         @Override
@@ -213,7 +213,7 @@ public class RoutinesActivity extends BaseActivity {
             // Scroll to the newly added item (it will be at the end due to timestamp sort)
             // Or find it by ID if you want to be precise
             int newIndex = findRoutineIndex(imported.id);
-            if (newIndex != -1) viewPager.setCurrentItem(newIndex, true);
+            if (newIndex != -1) routinesRecycler.scrollToPosition(newIndex);
 
             Toast.makeText(this, "Imported: " + uniqueTitle, Toast.LENGTH_SHORT).show();
 

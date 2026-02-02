@@ -38,7 +38,7 @@
                 android:paddingStart="4dp"
                 android:paddingEnd="2dp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                android:text="Major"
+                android:hint="Major workouts"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="13sp"/>
         </LinearLayout>
@@ -47,7 +47,8 @@
             android:layout_width="1dp"
             android:layout_marginHorizontal="1dp"
             android:layout_height="match_parent"
-            app:dividerColor="@color/onPrimary2"/>
+            app:dividerColor="@color/onPrimary2"
+            android:alpha="0.6"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                 android:paddingStart="2dp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_light"
                 android:textStyle="bold"
-                android:text="Major:"
+                android:text="Minor:"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="15sp"
                 android:letterSpacing="0.03"/>
@@ -71,7 +72,7 @@
                 android:paddingStart="4dp"
                 android:paddingEnd="2dp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                android:text="Minor"
+                android:hint="Minor workouts"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="13sp"/>
         </LinearLayout>
@@ -82,7 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         app:dividerColor="@color/onPrimary2"
-        android:layout_marginVertical="2dp"/>
+        android:layout_marginVertical="2dp"
+        android:alpha="0.6"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -103,7 +105,7 @@
         android:paddingStart="4dp"
         android:paddingBottom="2dp"
         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:text="Notes"
+        android:hint="Workout Notes"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="13sp" />
 </LinearLayout>

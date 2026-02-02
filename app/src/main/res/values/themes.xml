@@ -27,7 +27,6 @@
         <item name="colorOnSecondary">@color/black_white</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimaryInverse">@color/black_white</item>
-
     </style>
 
     <style name="Theme.WorkoutRepo" parent="Base.Theme.WorkoutRepo" />

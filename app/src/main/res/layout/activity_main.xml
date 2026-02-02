@@ -40,13 +40,13 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintTop_toTopOf="parent"
             android:scrollbars="none"
             android:requiresFadingEdge="horizontal"
-            android:fadingEdgeLength="16dp"
+            android:fadingEdgeLength="12dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
@@ -61,8 +61,10 @@
                     app:srcCompat="@drawable/github_mark"
                     android:backgroundTint="?attr/colorOnPrimary"
                     android:background="#00000000"
-                    android:scaleX="0.65"
-                    android:scaleY="0.65"/>
+                    android:scaleX="0.60"
+                    android:scaleY="0.60"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="0dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/theme_btn_container"
@@ -85,7 +87,9 @@
                         android:visibility="visible"
                         android:elevation="2dp"
                         app:srcCompat="@drawable/light_mode"
-                        app:tint="?attr/colorOnPrimary" />
+                        app:tint="?attr/colorOnPrimary"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="0dp" />
 
                     <ImageButton
                         android:id="@+id/btn_dark"
@@ -98,7 +102,9 @@
                         android:visibility="visible"
                         android:elevation="2dp"
                         app:srcCompat="@drawable/dark_mode"
-                        app:tint="?attr/colorOnPrimary" />
+                        app:tint="?attr/colorOnPrimary"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="0dp" />
 
                     <ImageButton
                         android:id="@+id/btn_auto"
@@ -110,7 +116,9 @@
                         android:scaleY="1.1"
                         android:visibility="visible"
                         android:elevation="2dp"
-                        app:srcCompat="@drawable/auto_mode"/>
+                        app:srcCompat="@drawable/auto_mode"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="0dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -88,17 +88,16 @@ public class MainActivity extends BaseActivity {
         // Calculate current day index (0 = Monday, 6 = Sunday)
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int dayIndex;
-        switch (dayOfWeek) {
-            case Calendar.MONDAY: dayIndex = 0; break;
-            case Calendar.TUESDAY: dayIndex = 1; break;
-            case Calendar.WEDNESDAY: dayIndex = 2; break;
-            case Calendar.THURSDAY: dayIndex = 3; break;
-            case Calendar.FRIDAY: dayIndex = 4; break;
-            case Calendar.SATURDAY: dayIndex = 5; break;
-            case Calendar.SUNDAY: dayIndex = 6; break;
-            default: dayIndex = 0;
-        }
+        int dayIndex = switch (dayOfWeek) {
+            case Calendar.MONDAY -> 0;
+            case Calendar.TUESDAY -> 1;
+            case Calendar.WEDNESDAY -> 2;
+            case Calendar.THURSDAY -> 3;
+            case Calendar.FRIDAY -> 4;
+            case Calendar.SATURDAY -> 5;
+            case Calendar.SUNDAY -> 6;
+            default -> 0;
+        };
 
         // Start near the middle so user can swipe in both directions; align to Monday
         int middle = Integer.MAX_VALUE / 2;

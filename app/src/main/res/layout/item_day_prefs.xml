@@ -1,47 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <com.google.android.material.card.MaterialCardView
+<com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+app:cardCornerRadius="14dp"
+app:strokeColor="@color/transparent"
+android:layout_marginTop="6dp"
+android:layout_marginBottom="6dp"
+android:layout_marginHorizontal="16dp"
+app:cardBackgroundColor="?attr/colorPrimaryVariant"
+app:cardElevation="2dp"
+xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="14dp"
-        app:strokeColor="@color/transparent"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginHorizontal="16dp"
-        app:cardBackgroundColor="?attr/colorPrimaryVariant"
-        app:cardElevation="2dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="14dp"
-            android:layout_marginTop="8dp">
-            <TextView
-                android:id="@+id/day_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MONDAY"
-                android:layout_gravity="start"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"/>
+        android:orientation="vertical"
+        android:layout_marginHorizontal="14dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginTop="8dp">
+        <TextView
+            android:id="@+id/day_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MONDAY"
+            android:layout_gravity="start"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"/>
 
-            <TextView
-                android:id="@+id/day_workouttype"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(type)"
-                android:layout_gravity="start"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="4dp"
-                android:textSize="15sp"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_italic"/>
+        <TextView
+            android:id="@+id/day_workouttype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(type)"
+            android:layout_gravity="start"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="15sp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_italic"/>
 
 <!--            <LinearLayout-->
 <!--                android:layout_width="match_parent"-->
@@ -72,10 +67,8 @@
 
 <!--            </LinearLayout>-->
 
-            <include
-                android:id="@+id/row_data"
-                layout="@layout/row_3cols"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
+        <include
+            android:id="@+id/row_data"
+            layout="@layout/row_3cols"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

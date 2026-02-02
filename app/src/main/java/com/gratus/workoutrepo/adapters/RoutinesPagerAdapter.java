@@ -44,28 +44,29 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Get screen width
+        int screenWidth = parent.getContext().getResources().getDisplayMetrics().widthPixels;
+
         if (viewType == TYPE_ADD_NEW) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_routine_ui, parent, false);
 
-            // FIX: Explicitly set RecyclerView.LayoutParams to MATCH_PARENT
-            // This prevents the ClassCastException in Release mode
+            // LOGIC: Set "Add" card to 85% width to create the "Drawer/Peek" effect
             RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int)(screenWidth * 0.65),
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
             v.setLayoutParams(lp);
-
             return new AddViewHolder(v);
+
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.routines_view, parent, false);
 
-            // FIX: Explicitly set RecyclerView.LayoutParams here too
+            // LOGIC: Normal routines are Full Screen (Match Parent)
             RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    screenWidth, // Forces full width snapping
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
             v.setLayoutParams(lp);
-
             return new RoutineViewHolder(v);
         }
     }
