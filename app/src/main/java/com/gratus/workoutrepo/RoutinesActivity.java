@@ -63,13 +63,22 @@ public class RoutinesActivity extends BaseActivity {
         adapter = new RoutinesPagerAdapter(loadedRoutines, activeRoutine.id, actionListener);
         routinesRecycler.setAdapter(adapter);
 
+        // --- FIX STARTS HERE --- (02/02/26)
         // Logic to Jump to the Active Routine
         int activeIndex = -1;
         for (int i = 0; i < loadedRoutines.size(); i++) {
-            if (activeIndex != -1) {
-                routinesRecycler.scrollToPosition(activeIndex);
+            // Compare the ID of the loaded routine with the active routine's ID
+            if (loadedRoutines.get(i).id.equals(activeRoutine.id)) {
+                activeIndex = i;
+                break; // Found it, stop searching
             }
         }
+
+        // Scroll immediately to the active card
+        if (activeIndex != -1) {
+            routinesRecycler.scrollToPosition(activeIndex);
+        }
+        // --- FIX ENDS HERE ---
     }
 
     // --- Action Listener Implementation ---
@@ -114,6 +123,9 @@ public class RoutinesActivity extends BaseActivity {
             sheet.setOnSaveListener((text, pos) -> {
                 if(field.equals("title")) routine.title = text;
                 else routine.notes = text;
+
+                // 2. Save to Library (Standard behavior) (02/02/26)
+                RoutineRepository.saveRoutineToLibrary(RoutinesActivity.this, routine);
 
                 // 3. FIX: Check if this is the ACTIVE routine. If so, update the buffer too! (18/01/26)
                 Routine active = RoutineRepository.getActiveRoutine(RoutinesActivity.this);

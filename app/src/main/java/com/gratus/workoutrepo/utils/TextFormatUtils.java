@@ -44,7 +44,7 @@ public class TextFormatUtils {
             int end = ssb.length();
 
             // Apply Custom Span: "\u2022" with 0 extra indent
-            ssb.setSpan(new TextBulletSpan("\u2022", 25, 0),
+            ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, 0),
                     start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             if (i < lines.length - 1) ssb.append("\n");
