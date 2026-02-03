@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetStart="@+id/start_hidden"
+        motion:constraintSetEnd="@+id/end_visible"
+        motion:duration="180"
+        motion:motionInterpolator="easeInOut">
+
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start_hidden">
+
+        <Constraint android:id="@id/toolbar">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent"/>
+        </Constraint>
+
+        <Constraint android:id="@id/guide_container">
+            <Layout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                motion:layout_constraintTop_toBottomOf="@id/toolbar"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"/>
+            <PropertySet android:visibility="gone" />
+        </Constraint>
+
+        <Constraint android:id="@id/mainCont">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                motion:layout_constraintTop_toBottomOf="@id/toolbar"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintBottom_toBottomOf="parent"/>
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end_visible">
+
+        <Constraint android:id="@id/toolbar">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent"/>
+        </Constraint>
+
+        <Constraint android:id="@id/guide_container">
+            <Layout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                motion:layout_constraintTop_toBottomOf="@id/toolbar"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"/>
+            <PropertySet android:visibility="visible"/>
+        </Constraint>
+
+        <Constraint android:id="@id/mainCont">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                motion:layout_constraintTop_toBottomOf="@id/guide_container"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintBottom_toBottomOf="parent"/>
+        </Constraint>
+    </ConstraintSet>
+
+</MotionScene>

@@ -43,7 +43,8 @@
             android:text="Notes:"
             android:textSize="18sp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-            android:textColor="?attr/colorAccent"/>
+            android:textColor="?attr/colorOnSurface"
+            android:alpha="0.7"/>
 
         <TextView
             android:id="@+id/notesDetails"
@@ -137,7 +138,7 @@
             android:letterSpacing="0.1"
             android:insetBottom="2dp"
             android:insetTop="0dp"
-            android:text="SAVE"
+            android:text="EXPORT"
             app:strokeWidth="1dp"
             app:strokeColor="?attr/colorOnSurface"
             android:layout_alignParentRight="true"

@@ -11,7 +11,8 @@
     app:strokeColor="@color/success_green"
     app:cardElevation="2dp"
     app:cardBackgroundColor="?attr/colorPrimaryVariant"
-    android:longClickable="true">
+    android:longClickable="true"
+    android:animateLayoutChanges="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

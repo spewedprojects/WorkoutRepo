@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,14 +29,18 @@ public class MainActivity extends BaseActivity {
 
     private long backPressedTime;
     private Toast backToast;
+    private MotionLayout motionLayout;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         applyTheme();
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        motionLayout = findViewById(R.id.main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -68,9 +73,15 @@ public class MainActivity extends BaseActivity {
         });
 
         setupThemeButtons();
+        setupButtons();
+        setupWeekPager();
+        setupOnBackPressed();
+    }
 
+    private void setupButtons() {
         ImageButton githubicon = findViewById(R.id.githubIcon);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
+
         githubicon.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
             v.getContext().startActivity(intent);
@@ -80,6 +91,18 @@ public class MainActivity extends BaseActivity {
             v.getContext().startActivity(intent);
         });
 
+        ImageButton guideBtn = findViewById(R.id.guide_btn);
+        guideBtn.setOnClickListener(v -> {
+            // Check current state by ID or Progress
+            if (motionLayout.getCurrentState() == R.id.end_visible) {
+                motionLayout.transitionToStart(); // Animates to guide_hidden
+            } else {
+                motionLayout.transitionToEnd();   // Animates to guide_visible
+            }
+        });
+    }
+
+    private void setupWeekPager() {
         // inside onCreate(...)
         ViewPager2 weekPager = findViewById(R.id.weekPager);
         WeekPagerAdapter adapter = new WeekPagerAdapter(this);
@@ -114,24 +137,6 @@ public class MainActivity extends BaseActivity {
                 // do something if needed...
             }
         });
-
-        // --- IMPROVED IMPLEMENTATION for double back to exit the app ---
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                if (backPressedTime + 2000 > System.currentTimeMillis()) {
-                    backToast.cancel();
-                    // Call finish() to close the activity
-                    finish();
-                } else {
-                    backToast = Toast.makeText(getBaseContext(), "Press BACK again to exit", Toast.LENGTH_SHORT);
-                    backToast.show();
-                }
-                backPressedTime = System.currentTimeMillis();
-            }
-        };
-        // Add the callback to the dispatcher
-        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     /**
@@ -193,6 +198,26 @@ public class MainActivity extends BaseActivity {
                 vp.getAdapter().notifyDataSetChanged();
             }
         }
+    }
+
+    private void setupOnBackPressed() {
+        // --- IMPROVED IMPLEMENTATION for double back to exit the app ---
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                    backToast.cancel();
+                    // Call finish() to close the activity
+                    finish();
+                } else {
+                    backToast = Toast.makeText(getBaseContext(), "Press BACK again to exit", Toast.LENGTH_SHORT);
+                    backToast.show();
+                }
+                backPressedTime = System.currentTimeMillis();
+            }
+        };
+        // Add the callback to the dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
 }

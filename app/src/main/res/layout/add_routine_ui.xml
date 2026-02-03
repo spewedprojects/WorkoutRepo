@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
+    android:scaleY="1"
+    android:scaleX="1"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
