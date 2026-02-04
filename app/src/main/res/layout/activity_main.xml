@@ -211,75 +211,77 @@
             android:paddingBottom="6dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
 
-        <!-- BOLD EXAMPLE -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="4dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="**text** "
-                android:textSize="14sp"
-                android:typeface="monospace"
-                android:paddingEnd="8dp"/>
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="12dp"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bold text"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="**Bold text**"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:paddingEnd="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="- item"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:paddingEnd="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" - item"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:paddingEnd="8dp" />
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="12dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bold text"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Main bullet point"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  \u25E6 Sub-bullet point"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-        <!-- MAIN BULLET EXAMPLE -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- item"
-                android:textSize="14sp"
-                android:typeface="monospace"
-                android:paddingEnd="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="   • Main bullet point"
-                android:textSize="14sp"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-        </LinearLayout>
-
-        <!-- SUB-BULLET EXAMPLE -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" - item"
-                android:textSize="14sp"
-                android:typeface="monospace"
-                android:paddingEnd="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="    \u25E6 Sub-bullet point"
-                android:textSize="14sp"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-        </LinearLayout>
+        <!-- Current version info -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
