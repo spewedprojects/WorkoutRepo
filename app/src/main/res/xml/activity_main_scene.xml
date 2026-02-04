@@ -8,6 +8,11 @@
         motion:duration="180"
         motion:motionInterpolator="easeInOut">
 
+        <OnSwipe
+            motion:touchAnchorId="@id/guide_container"
+            motion:touchRegionId="@id/guide_container"
+            motion:touchAnchorSide="bottom"
+            motion:dragDirection="dragUp" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start_hidden">
@@ -28,18 +33,34 @@
                 android:orientation="vertical"
                 motion:layout_constraintTop_toBottomOf="@id/toolbar"
                 motion:layout_constraintEnd_toEndOf="parent"
-                motion:layout_constraintStart_toStartOf="parent"/>
+                motion:layout_constraintStart_toStartOf="parent" />
             <PropertySet android:visibility="gone" />
         </Constraint>
 
-        <Constraint android:id="@id/mainCont">
+        <Constraint android:id="@id/weekPager">
             <Layout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                motion:layout_constraintTop_toBottomOf="@id/toolbar"
+                android:layout_marginBottom="10dp"
+                motion:layout_constraintTop_toBottomOf="@id/guide_container"
                 motion:layout_constraintEnd_toEndOf="parent"
                 motion:layout_constraintStart_toStartOf="parent"
-                motion:layout_constraintBottom_toBottomOf="parent"/>
+                motion:layout_constraintBottom_toTopOf="@id/buttonBar"
+                motion:layout_constraintHorizontal_chainStyle="packed"
+                motion:layout_constraintVertical_bias="0"/>
+        </Constraint>
+
+        <Constraint android:id="@id/buttonBar">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintTop_toBottomOf="@id/weekPager"
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintVertical_bias="1"/>
+            <PropertySet android:visibility="visible"/>
         </Constraint>
     </ConstraintSet>
 
@@ -65,14 +86,26 @@
             <PropertySet android:visibility="visible"/>
         </Constraint>
 
-        <Constraint android:id="@id/mainCont">
+        <Constraint android:id="@id/weekPager">
             <Layout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 motion:layout_constraintTop_toBottomOf="@id/guide_container"
                 motion:layout_constraintEnd_toEndOf="parent"
                 motion:layout_constraintStart_toStartOf="parent"
-                motion:layout_constraintBottom_toBottomOf="parent"/>
+                motion:layout_constraintBottom_toBottomOf="parent"
+                motion:layout_constraintHorizontal_chainStyle="packed"
+                motion:layout_constraintVertical_bias="0"/>
+        </Constraint>
+
+        <Constraint android:id="@id/buttonBar">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintTop_toBottomOf="@id/weekPager"/>
+            <PropertySet android:visibility="gone"/>
         </Constraint>
     </ConstraintSet>
 

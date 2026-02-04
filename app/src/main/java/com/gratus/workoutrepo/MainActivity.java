@@ -205,6 +205,13 @@ public class MainActivity extends BaseActivity {
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
             public void handleOnBackPressed() {
+                // First check if MotionLayout is expanded
+                if (motionLayout.getCurrentState() == R.id.end_visible) {
+                    // Collapse it instead of exiting
+                    motionLayout.transitionToStart();
+                    return; // consume back press here
+                }
+
                 if (backPressedTime + 2000 > System.currentTimeMillis()) {
                     backToast.cancel();
                     // Call finish() to close the activity

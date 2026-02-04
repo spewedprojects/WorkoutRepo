@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    app:layoutDescription="@xml/activity_main_scene">
+    app:layoutDescription="@xml/activity_main_scene"
+    app:layout_constraintVertical_chainStyle="packed">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
@@ -14,7 +15,8 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <ImageButton
             android:id="@+id/guide_btn"
@@ -148,6 +150,9 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/weekPager"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_bias="0"
         android:visibility="visible">
         <!-- TITLE -->
         <TextView
@@ -216,7 +221,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="**text**"
+                android:text="**text** "
                 android:textSize="14sp"
                 android:typeface="monospace"
                 android:paddingEnd="8dp"/>
@@ -224,7 +229,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="≻ Bold text"
+                android:text="Bold text"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
@@ -248,7 +253,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="→ Main bullet point"
+                android:text="   • Main bullet point"
                 android:textSize="14sp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
         </LinearLayout>
@@ -263,7 +268,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="  - item"
+                android:text=" - item"
                 android:textSize="14sp"
                 android:typeface="monospace"
                 android:paddingEnd="8dp" />
@@ -271,7 +276,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="→ Sub-bullet point"
+                android:text="    \u25E6 Sub-bullet point"
                 android:textSize="14sp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
         </LinearLayout>
@@ -280,73 +285,61 @@
             android:layout_height="wrap_content"
             android:text="@string/app_version"
             android:layout_gravity="end"
-            android:paddingBottom="8dp"
+            android:paddingBottom="0dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_regular"/>
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainCont"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/weekPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guide_container"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/buttonBar"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/weekPager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintBottom_toTopOf="@id/buttonBar"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:animateLayoutChanges="true"/>
+    <LinearLayout
+        android:id="@+id/buttonBar"
+        android:layout_width="match_parent"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="26dp"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weekPager"
+        app:layout_constraintVertical_bias="0"
+        android:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/buttonBar"
+        <ImageButton
+            android:id="@+id/browseWorkouts"
             android:layout_width="0dp"
-            android:weightSum="2"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="26dp"
-            android:layout_marginBottom="18dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weekPager"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_weight="1.2"
+            android:layout_height="48dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginVertical="6dp"
+            android:background="@drawable/rounded_corners"
+            android:elevation="2dp"
+            app:srcCompat="@drawable/list_38dp"/>
 
-            <ImageButton
-                android:id="@+id/browseWorkouts"
-                android:layout_width="0dp"
-                android:layout_weight="1.2"
-                android:layout_height="48dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginVertical="6dp"
-                android:background="@drawable/rounded_corners"
-                android:elevation="2dp"
-                app:srcCompat="@drawable/list_38dp"/>
-
-            <ImageButton
-                android:id="@+id/stravaAccess"
-                android:layout_width="0dp"
-                android:layout_weight="0.8"
-                android:layout_height="48dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="3dp"
-                android:layout_marginVertical="6dp"
-                app:srcCompat="@drawable/strava_2"
-                android:background="@drawable/rounded_corners_strava"
-                android:elevation="2dp"/>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/stravaAccess"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginVertical="6dp"
+            app:srcCompat="@drawable/strava_2"
+            android:background="@drawable/rounded_corners_strava"
+            android:elevation="2dp"/>
+    </LinearLayout>
 
     <!-- Much later - Another image button To access the Page where all these workouts will be listed Along with images. And another image button Where I'll find the entire repository of the Workouts. -->
 
