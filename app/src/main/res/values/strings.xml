@@ -3,4 +3,5 @@
     <string name="btn_light_mode">Switch to Light mode</string>
     <string name="btn_auto_mode">Switch to Auto mode</string>
     <string name="btn_dark_mode">Switch to Dark mode</string>
+    <string name="expand_notes_btn">Expand notes</string>
 </resources>

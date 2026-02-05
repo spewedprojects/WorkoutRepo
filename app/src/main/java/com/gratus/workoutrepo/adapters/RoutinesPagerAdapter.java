@@ -7,11 +7,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.google.android.material.button.MaterialButton;
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.RoutinesActivity;
 import com.gratus.workoutrepo.model.Routine;
+import com.gratus.workoutrepo.utils.ExpandableNoteHelper;
 import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 import java.util.List;
@@ -97,9 +100,9 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     static class RoutineViewHolder extends RecyclerView.ViewHolder {
-        TextView title, notes, notesDetails;
+        TextView title, notesDetails;
         RecyclerView dayList;
-        ImageButton btnDelete;
+        ImageButton btnDelete, btnExpand;
         MaterialButton btnApply, btnSave;
 
         RoutineViewHolder(View v) {
@@ -110,6 +113,7 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
             btnApply = v.findViewById(R.id.apply_routine_btn);
             btnSave = v.findViewById(R.id.save_routine_btn);
             btnDelete = v.findViewById(R.id.delete_routine_btn);
+            btnExpand = v.findViewById(R.id.expand_notes_rout);
 
             // Setup internal RecyclerView for days (ReadOnlyDayAdapter not shown for brevity, but needed)
             dayList.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(v.getContext()));
@@ -118,7 +122,10 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
         // Update bind method
         void bind(Routine routine, String activeId, RoutinesActivity.RoutineActionListener listener) {
             title.setText(routine.title);
-            notesDetails.setText(TextFormatUtils.formatNotesForDisplay(routine.notes));
+            ExpandableNoteHelper.setupNoteState(notesDetails, btnExpand, routine.notes);
+
+            btnExpand.setOnClickListener(v -> ExpandableNoteHelper.toggleNote(notesDetails, btnExpand));
+            //notesDetails.setText(TextFormatUtils.formatNotesForDisplay(routine.notes));
             RoutineDayAdapter dayAdapter = new RoutineDayAdapter(routine.days);
             dayList.setAdapter(dayAdapter);
 

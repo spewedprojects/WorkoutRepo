@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,13 +24,31 @@
             android:letterSpacing="0.03"
             android:layout_marginVertical="20dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-            android:textColor="?attr/colorOnSurface"/>
+            android:textColor="?attr/colorOnSurface"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"/>
 
         <View
+            android:id="@+id/dashed_divider"
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:layout_marginHorizontal="9dp"
-            android:background="@drawable/dashed_line"/>
+            android:background="@drawable/dashed_line"
+            android:layout_below="@id/routineId"/>
+
+        <ImageButton
+            android:id="@+id/expand_notes_rout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="24dp"
+            android:alpha="0.6"
+            android:elevation="4dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/expand_notes_btn"
+            android:src="@drawable/arrow_drop_up_24"
+            android:visibility="visible"
+            android:layout_below="@id/dashed_divider"
+            android:layout_alignParentEnd="true"/>
 
         <TextView
             android:id="@+id/notes"
@@ -44,7 +62,8 @@
             android:textSize="18sp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
             android:textColor="?attr/colorOnSurface"
-            android:alpha="0.7"/>
+            android:alpha="0.7"
+            android:layout_below="@id/dashed_divider"/>
 
         <TextView
             android:id="@+id/notesDetails"
@@ -58,8 +77,9 @@
             android:hint="Long tap to add notes"
             android:textColor="?attr/colorAccent"
             android:textSize="16sp"
-            android:longClickable="true"/>
-    </LinearLayout>
+            android:longClickable="true"
+            android:layout_below="@id/notes"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

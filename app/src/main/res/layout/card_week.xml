@@ -11,8 +11,8 @@
     app:strokeColor="@color/success_green"
     app:cardElevation="2dp"
     app:cardBackgroundColor="?attr/colorPrimaryVariant"
-    android:longClickable="true"
-    android:animateLayoutChanges="true">
+    android:longClickable="false"
+    android:animateLayoutChanges="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -69,12 +69,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/workoutType"
             app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintBottom_toTopOf="@id/notesDivider"
+            app:layout_constraintBottom_toTopOf="@id/notesContainer"
             app:layout_constraintVertical_bias="0">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
 
                 <TextView
                     android:id="@+id/major"
@@ -154,11 +155,20 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/notesDivider"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            app:layout_constraintBottom_toTopOf="@id/notesContainer"/>
+        <ImageButton
+            android:id="@+id/expand_notes_main"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:alpha="0.6"
+            android:elevation="4dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/expand_notes_btn"
+            android:rotation="180"
+            android:src="@drawable/arrow_drop_down_24"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <LinearLayout
             android:id="@+id/notesContainer"
@@ -169,7 +179,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="1"
-            app:layout_constraintVertical_chainStyle="packed">
+            app:layout_constraintVertical_chainStyle="packed"
+            android:animateLayoutChanges="true">
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/notesDivider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                app:layout_constraintBottom_toTopOf="@id/notesContainer"/>
 
             <TextView
                 android:id="@+id/notes"

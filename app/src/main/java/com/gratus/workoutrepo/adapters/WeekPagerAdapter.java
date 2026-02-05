@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.gratus.workoutrepo.EditorBottomSheet;
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.storage.WorkoutStorage;
+import com.gratus.workoutrepo.utils.ExpandableNoteHelper;
 import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.WeekViewHolder> {
@@ -93,8 +96,9 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(savedMinor));
 
         String savedNotesRaw = WorkoutStorage.getWorkout(context, day, "notes", "");
-        holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(savedNotesRaw));
-
+        //holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(savedNotesRaw));
+        ExpandableNoteHelper.setupNoteState(holder.notesDetails, holder.expandBtn, savedNotesRaw);
+        holder.expandBtn.setOnClickListener(v -> ExpandableNoteHelper.toggleNote(holder.notesDetails, holder.expandBtn));
 
         // Remove previous listeners to avoid duplicate callbacks (important when recycling)
         holder.workoutType.setOnLongClickListener(null);
@@ -116,6 +120,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
     }
 
     static class WeekViewHolder extends RecyclerView.ViewHolder {
+        public View expandBtn;
         TextView weekDay, workoutType, workoutsMajor, workoutsMinor, notesDetails;
 
         WeekViewHolder(@NonNull View itemView) {
@@ -125,6 +130,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
             workoutsMajor = itemView.findViewById(R.id.workoutsMajor);
             workoutsMinor = itemView.findViewById(R.id.workoutsMinor);
             notesDetails = itemView.findViewById(R.id.notesDetails);
+            expandBtn = itemView.findViewById(R.id.expand_notes_main);
         }
     }
 
@@ -183,7 +189,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
                     case "workoutsMinor" ->
                             holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
                     case "notes" ->
-                            holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(finalText));
+                            ExpandableNoteHelper.setupNoteState(holder.notesDetails, holder.expandBtn, finalText);
                 }
             });
 

@@ -18,7 +18,9 @@ public class TextFormatUtils {
 
     // Spacing constants (in pixels)
     private static final int BULLET_GAP_WIDTH = 15; // Space between bullet and text
-    private static final int SUB_BULLET_INDENT = 30; // Indentation for sub-points
+
+    private static final int MAIN_BULLET_INDENT = 30;
+    private static final int SUB_BULLET_INDENT = 60; // Indentation for sub-points
 
     /**
      * formatting for Major/Minor sections.
@@ -76,10 +78,19 @@ public class TextFormatUtils {
                 ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, 0),
                         start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            } else if (line.startsWith(" - ") || line.startsWith(" -")) {
-                // SUB BULLET
+            } else if (line.startsWith(" - ")) {
+                // MAIN BULLET Indented
                 int dashIndex = line.indexOf("-");
                 String content = line.substring(dashIndex + 1).trim();
+                ssb.append(content);
+                // Apply Custom Span: "\u2022" (Filled Bullet)
+                ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, MAIN_BULLET_INDENT),
+                        start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            } else if (line.startsWith("  - ") || line.startsWith(" -")) {
+                // SUB BULLET
+                int dashIndex = line.indexOf("-");
+                String content = line.substring(dashIndex + 2).trim();
                 ssb.append(content);
 
                 // Apply Custom Span: "\u25E6" (Hollow Bullet) with EXTRA INDENT
@@ -174,5 +185,24 @@ public class TextFormatUtils {
                 p.setStrokeWidth(originalStroke);
             }
         }
+    }
+
+    public static CharSequence getCollapsedNotes(String raw, int maxLines) {
+        if (raw == null || raw.trim().isEmpty()) return "";
+
+        String[] lines = raw.split("\\r?\\n");
+        if (lines.length <= maxLines) {
+            return formatNotesForDisplay(raw);
+        }
+
+        // Take the first 5 lines
+        StringBuilder collapsed = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            collapsed.append(lines[i]);
+            if (i < 4) collapsed.append("\n");
+        }
+        collapsed.append("..."); // The visual indicator
+
+        return formatNotesForDisplay(collapsed.toString());
     }
 }

@@ -1,3 +1,5 @@
+## Latest: v7.0.0
+
 ### App progression so far:
 ![readmescreen](https://github.com/user-attachments/assets/8759738e-f082-4915-b4e1-30787bcb334f)
 

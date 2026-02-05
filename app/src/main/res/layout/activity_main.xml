@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/help_38dp"
+            app:srcCompat="@drawable/info_38dp"
             android:alpha="0.2"/>
 
         <TextView
@@ -154,16 +154,32 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0"
         android:visibility="visible">
-        <!-- TITLE -->
-        <TextView
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Guide to the App"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="12dp"
-            android:gravity="start"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+            android:orientation="horizontal">
+            <!-- TITLE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guide to the App"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="12dp"
+                android:gravity="start"
+                android:layout_alignParentStart="true"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+
+            <!-- Current version info -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                android:paddingTop="4dp"
+                android:text="@string/app_version" />
+        </RelativeLayout>
 
         <!-- SECTION: SHORTCUTS -->
         <TextView
@@ -220,7 +236,7 @@
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="12dp"/>
+                android:layout_marginEnd="4dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -247,16 +263,23 @@
                     android:textSize="14sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  - item"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:paddingEnd="8dp" />
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="12dp"/>
+                android:layout_marginHorizontal="8dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
@@ -274,22 +297,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  \u25E6 Sub-bullet point"
+                    android:text="  • Indented bullet point"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="     \u25E6 Sub-bullet point"
                     android:textSize="14sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Current version info -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_version"
-            android:layout_gravity="end"
-            android:paddingBottom="0dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"/>
-
     </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
