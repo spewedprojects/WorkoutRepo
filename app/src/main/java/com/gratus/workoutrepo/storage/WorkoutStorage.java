@@ -23,8 +23,8 @@ public class WorkoutStorage {
             // 2. Update memory
             switch (fieldKey) {
                 case "workoutType": day.workoutType = value; break;
-                case "workoutsMajor": day.major = value; break;
-                case "workoutsMinor": day.minor = value; break;
+                case "workoutsMajor": day.majorWorkouts = value; break;
+                case "workoutsMinor": day.minorWorkouts = value; break;
                 case "notes": day.notes = value; break;
             }
 
@@ -48,8 +48,8 @@ public class WorkoutStorage {
         if (day != null) {
             switch (fieldKey) {
                 case "workoutType": return (day.workoutType == null || day.workoutType.isEmpty()) ? defaultValue : day.workoutType;
-                case "workoutsMajor": return (day.major == null || day.major.isEmpty()) ? defaultValue : day.major;
-                case "workoutsMinor": return (day.minor == null || day.minor.isEmpty()) ? defaultValue : day.minor;
+                case "workoutsMajor": return (day.majorWorkouts == null || day.majorWorkouts.isEmpty()) ? defaultValue : day.majorWorkouts;
+                case "workoutsMinor": return (day.minorWorkouts == null || day.minorWorkouts.isEmpty()) ? defaultValue : day.minorWorkouts;
                 case "notes": return (day.notes == null || day.notes.isEmpty()) ? defaultValue : day.notes;
             }
         }

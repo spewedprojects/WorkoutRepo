@@ -70,7 +70,7 @@ public class TextFormatUtils {
             int start = ssb.length();
             boolean isLastLine = (i == lines.length - 1);
 
-            if (line.startsWith("- ")) {
+            if (line.startsWith("- ") || line.startsWith("-")) {
                 // MAIN BULLET
                 String content = line.substring(2).trim();
                 ssb.append(content);
@@ -78,7 +78,7 @@ public class TextFormatUtils {
                 ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, 0),
                         start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            } else if (line.startsWith(" - ")) {
+            } else if (line.startsWith("-- ") || line.startsWith("--") || line.startsWith(" - ") || line.startsWith(" -")) {
                 // MAIN BULLET Indented
                 int dashIndex = line.indexOf("-");
                 String content = line.substring(dashIndex + 1).trim();
@@ -87,7 +87,7 @@ public class TextFormatUtils {
                 ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, MAIN_BULLET_INDENT),
                         start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            } else if (line.startsWith("  - ") || line.startsWith(" -")) {
+            } else if (line.startsWith("--- ") || line.startsWith("---") || line.startsWith("  - ") || line.startsWith("  -")) {
                 // SUB BULLET
                 int dashIndex = line.indexOf("-");
                 String content = line.substring(dashIndex + 2).trim();

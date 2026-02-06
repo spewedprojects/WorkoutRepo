@@ -21,8 +21,10 @@
             android:layout_height="wrap_content"
             android:text="Routine A"
             android:textSize="40sp"
+            android:gravity="center_horizontal"
             android:letterSpacing="0.03"
             android:layout_marginVertical="20dp"
+            android:layout_marginHorizontal="4dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
             android:textColor="?attr/colorOnSurface"
             android:layout_alignParentTop="true"
@@ -38,14 +40,15 @@
 
         <ImageButton
             android:id="@+id/expand_notes_rout"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="56dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="24dp"
+            android:layout_marginTop="-4dp"
             android:alpha="0.6"
             android:elevation="4dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/expand_notes_btn"
-            android:src="@drawable/arrow_drop_up_24"
+            android:src="@drawable/chevron_line_up_24"
             android:visibility="visible"
             android:layout_below="@id/dashed_divider"
             android:layout_alignParentEnd="true"/>
@@ -146,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/delete_icon_24dp"
             android:background="@color/transparent" />
 

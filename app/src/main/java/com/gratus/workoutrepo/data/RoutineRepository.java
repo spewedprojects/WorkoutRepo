@@ -92,8 +92,8 @@ public class RoutineRepository {
 
             // Map keys exactly as they were in your old WorkoutStorage
             day.workoutType = prefs.getString(d + "_workoutType", "");
-            day.major = prefs.getString(d + "_workoutsMajor", "");
-            day.minor = prefs.getString(d + "_workoutsMinor", "");
+            day.majorWorkouts = prefs.getString(d + "_workoutsMajor", "");
+            day.minorWorkouts = prefs.getString(d + "_workoutsMinor", "");
             day.notes = prefs.getString(d + "_notes", "");
         }
 

@@ -37,8 +37,8 @@ public class RoutineDayAdapter extends RecyclerView.Adapter<RoutineDayAdapter.Da
 
         // Populate the 3 columns
         // Use Utils for formatting
-        holder.textMajor.setText(TextFormatUtils.formatBulletsForDisplay(day.major));
-        holder.textMinor.setText(TextFormatUtils.formatBulletsForDisplay(day.minor));
+        holder.textMajor.setText(TextFormatUtils.formatBulletsForDisplay(day.majorWorkouts));
+        holder.textMinor.setText(TextFormatUtils.formatBulletsForDisplay(day.minorWorkouts));
         holder.textNotes.setText(TextFormatUtils.formatNotesForDisplay(day.notes));
     }
 

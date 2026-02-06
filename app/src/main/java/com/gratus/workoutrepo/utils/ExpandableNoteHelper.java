@@ -14,20 +14,27 @@ public class ExpandableNoteHelper {
      */
     public static void setupNoteState(TextView notesView, View expandBtn, String rawNotes) {
         String safeNotes = (rawNotes == null) ? "" : rawNotes;
-        String[] lines = safeNotes.split("\\r?\\n");
+        notesView.setTag(safeNotes); // Tag it early
 
-        if (lines.length > 7) {
-            expandBtn.setVisibility(View.VISIBLE);
-            expandBtn.setRotation(180f); // Collapsed state
-            notesView.setText(TextFormatUtils.getCollapsedNotes(safeNotes, 5));
-        } else {
-            expandBtn.setVisibility(View.GONE);
-            expandBtn.setRotation(0f);
-            notesView.setText(TextFormatUtils.formatNotesForDisplay(safeNotes));
-        }
+        // 1. Initial display using formatted text to allow measurement
+        notesView.setText(TextFormatUtils.formatNotesForDisplay(safeNotes));
 
-        // Tag the view with the latest raw notes to prevent listener desync
-        notesView.setTag(safeNotes);
+        // 2. Wait for the view to render to check for wrapping/DPI impact
+        notesView.post(() -> {
+            int actualLines = notesView.getLineCount();
+            String[] rawLines = safeNotes.split("\\r?\\n");
+
+            // Collapse if: raw count > 7 OR rendered count > 7
+            if (rawLines.length > 7 || actualLines > 6) {
+                expandBtn.setVisibility(View.VISIBLE);
+                expandBtn.setRotation(180f); // Default to collapsed
+                notesView.setText(TextFormatUtils.getCollapsedNotes(safeNotes, 4));
+            } else {
+                expandBtn.setVisibility(View.GONE);
+                expandBtn.setRotation(0f);
+                notesView.setText(TextFormatUtils.formatNotesForDisplay(safeNotes));
+            }
+        });
     }
 
     /**

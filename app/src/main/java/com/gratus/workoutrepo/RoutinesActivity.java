@@ -1,8 +1,13 @@
 package com.gratus.workoutrepo;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -17,11 +22,21 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import com.google.gson.GsonBuilder;
 import com.gratus.workoutrepo.adapters.RoutinesPagerAdapter;
 import com.gratus.workoutrepo.data.RoutineRepository;
 import com.gratus.workoutrepo.model.Routine;
@@ -100,7 +115,8 @@ public class RoutinesActivity extends BaseActivity {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("application/json");
             intent.putExtra(Intent.EXTRA_TITLE, routine.title + ".json");
-            exportLauncher.launch(intent);
+            //exportLauncher.launch(intent)
+            autoExportRoutine(RoutinesActivity.this, routine);
         }
 
         @Override
@@ -187,6 +203,54 @@ public class RoutinesActivity extends BaseActivity {
             Toast.makeText(this, "Export Successful", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(this, "Export Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void autoExportRoutine(Context context, Routine routine) {
+        // Build filename with timestamp
+        String timeStamp = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date());
+        String fileName = "routine_" + routine.title + "_" + timeStamp + ".json";
+
+        OutputStream outputStream = null;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10+ : use MediaStore
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                values.put(MediaStore.MediaColumns.MIME_TYPE, "application/json");
+                values.put(MediaStore.MediaColumns.RELATIVE_PATH,
+                        Environment.DIRECTORY_DOCUMENTS + "/RoutineExports");
+
+                Uri fileUri = context.getContentResolver()
+                        .insert(MediaStore.Files.getContentUri("external"), values);
+                if (fileUri == null) {
+                    throw new FileNotFoundException("Failed to create file in Documents/RoutineExports");
+                }
+                outputStream = context.getContentResolver().openOutputStream(fileUri);
+            } else {
+                // Legacy storage for Android 9 and below
+                File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                File routineDir = new File(exportDir, "RoutineExports");
+                if (!routineDir.exists() && !routineDir.mkdirs()) {
+                    throw new IOException("Failed to create RoutineExports directory.");
+                }
+                File exportFile = new File(routineDir, fileName);
+                outputStream = new FileOutputStream(exportFile);
+            }
+
+            // Write JSON with pretty printing
+            String json = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create()
+                    .toJson(routine);
+            try (Writer writer = new OutputStreamWriter(outputStream)) {
+                writer.write(json);
+            }
+
+            Toast.makeText(context, "Saved to Documents/RoutineExports!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Export Failed.", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -72,9 +72,10 @@
             app:layout_constraintBottom_toTopOf="@id/notesContainer"
             app:layout_constraintVertical_bias="0">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:animateLayoutChanges="true">
 
                 <TextView
@@ -86,14 +87,7 @@
                     android:text="Major:"
                     android:textSize="22sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                    android:textColor="?attr/colorAccent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/workoutsMajor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintVertical_bias="0"
-                    app:layout_constraintVertical_chainStyle="packed"/>
+                    android:textColor="?attr/colorAccent"/>
 
                 <TextView
                     android:id="@+id/workoutsMajor"
@@ -108,13 +102,7 @@
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="20sp"
                     android:longClickable="true"
-                    android:gravity="start"
-                    app:layout_constraintTop_toBottomOf="@id/major"
-                    app:layout_constraintBottom_toTopOf="@id/minor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintVertical_bias="0"
-                    app:layout_constraintVertical_chainStyle="packed"/>
+                    android:gravity="start"/>
 
                 <TextView
                     android:id="@+id/minor"
@@ -125,13 +113,7 @@
                     android:text="Minor:"
                     android:textSize="22sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                    android:textColor="?attr/colorAccent"
-                    app:layout_constraintTop_toBottomOf="@id/workoutsMajor"
-                    app:layout_constraintBottom_toTopOf="@id/workoutsMinor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintVertical_bias="0"
-                    app:layout_constraintHorizontal_bias="0"/>
+                    android:textColor="?attr/colorAccent"/>
 
                 <TextView
                     android:id="@+id/workoutsMinor"
@@ -146,26 +128,20 @@
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="20sp"
                     android:longClickable="true"
-                    android:gravity="start"
-                    app:layout_constraintTop_toBottomOf="@id/minor"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintVertical_bias="0"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:gravity="start"/>
+            </LinearLayout>
         </ScrollView>
 
         <ImageButton
             android:id="@+id/expand_notes_main"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="56dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
             android:alpha="0.6"
-            android:elevation="4dp"
+            android:elevation="16dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/expand_notes_btn"
-            android:rotation="180"
-            android:src="@drawable/arrow_drop_down_24"
+            android:src="@drawable/chevron_line_down_24"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -175,6 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:elevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -192,7 +169,7 @@
                 android:id="@+id/notes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
                 android:text="Notes:"
@@ -205,7 +182,7 @@
                 android:id="@+id/notesDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="20dp"
                 android:filterTouchesWhenObscured="false"
                 android:focusableInTouchMode="true"
