@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -51,7 +52,17 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this, RoutinesActivity.class))
         );
 
-        HorizontalScrollView scrollView = findViewById(R.id.btn_scroll);
+        ScrollView scrollView = findViewById(R.id.btn_scroll);
+
+        // Run after layout so child sizes are known
+        scrollView.post(() -> {
+            ViewGroup container = (ViewGroup) scrollView.getChildAt(0);
+            int itemHeight = container.getChildAt(0).getHeight();
+
+            // Scroll to the second item (index 1)
+            int targetY = 2 * itemHeight;
+            scrollView.scrollTo(0, targetY);
+        });
 
         scrollView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -59,12 +70,12 @@ public class MainActivity extends BaseActivity {
                 ViewGroup container = (ViewGroup) scrollView.getChildAt(0);
 
                 // Each item has fixed width (58dp in your XML)
-                int itemWidth = container.getChildAt(0).getWidth();
-                int scrollX = scrollView.getScrollX();
+                int itemHeight = container.getChildAt(0).getHeight();
+                int scrollY = scrollView.getScrollY();
 
                 // Decide which item we are closer to: 0 (GitHub) or 1 (Theme container)
-                int page = (scrollX + itemWidth / 2) / itemWidth;
-                int targetX = page * itemWidth;
+                int page = (scrollY + itemHeight / 2) / itemHeight;
+                int targetX = page * itemHeight;
 
                 scrollView.post(() -> scrollView.smoothScrollTo(targetX, 0));
                 return false;

@@ -48,40 +48,28 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
 
-        <HorizontalScrollView
+        <ScrollView
             android:id="@+id/btn_scroll"
-            android:layout_width="80dp"
+            android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintTop_toTopOf="parent"
             android:scrollbars="none"
-            android:requiresFadingEdge="horizontal"
+            android:requiresFadingEdge="vertical"
             android:fadingEdgeLength="12dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/githubIcon"
-                    android:layout_width="80dp"
-                    android:layout_height="?attr/actionBarSize"
-                    app:srcCompat="@drawable/github_mark"
-                    android:backgroundTint="?attr/colorOnPrimary"
-                    android:background="#00000000"
-                    android:scaleX="0.60"
-                    android:scaleY="0.60"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="0dp" />
+                android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/theme_btn_container"
-                    android:layout_width="80dp"
+                    android:layout_width="60dp"
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="2dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -101,7 +89,7 @@
                         android:elevation="2dp"
                         app:srcCompat="@drawable/light_mode"
                         app:tint="?attr/colorOnPrimary"
-                        android:paddingStart="32dp"
+                        android:paddingStart="0dp"
                         android:paddingEnd="0dp" />
 
                     <ImageButton
@@ -116,7 +104,7 @@
                         android:elevation="2dp"
                         app:srcCompat="@drawable/dark_mode"
                         app:tint="?attr/colorOnPrimary"
-                        android:paddingStart="32dp"
+                        android:paddingStart="0dp"
                         android:paddingEnd="0dp" />
 
                     <ImageButton
@@ -130,13 +118,24 @@
                         android:visibility="visible"
                         android:elevation="2dp"
                         app:srcCompat="@drawable/auto_mode"
-                        android:paddingStart="32dp"
+                        android:paddingStart="0dp"
                         android:paddingEnd="0dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <ImageButton
+                    android:id="@+id/githubIcon"
+                    android:layout_width="60dp"
+                    android:layout_height="?attr/actionBarSize"
+                    app:srcCompat="@drawable/github_mark"
+                    android:background="@color/transparent"
+                    android:scaleX="0.60"
+                    android:scaleY="0.60"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp" />
+
             </LinearLayout>
-        </HorizontalScrollView>
+        </ScrollView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -231,7 +230,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="4dp">
+            android:paddingBottom="8dp">
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="1dp"
@@ -241,7 +240,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="fill_vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -259,14 +259,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-- item or - item"
+                    android:text="-- item"
                     android:textSize="14sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="--- item or  - item"
+                    android:text="--- item"
                     android:textSize="14sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
@@ -280,7 +280,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="fill_vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

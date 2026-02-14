@@ -18,6 +18,7 @@ public class TextFormatUtils {
 
     // Spacing constants (in pixels)
     private static final int BULLET_GAP_WIDTH = 15; // Space between bullet and text
+    private static final int NUMBERED_BULLET_GAP_WIDTH = 25; // Space between bullet and text
 
     private static final int MAIN_BULLET_INDENT = 30;
     private static final int SUB_BULLET_INDENT = 60; // Indentation for sub-points
@@ -64,43 +65,73 @@ public class TextFormatUtils {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder();
         String[] lines = raw.split("\\r?\\n", -1);
+        // 1. Define the pattern for numbers (e.g., "1.", "12.", "1)")
+        // ^\s* matches start of line with optional spaces
+        // (\d+) captures the digits
+        // [.)] matches either a dot or a closing parenthesis
+        // \s* matches optional space after the punctuation
+        Pattern numberPattern = Pattern.compile("^\\s*(\\d+)[.)]\\s*");
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             int start = ssb.length();
             boolean isLastLine = (i == lines.length - 1);
 
-            if (line.startsWith("- ") || line.startsWith("-")) {
-                // MAIN BULLET
-                String content = line.substring(2).trim();
-                ssb.append(content);
-                // Apply Custom Span: "\u2022" (Filled Bullet)
-                ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, 0),
-                        start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            Matcher matcher = numberPattern.matcher(line);
 
-            } else if (line.startsWith("-- ") || line.startsWith("--") || line.startsWith(" - ") || line.startsWith(" -")) {
-                // MAIN BULLET Indented
-                int dashIndex = line.indexOf("-");
-                String content = line.substring(dashIndex + 1).trim();
-                ssb.append(content);
-                // Apply Custom Span: "\u2022" (Filled Bullet)
-                ssb.setSpan(new TextBulletSpan("\u2022", BULLET_GAP_WIDTH, MAIN_BULLET_INDENT),
-                        start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (matcher.find()) {
+                // NUMBERED LIST MATCHED
+                String numberStr = matcher.group(1); // The actual number (e.g., "1")
+                String fullMatch = matcher.group(0); // The whole "1. " part
 
-            } else if (line.startsWith("--- ") || line.startsWith("---") || line.startsWith("  - ") || line.startsWith("  -")) {
-                // SUB BULLET
-                int dashIndex = line.indexOf("-");
-                String content = line.substring(dashIndex + 2).trim();
+                String content = line.substring(fullMatch.length()).trim();
                 ssb.append(content);
 
-                // Apply Custom Span: "\u25E6" (Hollow Bullet) with EXTRA INDENT
-                ssb.setSpan(new TextBulletSpan("\u25E6", BULLET_GAP_WIDTH, SUB_BULLET_INDENT),
+                // Use the number + "." as the bullet character instead of \u2022
+                ssb.setSpan(new TextBulletSpan(numberStr + ".", NUMBERED_BULLET_GAP_WIDTH, 0),
                         start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+            } else if (line.trim().startsWith("-")) {
+                // Count consecutive dashes at the start
+                int dashCount = 0;
+                while (dashCount < line.length() && line.charAt(dashCount) == '-') {
+                    dashCount++;
+                }
+                // Require a space after the dashes to qualify as a bullet
+                if (dashCount > 0 && dashCount < line.length() && line.charAt(dashCount) == ' ') {
+                    String content = line.substring(dashCount + 1).trim();
+                    ssb.append(content);
+                    // Decide bullet style and indent based on dash count
+                    String bulletChar;
+                    int indent = switch (dashCount) {
+                        case 1 -> { // First dash (- )
+                            bulletChar = "\u2022"; // filled bullet
+                            yield 0;
+                        }
+                        case 2 -> { // Second dash (-- )
+                            bulletChar = "\u2022"; // filled bullet
+                            yield MAIN_BULLET_INDENT;
+                        }
+                        case 3 -> { // Third dash (--- )
+                            bulletChar = "\u25E6"; // hollow bullet
+                            yield SUB_BULLET_INDENT;
+                        }
+                        default -> { // More than 3 dashes (----... )
+                            bulletChar = "\u25E6"; // hollow bullet for deeper levels
+                            yield SUB_BULLET_INDENT + (dashCount - 3) * 20;
+                        }
+                    };
+                    ssb.setSpan(new TextBulletSpan(bulletChar, BULLET_GAP_WIDTH, indent),
+                            start, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                } else {
+                    // Not a valid bullet, just append text
+                    ssb.append(line);
+                }
             } else {
-                // REGULAR TEXT (No bullet, just text)
+                // Regular text
                 ssb.append(line);
             }
+
 
             if (!isLastLine) ssb.append("\n");
         }

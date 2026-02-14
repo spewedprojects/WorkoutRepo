@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="100dp"
+    android:viewportWidth="200"
+    android:viewportHeight="100">
+
+    <!-- Tub shape: flat top, convex bottom corners -->
+    <path
+        android:fillColor="?attr/colorSurface"
+        android:pathData="
+            M0,0
+            H200
+            V86
+            Q200,100 186,100
+            H14
+            Q0,100 0,86
+            Z"/>
+</vector>
