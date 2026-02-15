@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected static final String PREFS_NAME = "AppThemeSettings";
+    public static final String PREFS_NAME = "WorkoutRepoAppSettings";
     protected static final String THEME_KEY = "SelectedTheme";
 
     @Override

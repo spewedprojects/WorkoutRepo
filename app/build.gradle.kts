@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -10,8 +13,8 @@ android {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 26
-        versionName = "7.2.0" // major.minor.patch
+        versionCode = 27
+        versionName = "8.0.0" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
@@ -37,6 +40,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 }
 
 dependencies {
@@ -46,8 +54,13 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.gridlayout)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.gson)
+    // Networking
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
 }

@@ -10,7 +10,6 @@
 
         <OnSwipe
             motion:touchAnchorId="@id/guide_container"
-            motion:touchRegionId="@id/guide_container"
             motion:touchAnchorSide="bottom"
             motion:dragDirection="dragUp" />
     </Transition>

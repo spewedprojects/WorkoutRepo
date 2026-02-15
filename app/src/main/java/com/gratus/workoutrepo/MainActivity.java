@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -20,10 +18,14 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.Calendar;
 
+import com.gratus.workoutrepo.adapters.GuideAdapter;
 import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
 
 public class MainActivity extends BaseActivity {
@@ -83,10 +85,32 @@ public class MainActivity extends BaseActivity {
             return false;
         });
 
+        setupGuideRecyclerView();
+
         setupThemeButtons();
         setupButtons();
         setupWeekPager();
         setupOnBackPressed();
+    }
+
+    private void setupGuideRecyclerView() {
+        RecyclerView guideRv = findViewById(R.id.guide_container);
+        guideRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        GuideAdapter adapter = new GuideAdapter();
+        guideRv.setAdapter(adapter);
+
+        // Ensure the RV doesn't shrink when switching pages
+        guideRv.post(() -> {
+            if (guideRv.getChildCount() > 0) {
+                // If the Usage Guide is at position 0, it will dictate the initial height
+                int initialHeight = guideRv.getChildAt(0).getHeight();
+                guideRv.setMinimumHeight(initialHeight);
+            }
+        });
+
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(guideRv);
     }
 
     private void setupButtons() {
@@ -98,8 +122,41 @@ public class MainActivity extends BaseActivity {
             v.getContext().startActivity(intent);
         });
         stravaaccess.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.strava.com/athletes/32298220"));
-            v.getContext().startActivity(intent);
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            // Use the custom key, with the old hardcoded link as the default
+            String url = prefs.getString("CustomStravaUrl", "https://www.strava.com/athletes/32298220");
+
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Invalid URL saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 2. NEW: Long Click to open the App-Integrated Sheet
+        stravaaccess.setOnLongClickListener(v -> {
+            // Find the pager to see what day is currently centered
+            ViewPager2 weekPager = findViewById(R.id.weekPager);
+
+            if (weekPager != null) {
+                int currentItem = weekPager.getCurrentItem();
+
+                // Calculate day index (0=Mon, 1=Tue...)
+                int dayIndex = currentItem % 7;
+
+                // Convert to String
+                String dayName = getDayNameFromIndex(dayIndex);
+
+                // Show the Kotlin BottomSheet
+                // Note: Java treats the Kotlin class just like a Java class!
+                StravaBottomSheet bottomSheet = new StravaBottomSheet(dayName);
+                bottomSheet.show(getSupportFragmentManager(), "StravaSheet");
+
+                // Return true to indicate we handled the event (prevents the normal onClick from firing after)
+                return true;
+            }
+            return false;
         });
 
         ImageButton guideBtn = findViewById(R.id.guide_btn);
@@ -195,6 +252,19 @@ public class MainActivity extends BaseActivity {
                 autoButton.setVisibility(View.GONE);
                 System.out.println("AUTO mode - GONE (Dark button and Auto button), VISIBLE (Light button)");
                 break;
+        }
+    }
+
+    private String getDayNameFromIndex(int index) {
+        switch (index) {
+            case 0: return "Monday";
+            case 1: return "Tuesday";
+            case 2: return "Wednesday";
+            case 3: return "Thursday";
+            case 4: return "Friday";
+            case 5: return "Saturday";
+            case 6: return "Sunday";
+            default: return "Monday"; // Fallback
         }
     }
 

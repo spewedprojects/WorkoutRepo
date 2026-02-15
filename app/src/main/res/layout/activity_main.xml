@@ -140,177 +140,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/guide_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="32dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/weekPager"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0"
-        android:visibility="visible">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <!-- TITLE -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guide to the App"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingBottom="12dp"
-                android:gravity="start"
-                android:layout_alignParentStart="true"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-            <!-- Current version info -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                android:paddingTop="4dp"
-                android:text="@string/app_version" />
-        </RelativeLayout>
-
-        <!-- SECTION: SHORTCUTS -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hidden Shortcuts"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Slide the GitHub icon to reveal the theme switcher\n• Long-press a workout to edit.\n• Tap Save button to save changes."
-            android:textSize="14sp"
-            android:paddingBottom="12dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <!-- SECTION: WORKOUT RULES -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Workouts"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Each new line is treated as a bullet point\n• Saving automatically applies formatting."
-            android:textSize="14sp"
-            android:paddingBottom="12dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <!-- SECTION: NOTES RULES -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notes Formatting"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp">
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="fill_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="**Bold text**"
-                    android:textSize="14sp"
-                    android:typeface="monospace"
-                    android:paddingEnd="8dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="- item"
-                    android:textSize="14sp"
-                    android:typeface="monospace"
-                    android:paddingEnd="8dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-- item"
-                    android:textSize="14sp"
-                    android:typeface="monospace"
-                    android:paddingEnd="8dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="--- item"
-                    android:textSize="14sp"
-                    android:typeface="monospace"
-                    android:paddingEnd="8dp" />
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="8dp"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="fill_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bold text"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="• Main bullet point"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  • Indented bullet point"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="     \u25E6 Sub-bullet point"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
+        android:visibility="visible"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/weekPager"
