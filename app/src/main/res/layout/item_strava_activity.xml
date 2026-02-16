@@ -25,8 +25,8 @@
             android:layout_height="wrap_content"
             android:text="Morning Ride"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:fontFamily="@font/inter"
+            android:textSize="17sp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
             android:letterSpacing="0.0"
             android:textColor="@color/black_white"
             android:maxLines="1"
@@ -45,7 +45,7 @@
 
             <ImageView
                 android:id="@+id/ivActivityIcon"
-                android:layout_width="22dp"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/strava_roadbike" />
 
@@ -66,7 +66,7 @@
                     android:maxLines="1"
                     android:text="This was an amazing ride!. I got..."
                     android:textColor="@color/black_white"
-                    android:textSize="14sp" />
+                    android:textSize="13.5sp" />
 
                 <!-- Activity Details -->
                 <TextView
