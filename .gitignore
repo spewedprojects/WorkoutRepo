@@ -7,9 +7,12 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/misc_files
+/app/release/baselineProfiles
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+/app/src/main/java/com/gratus/workoutrepo/repository/TokenManager.kt

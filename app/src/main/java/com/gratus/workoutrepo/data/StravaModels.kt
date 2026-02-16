@@ -26,8 +26,17 @@ data class StravaActivity(
     @SerializedName("average_watts")
     val averageWatts: Float?,
 
+    @SerializedName("average_heartrate")
+    val averageHeartrate: Float?,
+
+    @SerializedName("total_elevation_gain")
+    val totalElevationGain: Float?,
+
     // Activity type (e.g., "Ride", "Run", "WeightTraining")
-    val type: String
+    val type: String,
+
+    // NEW: The user's description/notes
+    val description: String?
 )
 
 // 2. The Token Object (For refreshing authentication)

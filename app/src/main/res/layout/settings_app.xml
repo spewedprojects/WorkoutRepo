@@ -86,9 +86,59 @@
             android:textColor="?attr/colorOnPrimary"
             android:backgroundTint="@color/white_black"
             app:cornerRadius="12dp"
+            app:strokeColor="@color/black_white"
+            app:strokeWidth="1dp"
             android:layout_marginStart="6dp"
             android:text="Save" />
 
     </LinearLayout>
+
+    <!-- Graph Y Axis -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:id="@+id/click_TextContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                android:text="Configure Strava button"
+                android:textColor="@color/black_white"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvClick_sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:alpha="0.65"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                android:text="Opens Strava Profile"
+                android:textColor="@color/black_white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switch_longshortClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:enabled="true"
+            android:checked="true"
+            app:thumbTint="@color/switch_thumb_colors"
+            app:trackTint="@color/switch_track_colors"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -4,13 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="32dp">
 
+        <ImageView
+            android:id="@+id/ivSwipeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/swipe_left_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:alpha="0.3"/>
+
         <RelativeLayout
+            android:id="@+id/container1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -36,57 +46,69 @@
                 android:text="@string/app_version" />
         </RelativeLayout>
 
-        <!-- SECTION: SHORTCUTS -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hidden Shortcuts"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Slide the GitHub icon to reveal the theme switcher\n• Long-press a workout to edit.\n• Tap Save button to save changes."
-            android:textSize="14sp"
-            android:paddingBottom="12dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <!-- SECTION: WORKOUT RULES -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Workouts"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Each new line is treated as a bullet point\n• Saving automatically applies formatting."
-            android:textSize="14sp"
-            android:paddingBottom="12dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
-        <!-- SECTION: NOTES RULES -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notes Formatting"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="6dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/container2"
+            android:layout_below="@id/container1">
+
+            <!-- SECTION: SHORTCUTS -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hidden Shortcuts"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="6dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"
+                android:layout_below="@id/container1"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Swipe down GitHub icon to switch themes.\n• Long-press a workout to edit.\n• Swipe this area to go to settings."
+                android:textSize="14sp"
+                android:paddingBottom="12dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+
+            <!-- SECTION: WORKOUT RULES -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Workouts"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="6dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Each new line is treated as a bullet point.\n• Saving automatically applies formatting."
+                android:textSize="14sp"
+                android:paddingBottom="8dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+
+            <!-- SECTION: NOTES RULES -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notes Formatting"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="6dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:layout_below="@id/container2">
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="1dp"
@@ -175,5 +197,5 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

@@ -5,10 +5,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
@@ -50,6 +52,12 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Window window = getDialog() != null ? getDialog().getWindow() : null;
+        if (window != null) {
+            // Using a constant or a clear variable name explains the "why"
+            final float dimAmount = 0.2f; // 20% opacity
+            window.setDimAmount(dimAmount);
+        }
         Bundle a = getArguments();
         if (a != null) {
             day = a.getString(ARG_DAY);
@@ -65,22 +73,22 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottomsheet_editor, container, false);
+        View view = inflater.inflate(R.layout.bottomsheet_editor, container, false);
 
-        TextView title = v.findViewById(R.id.editorTitle);
+        TextView title = view.findViewById(R.id.editorTitle);
         title.setText("Edit " + day + " " + fieldKey);
 
-        TextInputEditText editText = v.findViewById(R.id.editorEditText);
+        TextInputEditText editText = view.findViewById(R.id.editorEditText);
         if (!TextUtils.isEmpty(editableText)) editText.setText(editableText);
         editText.setSelection(editText.getText().length());
-        clearFocusOnKeyboardHide(editText, v);
+        clearFocusOnKeyboardHide(editText, view);
 
-        MaterialButton cancel = v.findViewById(R.id.cancelBtn);
-        MaterialButton save = v.findViewById(R.id.saveBtn);
+        MaterialButton cancel = view.findViewById(R.id.cancelBtn);
+        MaterialButton save = view.findViewById(R.id.saveBtn);
 
-        cancel.setOnClickListener(view -> dismiss());
+        cancel.setOnClickListener(v -> dismiss());
 
-        save.setOnClickListener(view -> {
+        save.setOnClickListener(v -> {
             String userText = editText.getText() == null ? "" : editText.getText().toString();
             // Return the raw editable text (no bullets) to caller via callback
             if (onSaveListener != null) {
@@ -89,7 +97,17 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
-        return v;
+//        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.bottom_sheet_root_editor), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(
+//                    systemBars.left,
+//                    0,
+//                    systemBars.right,
+//                    0);
+//            return insets;
+//        });
+
+        return view;
     }
 
     // 01/02/2026 - clear focus when keyboard not visible

@@ -77,9 +77,9 @@ public class MainActivity extends BaseActivity {
 
                 // Decide which item we are closer to: 0 (GitHub) or 1 (Theme container)
                 int page = (scrollY + itemHeight / 2) / itemHeight;
-                int targetX = page * itemHeight;
+                int targetY = page * itemHeight;
 
-                scrollView.post(() -> scrollView.smoothScrollTo(targetX, 0));
+                scrollView.post(() -> scrollView.smoothScrollTo(0, targetY));
                 return false;
             }
             return false;
@@ -100,14 +100,18 @@ public class MainActivity extends BaseActivity {
         GuideAdapter adapter = new GuideAdapter();
         guideRv.setAdapter(adapter);
 
-        // Ensure the RV doesn't shrink when switching pages
-        guideRv.post(() -> {
-            if (guideRv.getChildCount() > 0) {
-                // If the Usage Guide is at position 0, it will dictate the initial height
-                int initialHeight = guideRv.getChildAt(0).getHeight();
-                guideRv.setMinimumHeight(initialHeight);
-            }
-        });
+        // FIX: Pre-calculate the height of the 'Usage Info' page (the tallest one)
+        // We inflate it effectively "off-screen" just to measure it.
+        View usageView = getLayoutInflater().inflate(R.layout.settings_usageinfo, guideRv, false);
+
+        // Measure it with the width of the screen (or parent) to see how tall it gets
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        usageView.measure(widthMeasureSpec, heightMeasureSpec);
+
+        // Apply that measured height as the minimum height for the RecyclerView
+        int usageHeight = usageView.getMeasuredHeight();
+        guideRv.setMinimumHeight(usageHeight);
 
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(guideRv);
@@ -121,42 +125,58 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
             v.getContext().startActivity(intent);
         });
-        stravaaccess.setOnClickListener(v -> {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            // Use the custom key, with the old hardcoded link as the default
-            String url = prefs.getString("CustomStravaUrl", "https://www.strava.com/athletes/32298220");
 
+        // Define the actions
+        Runnable openUrlAction = () -> {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String url = prefs.getString("CustomStravaUrl", "https://www.strava.com/athletes/32298220");
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             } catch (Exception e) {
                 Toast.makeText(this, "Invalid URL saved", Toast.LENGTH_SHORT).show();
             }
-        });
+        };
 
-        // 2. NEW: Long Click to open the App-Integrated Sheet
-        stravaaccess.setOnLongClickListener(v -> {
-            // Find the pager to see what day is currently centered
+        Runnable openSheetAction = () -> {
             ViewPager2 weekPager = findViewById(R.id.weekPager);
-
             if (weekPager != null) {
                 int currentItem = weekPager.getCurrentItem();
-
-                // Calculate day index (0=Mon, 1=Tue...)
                 int dayIndex = currentItem % 7;
-
-                // Convert to String
                 String dayName = getDayNameFromIndex(dayIndex);
 
-                // Show the Kotlin BottomSheet
-                // Note: Java treats the Kotlin class just like a Java class!
                 StravaBottomSheet bottomSheet = new StravaBottomSheet(dayName);
                 bottomSheet.show(getSupportFragmentManager(), "StravaSheet");
-
-                // Return true to indicate we handled the event (prevents the normal onClick from firing after)
-                return true;
             }
-            return false;
+        };
+
+        // SINGLE CLICK LISTENER
+        stravaaccess.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
+
+            // If long click is assigned to Strava, short click opens Sheet.
+            // If long click is assigned to Sheet (false), short click opens Strava.
+            if (longClickStravaAction) {
+                openSheetAction.run();
+            } else {
+                openUrlAction.run();
+            }
+        });
+
+        // LONG CLICK LISTENER
+        stravaaccess.setOnLongClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
+
+            // If long click is assigned to Strava (true), open Url.
+            // Else open Sheet.
+            if (longClickStravaAction) {
+                openUrlAction.run();
+            } else {
+                openSheetAction.run();
+            }
+            return true; // Consume event
         });
 
         ImageButton guideBtn = findViewById(R.id.guide_btn);

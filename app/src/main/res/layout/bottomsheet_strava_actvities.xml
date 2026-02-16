@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/bottom_sheet_root"
     android:background="@drawable/bg_bottomsheet_rounded"
-    android:paddingHorizontal="24dp"
-    android:paddingTop="6dp">
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/Sdrag_handle"
@@ -18,40 +18,77 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginTop="24dp"
-        android:text="Strava Activities today"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/inter"
-        android:gravity="center"
-        android:textColor="@color/black_white"
-        android:alpha="0.90"
-        android:elevation="1dp"
+        android:paddingHorizontal="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <include layout="@layout/item_strava_activity"
-        android:id="@+id/dummy_datacard"
-        android:layout_height="wrap_content"
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Strava Activities today"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:gravity="center"
+            android:textColor="@color/black_white"
+            android:alpha="0.90"
+            android:elevation="1dp"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/tvSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last synced (00mins ago)"
+            android:textSize="13sp"
+            android:textStyle="italic"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:gravity="center"
+            android:textColor="@color/black_white"
+            android:alpha="0.70"
+            android:elevation="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tvTitle"/>
+
+        <ImageButton
+            android:id="@+id/refresh_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="0dp"
+            android:background="@color/transparent"
+            android:src="@drawable/outline_autorenew_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="#80fc4c02"
+        android:indeterminateBehavior="cycle"
+        app:layout_constraintBottom_toTopOf="@id/rvActivities"
+        app:layout_constraintTop_toBottomOf="@id/header_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvActivities"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_max="600dp"
         android:clipToPadding="false"
-        android:paddingTop="12dp"
-        android:fadingEdge="vertical"
+        android:requiresFadingEdge="vertical"
         android:layout_marginBottom="28dp"
-        app:layout_constraintTop_toBottomOf="@id/dummy_datacard"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
