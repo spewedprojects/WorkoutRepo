@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.security.ProviderInstaller;
+import javax.net.ssl.SSLContext;
+
 import java.util.Calendar;
 
 import com.gratus.workoutrepo.adapters.GuideAdapter;
@@ -39,6 +42,14 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         applyTheme();
         super.onCreate(savedInstanceState);
+
+        // --- NEW: Fix SSL Handshake errors on older Emulators ---
+//        try {
+//            ProviderInstaller.installIfNeeded(this);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        // --------------------------------------------------------
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);

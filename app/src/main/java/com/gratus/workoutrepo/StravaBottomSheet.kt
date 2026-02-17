@@ -1,5 +1,6 @@
 package com.gratus.workoutrepo
 
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import android.view.animation.RotateAnimation
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.gratus.workoutrepo.adapters.StravaAdapter
+import com.gratus.workoutrepo.data.StravaActivity
 import com.gratus.workoutrepo.repository.StravaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +41,7 @@ class StravaBottomSheet(
         return inflater.inflate(R.layout.bottomsheet_strava_actvities, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,7 +51,7 @@ class StravaBottomSheet(
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar) // Optional: Add a progress bar to your layout
         val refreshBtn = view.findViewById<ImageButton>(R.id.refresh_btn)
 
-        tvTitle.text = "Strava Activities on $dayOfWeek"
+        tvTitle.text = "Strava Activities on ${dayOfWeek}s"
 
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -61,6 +66,61 @@ class StravaBottomSheet(
             repeatCount = Animation.INFINITE
         }
 
+        // 1. Define the Click Listener separately
+        val onActivityClick: (Long) -> Unit = { activityId ->
+            lifecycleScope.launch {
+                val adapter = recyclerView.adapter as? StravaAdapter ?: return@launch
+
+                // UI: Set "Fetching..." state
+                adapter.markItemLoading(activityId)
+
+                // Network: Fetch details
+                val detailedActivity = withContext(Dispatchers.IO) {
+                    StravaRepository.getActivityDetails(requireContext(), activityId)
+                }
+
+                // UI: Update ONLY the specific item if successful
+                if (detailedActivity != null) {
+                    // A. Get the fresh list from Repo
+                    val updatedList = withContext(Dispatchers.IO) {
+                        StravaRepository.getActivitiesForDay(requireContext(), dayOfWeek)
+                    }
+
+                    // B. Update the Adapter's data
+                    adapter.updateList(updatedList)
+
+                    // --- THE FIX: Clear the loading flag! ---
+                    // Now onBindViewHolder will skip the "Fetching" if-block and show the description
+                    adapter.markItemLoading(null)
+
+                    // C. Find the index and refresh just that row (for the animation)
+                    val index = updatedList.indexOfFirst { it.id == activityId }
+                    if (index != -1) {
+                        adapter.notifyItemChanged(index)
+                    }
+                } else {
+                    // Optional: If fetch failed, clear loading so it goes back to "Tap to load"
+                    adapter.markItemLoading(null)
+                    Toast.makeText(context, "Failed to load details", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // 2. Initial Setup (Run this only once when data first loads)
+        fun bindList(list: List<StravaActivity>) {
+            if (recyclerView.adapter == null) {
+                // First time: Attach the adapter
+                val adapter = StravaAdapter(list, onActivityClick)
+                recyclerView.adapter = adapter
+            } else {
+                // Subsequent refreshes (e.g. Pull-to-Refresh): Reload whole list
+                val adapter = recyclerView.adapter as StravaAdapter
+                adapter.updateList(list)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun loadData(forceRefresh: Boolean) {
             lifecycleScope.launch {
                 // UI STATE: LOADING
@@ -97,8 +157,8 @@ class StravaBottomSheet(
                 recyclerView.visibility = View.VISIBLE
 
                 if (activities.isNotEmpty()) {
-                    recyclerView.adapter = StravaAdapter(activities)
-                    tvTitle.text = "Strava Activities on $dayOfWeek"
+                    bindList(activities) // Use the new function
+                    tvTitle.text = "Strava Activities on ${dayOfWeek}s"
                 } else {
                     tvTitle.text = "No recent $dayOfWeek activities"
                     // Optional: Clear adapter to show empty state
@@ -128,6 +188,7 @@ class StravaBottomSheet(
                     0
                 )
                 insets
-            })
+            }
+        )
     }
 }
