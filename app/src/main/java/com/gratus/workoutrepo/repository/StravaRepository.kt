@@ -22,7 +22,7 @@ object StravaRepository {
     // --- CACHE VARIABLES ---
     private var cachedActivities: List<StravaActivity>? = null
     private var lastCacheTime: Long = 0
-    private const val CACHE_DURATION_MS = 24 * 60 * 60 * 1000 // 24 hours
+    private const val CACHE_DURATION_MS = 48 * 60 * 60 * 1000 // 24 hours
     // NEW: File Name instead of Prefs Name
     private const val CACHE_FILE_NAME = "strava_activities_cache.json"
 

@@ -1,144 +1,285 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingHorizontal="32dp"
-    android:layout_height="match_parent">
+    android:requiresFadingEdge="vertical">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/tvSettingsTitle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Strava Profile Settings"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_variable" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- Spacer -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
-
-    <!-- Profile URL Input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilProfileUrl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Strava Profile URL"
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusTopStart="12dp"
-        app:cursorColor="?attr/colorAccent"
-        app:boxStrokeColor="@color/textbox_stroke"
-        app:endIconMode="clear_text">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etProfileUrl"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textUri"
-            android:maxLines="1" />
+            android:paddingVertical="8dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true">
 
-    <!-- Helper Text -->
-    <TextView
-        android:id="@+id/tvUrlHelper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Example: https://www.strava.com/athletes/123456"
-        android:textSize="12sp"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:layout_marginTop="4dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.8"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                    android:text="Enable Starva"
+                    android:textColor="@color/black_white"
+                    android:textSize="16sp"/>
 
-    <!-- Buttons -->
-    <LinearLayout
-        android:id="@+id/actionBtn_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:layout_marginTop="12dp"
-        android:visibility="visible"
-        android:animateLayoutChanges="true">
+                <TextView
+                    android:id="@+id/tvenablestrava_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.65"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                    android:text="Strava feature enabled"
+                    android:textColor="@color/black_white"
+                    android:textSize="14sp"/>
+            </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/transparent"
-            app:strokeColor="@color/black_white"
-            android:alpha="0.7"
-            app:strokeWidth="1dp"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="6dp"
-            android:text="Cancel" />
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switch_enablestrava"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="8dp"
+                android:enabled="true"
+                android:checked="true"
+                app:thumbTint="@color/white_black"
+                app:trackTint="#fc4c02"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSave"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnPrimary"
-            android:backgroundTint="@color/white_black"
-            app:cornerRadius="12dp"
-            app:strokeColor="@color/black_white"
-            app:strokeWidth="1dp"
-            android:layout_marginStart="6dp"
-            android:text="Save" />
-
-    </LinearLayout>
-
-    <!-- Graph Y Axis -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:layout_marginTop="12dp">
+        </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/click_TextContainer"
+            android:id="@+id/strava_settings_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignParentStart="true">
-
+            android:visibility="visible">
+            <!-- Title -->
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tvSettingsTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                android:text="Configure Strava button"
-                android:textColor="@color/black_white"
-                android:textSize="16sp"/>
+                android:text="Strava Profile Settings"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="6dp"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_variable" />
 
-            <TextView
-                android:id="@+id/tvClick_sub"
-                android:layout_width="wrap_content"
+            <!-- Profile URL Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilProfileUrl"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:alpha="0.65"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                android:text="Opens Strava Profile"
-                android:textColor="@color/black_white"
-                android:textSize="14sp"/>
+                android:hint="Strava Profile URL"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:cursorColor="?attr/colorAccent"
+                app:boxStrokeColor="@color/textbox_stroke"
+                android:saveEnabled="true"
+                app:endIconCheckable="true"
+                app:endIconDrawable="@drawable/check_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etProfileUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"
+                    android:saveEnabled="true"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Helper Text -->
+            <TextView
+                android:id="@+id/tvUrlHelper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Example: https://www.strava.com/athletes/123456"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp" />
+
+            <!-- Buttons -->
+
+            <!-- Graph Y Axis -->
+            <LinearLayout
+                android:id="@+id/actionBtn_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:animateLayoutChanges="true"
+                android:gravity="end"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:alpha="0.7"
+                    android:backgroundTint="@color/transparent"
+                    android:text="Cancel"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSave"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:backgroundTint="@color/white_black"
+                    android:text="Save"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white"
+                    app:strokeWidth="1dp" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:id="@+id/click_TextContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentStart="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                        android:text="Configure Strava button"
+                        android:textColor="@color/black_white"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvClick_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:alpha="0.65"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:text="Opens Strava Profile"
+                        android:textColor="@color/black_white"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switch_longshortClick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:enabled="true"
+                    android:checked="true"
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:id="@+id/click_autorefresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                        android:text="Enable Auto refresh data"
+                        android:textColor="@color/black_white"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvautorefresh_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:alpha="0.65"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:text="Set a custom duration"
+                        android:textColor="@color/black_white"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switch_enableautorefresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="12dp"
+                    android:enabled="true"
+                    android:checked="true"
+                    app:thumbTint="@color/switch_thumb_colors"
+                    app:trackTint="@color/switch_track_colors"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilAutoRefresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    android:layout_toStartOf="@id/switch_enableautorefresh"
+                    android:layout_centerVertical="true"
+                    android:paddingBottom="4dp"
+                    android:visibility="visible"
+                    android:saveEnabled="true">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAutoRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="46dp"
+                        android:paddingHorizontal="4dp"
+                        android:hint="hrs"
+                        android:textSize="12dp"
+                        android:includeFontPadding="false"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textStyle="italic"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:saveEnabled="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/switch_longshortClick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:enabled="true"
-            android:checked="true"
-            app:thumbTint="@color/switch_thumb_colors"
-            app:trackTint="@color/switch_track_colors"/>
+    </LinearLayout>
 
-    </RelativeLayout>
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

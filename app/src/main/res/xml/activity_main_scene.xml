@@ -11,7 +11,8 @@
         <OnSwipe
             motion:touchAnchorId="@id/guide_container"
             motion:touchAnchorSide="bottom"
-            motion:dragDirection="dragUp" />
+            motion:dragDirection="dragUp"
+            motion:nestedScrollFlags="supportScrollUp"/>
     </Transition>
 
     <ConstraintSet android:id="@+id/start_hidden">
