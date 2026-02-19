@@ -22,7 +22,6 @@ object StravaRepository {
     // --- CACHE VARIABLES ---
     private var cachedActivities: List<StravaActivity>? = null
     private var lastCacheTime: Long = 0
-    private const val CACHE_DURATION_MS = 48 * 60 * 60 * 1000 // 24 hours
     // NEW: File Name instead of Prefs Name
     private const val CACHE_FILE_NAME = "strava_activities_cache.json"
 
@@ -47,8 +46,13 @@ object StravaRepository {
         }
 
         // 2. Decide: Fetch or Use Cache?
-        // We fetch if: Forced (Pull-to-refresh) OR Cache is Null OR Cache is Old
-        if (forceRefresh || shouldFetchFromNetwork()) {
+        // We fetch if: Forced (Pull-to-refresh) OR Auto-Refresh is Enabled AND (Cache is Null OR Cache is Old)
+        val prefs = context.getSharedPreferences("MeditationTrackerPrefs", Context.MODE_PRIVATE)
+        val isAutoRefresh = prefs.getBoolean("EnableAutoRefresh", true)
+        val cacheDurationHours = prefs.getLong("CacheDurationHours", 48)
+        val cacheDurationMs = cacheDurationHours * 60 * 60 * 1000
+
+        if (forceRefresh || (isAutoRefresh && shouldFetchFromNetwork(cacheDurationMs))) {
             fetchAndSaveActivities(context)
         }
 
@@ -114,10 +118,10 @@ object StravaRepository {
         val activities: List<StravaActivity>
     )
 
-    private fun shouldFetchFromNetwork(): Boolean {
+    private fun shouldFetchFromNetwork(cacheDurationMs: Long): Boolean {
         if (cachedActivities == null) return true
         val now = System.currentTimeMillis()
-        return (now - lastCacheTime) > CACHE_DURATION_MS
+        return (now - lastCacheTime) > cacheDurationMs
     }
 
     // 1. Fetch Single Detail (Lazy Load) - Same as before

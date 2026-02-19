@@ -151,6 +151,7 @@
         app:layout_constraintBottom_toTopOf="@id/weekPager"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0"
+        android:descendantFocusability="afterDescendants"
         android:visibility="visible"/>
 
     <androidx.viewpager2.widget.ViewPager2

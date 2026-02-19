@@ -44,11 +44,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         // --- NEW: Fix SSL Handshake errors on older Emulators ---
-//        try {
-//            ProviderInstaller.installIfNeeded(this);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        // try {
+        // ProviderInstaller.installIfNeeded(this);
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
         // --------------------------------------------------------
 
         EdgeToEdge.enable(this);
@@ -61,9 +61,8 @@ public class MainActivity extends BaseActivity {
             return insets;
         });
 
-        findViewById(R.id.browseWorkouts).setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, RoutinesActivity.class))
-        );
+        findViewById(R.id.browseWorkouts)
+                .setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RoutinesActivity.class)));
 
         ScrollView scrollView = findViewById(R.id.btn_scroll);
 
@@ -116,7 +115,8 @@ public class MainActivity extends BaseActivity {
         View usageView = getLayoutInflater().inflate(R.layout.settings_usageinfo, guideRv, false);
 
         // Measure it with the width of the screen (or parent) to see how tall it gets
-        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(getResources().getDisplayMetrics().widthPixels,
+                View.MeasureSpec.AT_MOST);
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         usageView.measure(widthMeasureSpec, heightMeasureSpec);
 
@@ -133,7 +133,8 @@ public class MainActivity extends BaseActivity {
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
 
         githubicon.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
             v.getContext().startActivity(intent);
         });
 
@@ -175,9 +176,22 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        // Set initial visibility based on preference
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isStravaEnabled = prefs.getBoolean("EnableStravaFeature", false);
+        stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
+
+        // Listen for changes
+        prefs.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
+            if ("EnableStravaFeature".equals(key)) {
+                boolean enabled = sharedPreferences.getBoolean("EnableStravaFeature", false);
+                stravaaccess.setVisibility(enabled ? View.VISIBLE : View.GONE);
+            }
+        });
+
         // LONG CLICK LISTENER
         stravaaccess.setOnLongClickListener(v -> {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            //SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
 
             // If long click is assigned to Strava (true), open Url.
@@ -196,7 +210,7 @@ public class MainActivity extends BaseActivity {
             if (motionLayout.getCurrentState() == R.id.end_visible) {
                 motionLayout.transitionToStart(); // Animates to guide_hidden
             } else {
-                motionLayout.transitionToEnd();   // Animates to guide_visible
+                motionLayout.transitionToEnd(); // Animates to guide_visible
             }
         });
     }

@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp">
+            android:paddingVertical="4dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -54,8 +54,8 @@
                 android:layout_marginStart="8dp"
                 android:enabled="true"
                 android:checked="true"
-                app:thumbTint="@color/white_black"
-                app:trackTint="#fc4c02"/>
+                app:thumbTint="@color/switch_thumb_colors"
+                app:trackTint="@color/switch_track_colors_strava"/>
 
         </RelativeLayout>
 
@@ -112,51 +112,10 @@
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_marginTop="4dp" />
 
-            <!-- Buttons -->
-
-            <!-- Graph Y Axis -->
-            <LinearLayout
-                android:id="@+id/actionBtn_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:animateLayoutChanges="true"
-                android:gravity="end"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCancel"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:alpha="0.7"
-                    android:backgroundTint="@color/transparent"
-                    android:text="Cancel"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/black_white"
-                    app:strokeWidth="1dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSave"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:backgroundTint="@color/white_black"
-                    android:text="Save"
-                    android:textColor="?attr/colorOnPrimary"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/black_white"
-                    app:strokeWidth="1dp" />
-
-            </LinearLayout>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
+                android:paddingVertical="4dp"
                 android:layout_marginTop="12dp">
 
                 <LinearLayout
@@ -203,8 +162,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
-                android:layout_marginTop="12dp">
+                android:paddingVertical="4dp">
 
                 <LinearLayout
                     android:id="@+id/click_autorefresh"
@@ -257,23 +215,22 @@
                     app:boxCornerRadiusTopStart="12dp"
                     android:layout_toStartOf="@id/switch_enableautorefresh"
                     android:layout_centerVertical="true"
-                    android:paddingBottom="4dp"
+                    app:cursorColor="?attr/colorAccent"
+                    android:hint="hrs"
+                    app:boxStrokeColor="@color/textbox_stroke"
                     android:visibility="visible"
-                    android:saveEnabled="true">
+                    android:saveEnabled="true"
+                    android:paddingBottom="4dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAutoRefresh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="46dp"
-                        android:paddingHorizontal="4dp"
-                        android:hint="hrs"
-                        android:textSize="12dp"
-                        android:includeFontPadding="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:inputType="number"
                         android:textAlignment="center"
-                        android:gravity="center"
-                        android:textStyle="italic"
                         android:imeOptions="actionDone"
                         android:maxLines="1"
-                        android:saveEnabled="true" />
+                        android:saveEnabled="true"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
             </RelativeLayout>
