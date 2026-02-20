@@ -47,7 +47,7 @@ object StravaRepository {
 
         // 2. Decide: Fetch or Use Cache?
         // We fetch if: Forced (Pull-to-refresh) OR Auto-Refresh is Enabled AND (Cache is Null OR Cache is Old)
-        val prefs = context.getSharedPreferences("MeditationTrackerPrefs", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val isAutoRefresh = prefs.getBoolean("EnableAutoRefresh", true)
         val cacheDurationHours = prefs.getLong("CacheDurationHours", 48)
         val cacheDurationMs = cacheDurationHours * 60 * 60 * 1000

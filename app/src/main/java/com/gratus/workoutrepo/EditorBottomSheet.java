@@ -1,5 +1,6 @@
 package com.gratus.workoutrepo;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,8 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.gratus.workoutrepo.R;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,12 +57,8 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getDialog() != null ? getDialog().getWindow() : null;
-        if (window != null) {
-            // Using a constant or a clear variable name explains the "why"
-            final float dimAmount = 0.2f; // 20% opacity
-            window.setDimAmount(dimAmount);
-        }
+
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
         Bundle a = getArguments();
         if (a != null) {
             day = a.getString(ARG_DAY);
@@ -97,17 +98,29 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
-//        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.bottom_sheet_root_editor), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(
-//                    systemBars.left,
-//                    0,
-//                    systemBars.right,
-//                    0);
-//            return insets;
-//        });
-
         return view;
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setOnShowListener(dialogInterface -> {
+            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
+            View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+            if (bottomSheetInternal != null) {
+                // 1. Remove the default background color/drawable of the internal container
+                bottomSheetInternal.setBackgroundResource(android.R.color.transparent);
+
+                // 2. Disable clipping on the parent container to allow the shadow to show
+                if (bottomSheetInternal.getParent() instanceof ViewGroup parent) {
+                    parent.setClipChildren(false);
+                    parent.setClipToPadding(false);
+                };
+            }
+        });
+        return dialog;
     }
 
     // 01/02/2026 - clear focus when keyboard not visible

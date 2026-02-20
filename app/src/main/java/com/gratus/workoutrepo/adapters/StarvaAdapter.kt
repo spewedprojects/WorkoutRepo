@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gratus.workoutrepo.R
 import com.gratus.workoutrepo.data.StravaActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.core.net.toUri
 
 class StravaAdapter(private var items: List<StravaActivity>,
                     private val onActivityClick: (Long) -> Unit // <--- callback
@@ -32,8 +34,22 @@ class StravaAdapter(private var items: List<StravaActivity>,
 
     // --- NEW HELPER FUNCTION ---
     fun updateList(newItems: List<StravaActivity>) {
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize() = items.size
+            override fun getNewListSize() = newItems.size
+
+            override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean {
+                return items[oldPos].id == newItems[newPos].id
+            }
+
+            override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
+                return items[oldPos] == newItems[newPos]
+            }
+        }
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.items = newItems
-        // We don't call notifyDataSetChanged() here because we want granular control
+        diffResult.dispatchUpdatesTo(this) // Magic! Smoothly animates adds/removes/updates
     }
 
     // --- NEW: Helper to update UI without reloading everything ---
@@ -54,7 +70,7 @@ class StravaAdapter(private var items: List<StravaActivity>,
 
         // 1. Long Click -> Open Browser
         holder.itemView.setOnLongClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.strava.com/activities/${item.id}"))
+            val intent = Intent(Intent.ACTION_VIEW,"https://www.strava.com/activities/${item.id}".toUri())
             holder.itemView.context.startActivity(intent)
             true
         }

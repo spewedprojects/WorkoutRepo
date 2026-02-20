@@ -55,8 +55,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof SettingsViewHolder) {
-            SettingsViewHolder sHolder = (SettingsViewHolder) holder;
+        if (holder instanceof SettingsViewHolder sHolder) {
             SharedPreferences prefs = sHolder.itemView.getContext()
                     .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 

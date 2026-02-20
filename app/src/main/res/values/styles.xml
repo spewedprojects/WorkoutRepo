@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MyBottomSheetDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <!-- Enable background dim -->
-        <item name="android:backgroundDimEnabled">true</item>
-        <!-- Control the dim amount (0.0–1.0) -->
-        <item name="android:backgroundDimAmount">0.2</item>
-        <!-- Optional: change the scrim color if you want something other than black -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
 </resources>

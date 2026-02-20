@@ -36,6 +36,8 @@ public class MainActivity extends BaseActivity {
     private long backPressedTime;
     private Toast backToast;
     private MotionLayout motionLayout;
+    // --- NEW: Keep a strong reference to the listener ---
+    private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -182,12 +184,15 @@ public class MainActivity extends BaseActivity {
         stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
 
         // Listen for changes
-        prefs.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
+        // --- UPDATED: Assign to the global variable ---
+        prefListener = (sharedPreferences, key) -> {
             if ("EnableStravaFeature".equals(key)) {
                 boolean enabled = sharedPreferences.getBoolean("EnableStravaFeature", false);
                 stravaaccess.setVisibility(enabled ? View.VISIBLE : View.GONE);
             }
-        });
+        };
+        // Register the strong reference
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
         // LONG CLICK LISTENER
         stravaaccess.setOnLongClickListener(v -> {
@@ -316,8 +321,16 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // This forces the adapter to reload data from the JSON file
-        // which might have changed if you clicked "Apply" in the Routines screen
+
+        // --- NEW: Re-check Strava button visibility when returning to the app ---
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isStravaEnabled = prefs.getBoolean("EnableStravaFeature", false);
+        ImageButton stravaaccess = findViewById(R.id.stravaAccess);
+        if (stravaaccess != null) {
+            stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
+        }
+
+        // This forces the adapter to reload data from the JSON file which might have changed if you clicked "Apply" in the Routines screen
         if (findViewById(R.id.weekPager) != null) {
             androidx.viewpager2.widget.ViewPager2 vp = findViewById(R.id.weekPager);
             if (vp.getAdapter() != null) {

@@ -35,6 +35,12 @@ class StravaBottomSheet(
     // add a default constructor too:
     constructor() : this("Monday")
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Apply the same transparent theme to remove default background and dim
+        setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -133,13 +139,11 @@ class StravaBottomSheet(
                 }
 
                 // DATA FETCH
-                val activities = withContext(Dispatchers.IO) {
-                    // Pass Context so we can save/load the JSON file
-                    StravaRepository.getActivitiesForDay(requireContext(), dayOfWeek, forceRefresh)
+                val (activities, lastSync) = withContext(Dispatchers.IO) {
+                    val acts = StravaRepository.getActivitiesForDay(requireContext(), dayOfWeek, forceRefresh)
+                    val syncTime = StravaRepository.getLastSyncTime(requireContext())
+                    Pair(acts, syncTime) // Return both from the background thread
                 }
-
-                // --- NEW: Update the Subtitle/Timestamp ---
-                val lastSync = StravaRepository.getLastSyncTime(requireContext())
                 if (lastSync > 0) {
                     val timeAgo = DateUtils.getRelativeTimeSpanString(
                         lastSync,
@@ -158,7 +162,7 @@ class StravaBottomSheet(
 
                 if (activities.isNotEmpty()) {
                     bindList(activities) // Use the new function
-                    tvTitle.text = "Strava Activities on ${dayOfWeek}s"
+                    tvTitle.text = "Strava Activities on ${dayOfWeek}s (${activities.size})"
                 } else {
                     tvTitle.text = "No recent $dayOfWeek activities"
                     // Optional: Clear adapter to show empty state
@@ -175,20 +179,36 @@ class StravaBottomSheet(
             loadData(forceRefresh = true)
         }
 
+        // Fix for custom background and shadow clipping
+        dialog?.setOnShowListener { dialogInterface ->
+            val bottomSheetDialog = dialogInterface as com.google.android.material.bottomsheet.BottomSheetDialog
+            val bottomSheetInternal = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
+            bottomSheetInternal?.let { internal ->
+                // 1. Clear the default Material background to respect your theme/layout
+                internal.setBackgroundResource(android.R.color.transparent)
+
+                // 2. Disable clipping on the parent to allow shadows to "bleed" out
+                (internal.parent as? ViewGroup)?.let { parent ->
+                    parent.setClipChildren(false)
+                    parent.setClipToPadding(false)
+                }
+            }
+        }
+
         // --- NEW CODE END ---
         /*** */
         ViewCompat.setOnApplyWindowInsetsListener(
-            view.findViewById<View?>(R.id.bottom_sheet_root)!!,
-            OnApplyWindowInsetsListener { v: View?, insets: WindowInsetsCompat? ->
-                val systemBars = insets!!.getInsets(WindowInsetsCompat.Type.systemBars())
-                v!!.setPadding(
-                    systemBars.left,
-                    0,
-                    systemBars.right,
-                    0
-                )
-                insets
-            }
-        )
+            view.findViewById<View?>(R.id.bottom_sheet_root)!!
+        ) { v: View?, insets: WindowInsetsCompat? ->
+            val systemBars = insets!!.getInsets(WindowInsetsCompat.Type.systemBars())
+            v!!.setPadding(
+                systemBars.left,
+                0,
+                systemBars.right,
+                0
+            )
+            insets
+        }
     }
 }
