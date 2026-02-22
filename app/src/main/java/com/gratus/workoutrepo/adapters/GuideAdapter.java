@@ -139,8 +139,8 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 fadeOut.setDuration(2000); // 2 seconds
                 fadeOut.setFillAfter(true); // keep alpha at 0 after animation
                 imageView.startAnimation(fadeOut);
-            }, 4000);
-            imageView.postDelayed(() -> imageView.setVisibility(View.GONE), 6000);
+            }, 8000);
+            imageView.postDelayed(() -> imageView.setVisibility(View.GONE), 10000);
         }
     }
 

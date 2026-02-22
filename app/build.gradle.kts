@@ -13,8 +13,8 @@ android {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 34
-        versionName = "10.1.1" // major.minor.patch
+        versionCode = 35
+        versionName = "10.2.0" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
@@ -61,7 +61,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.gson)
     // Networking
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }

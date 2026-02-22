@@ -14,10 +14,11 @@
             android:id="@+id/ivSwipeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="Swipe left icon"
             android:src="@drawable/swipe_left_24dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:alpha="0.3"/>
+            android:alpha="0.4"/>
 
         <RelativeLayout
             android:id="@+id/container1"
@@ -190,7 +191,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="     \u25E6 Sub-bullet point"
+                    android:text="     ৹ Sub-bullet point"
                     android:textSize="14sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
             </LinearLayout>

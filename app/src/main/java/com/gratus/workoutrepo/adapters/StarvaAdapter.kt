@@ -1,7 +1,6 @@
 package com.gratus.workoutrepo.adapters
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,9 @@ import com.gratus.workoutrepo.data.StravaActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.core.net.toUri
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.util.Locale
 
 class StravaAdapter(private var items: List<StravaActivity>,
                     private val onActivityClick: (Long) -> Unit // <--- callback
@@ -93,7 +95,7 @@ class StravaAdapter(private var items: List<StravaActivity>,
         if (item.id == loadingActivityId) {
             // STATE: Loading
             holder.summary.text = "Fetching details..."
-            holder.summary.alpha = 0.8f
+            holder.summary.alpha = 0.75f
             holder.summary.maxLines = 1
         }
         else if (!item.description.isNullOrBlank()) {
@@ -110,30 +112,55 @@ class StravaAdapter(private var items: List<StravaActivity>,
         }
 
         // 3. Format Details String: "25.3 km • 1h 05m • 210w • 115bpm • 120m"
-        val km = String.format("%.1f km", item.distance / 1000)
+        val parts = mutableListOf<String>()
 
-        val hours = item.movingTime / 3600
-        val minutes = (item.movingTime % 3600) / 60
-        val time = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
+        if (item.distance > 0) {
+            val km = String.format("%.1f km", item.distance / 1000)
+            parts.add(km)
+        }
 
-        // Handle optional data (Watts, HR, Elevation)
-        val parts = mutableListOf(km, time)
+        // Time: Only add if > 0
+        if (item.movingTime > 0) {
+            val hours = item.movingTime / 3600
+            val minutes = (item.movingTime % 3600) / 60
+            val time = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}mins"
+            parts.add(time)
+        }
 
         item.averageWatts?.let { parts.add("${it.toInt()}w") }
         item.averageHeartrate?.let { parts.add("${it.toInt()}bpm") }
-        item.totalElevationGain?.let {
-            if (it > 0) parts.add("${it.toInt()}mts")
-        }
+        item.totalElevationGain?.let { if (it > 0) parts.add("${it.toInt()}mts") }
         holder.details.text = parts.joinToString(" • ")
 
-        // 4. Set Date
-        // Date Formatting
-        try {
-            val isoDate = LocalDate.parse(item.startDateLocal, DateTimeFormatter.ISO_DATE_TIME)
-            holder.date.text = isoDate.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
-        } catch (e: Exception) {
-            holder.date.text = item.startDateLocal // Fallback
+        // 4. Set Date - Date Formatting
+        val dateInput = item.startDateLocal // e.g. "2026-02-22T14:05:00Z" or "2026-02-22T14:05:00" or "2026-02-22"
+
+        val dateOutput = try {
+            // Try parsing an ISO date-time with offset first
+            val odt = OffsetDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
+            val fmt = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+            odt.format(fmt)
+        } catch (e1: Exception) {
+            try {
+                // Try parsing a local date-time without offset
+                val ldt = LocalDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
+                val fmt = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+                ldt.format(fmt)
+            } catch (e2: Exception) {
+                try {
+                    // If it's date-only, show date and no time (or append 0000 if you prefer)
+                    val ld = LocalDate.parse(dateInput, DateTimeFormatter.ISO_DATE)
+                    val fmtDateOnly = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+                    // append 0000 as time when only date is available
+                    ld.atStartOfDay().format(fmtDateOnly)
+                } catch (e3: Exception) {
+                    // final fallback: raw string
+                    dateInput
+                }
+            }
         }
+
+        holder.date.text = dateOutput
 
         // 5. Dynamic Icon Logic
         val iconRes = when (item.type) {

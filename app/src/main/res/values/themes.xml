@@ -42,5 +42,9 @@
         <item name="android:windowIsFloating">false</item>
 
         <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <item name="android:colorControlHighlight">@color/text_handle_color</item>
+        <item name="android:textColorHighlight">@color/text_highlight_color</item>
+        <item name="colorPrimary">@color/text_handle_color</item>
     </style>
 </resources>

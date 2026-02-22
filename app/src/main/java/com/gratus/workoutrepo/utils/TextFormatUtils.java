@@ -58,7 +58,7 @@ public class TextFormatUtils {
 
     /**
      * Formatting for Notes.
-     * Handles Main Bullets (\u2022) and Sub-Bullets (\u25E6).
+     * Handles Main Bullets (\u2022) and Sub-Bullets (\u25E6 | \u09F9).
      */
     public static CharSequence formatNotesForDisplay(String raw) {
         if (raw == null || raw.trim().isEmpty()) return "";
@@ -109,15 +109,15 @@ public class TextFormatUtils {
                             yield 0;
                         }
                         case 2 -> { // Second dash (-- )
-                            bulletChar = "\u2022"; // filled bullet
+                            bulletChar = "•"; // filled bullet
                             yield MAIN_BULLET_INDENT;
                         }
                         case 3 -> { // Third dash (--- )
-                            bulletChar = "\u25E6"; // hollow bullet
+                            bulletChar = "৹"; // hollow bullet
                             yield SUB_BULLET_INDENT;
                         }
                         default -> { // More than 3 dashes (----... )
-                            bulletChar = "\u25E6"; // hollow bullet for deeper levels
+                            bulletChar = "\u09F9"; // hollow bullet for deeper levels
                             yield SUB_BULLET_INDENT + (dashCount - 3) * 20;
                         }
                     };
