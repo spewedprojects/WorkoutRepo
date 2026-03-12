@@ -76,12 +76,9 @@ class WorkoutsRemoteViewsFactory(private val context: Context, intent: Intent) :
                 val layoutRes = if (item.isMajor) R.layout.list_item_major else R.layout.list_item_minor
                 val views = RemoteViews(context.packageName, layoutRes)
                 
-                var line = item.text
-                if (line.startsWith("•")) line = line.substring(1).trim()
-                else if (line.startsWith("- ")) line = line.substring(2).trim()
-
                 val textId = if (item.isMajor) R.id.workoutsMajor else R.id.workoutsMinor
-                views.setTextViewText(textId, "• $line")
+                val formattedText = com.gratus.workoutrepo.utils.TextFormatUtils.formatBulletsForWidget(item.text)
+                views.setTextViewText(textId, formattedText)
 
                 val fillInIntent = Intent()
                 fillInIntent.putExtra("EXTRA_DAY_INDEX", dayIndex)

@@ -57,6 +57,29 @@ public class TextFormatUtils {
     }
 
     /**
+     * Special formatting for Widgets using standard parcelable spans.
+     * RemoteViews cannot handle custom span classes like TextBulletSpan.
+     */
+    public static CharSequence formatBulletsForWidget(String line) {
+        if (line == null || line.trim().isEmpty()) return "";
+
+        line = line.trim();
+        // Strip existing text bullets/hyphens
+        if (line.startsWith("•") || line.startsWith("- ")) {
+            line = line.substring(line.startsWith("•") ? 1 : 2).trim();
+        }
+
+        SpannableStringBuilder ssb = new SpannableStringBuilder("• " + line);
+        
+        // Apply hanging indent using Standard LeadingMarginSpan
+        // first = 0, rest = 32 (aprox width of "• ")
+        ssb.setSpan(new LeadingMarginSpan.Standard(0, 32),
+                0, ssb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return applyBoldFormatting(ssb);
+    }
+
+    /**
      * Formatting for Notes.
      * Handles Main Bullets (\u2022) and Sub-Bullets (\u25E6 | \u09F9).
      */
