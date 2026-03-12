@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="• Swipe down GitHub icon to switch themes.\n• Long-press a workout to edit.\n• Swipe this area to go to settings."
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:paddingBottom="12dp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
 
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="• Each new line is treated as a bullet point.\n• Saving automatically applies formatting."
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:paddingBottom="8dp"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
 
@@ -126,15 +126,23 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="**Bold text**"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:text="1./1) item"
+                    android:textSize="13sp"
+                    android:typeface="monospace"
+                    android:paddingEnd="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:text="- item"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
                 <TextView
@@ -142,7 +150,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="-- item"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
                 <TextView
@@ -150,7 +158,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="--- item"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:typeface="monospace"
                     android:paddingEnd="8dp" />
             </LinearLayout>
@@ -170,29 +178,36 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="Bold text"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:text="1. Numbered line"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:text="• Main bullet point"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="  • Indented bullet point"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="     ৹ Sub-bullet point"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
             </LinearLayout>
 

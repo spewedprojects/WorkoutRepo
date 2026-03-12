@@ -103,6 +103,27 @@ public class MainActivity extends BaseActivity {
         setupButtons();
         setupWeekPager();
         setupOnBackPressed();
+        handleWidgetIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleWidgetIntent(intent);
+    }
+
+    private void handleWidgetIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("EXTRA_DAY_INDEX")) {
+            int dayIndex = intent.getIntExtra("EXTRA_DAY_INDEX", 0);
+            ViewPager2 weekPager = findViewById(R.id.weekPager);
+            if (weekPager != null) {
+                // Find current middle position to align to Monday correctly, then add dayIndex
+                int middle = Integer.MAX_VALUE / 2;
+                int startPosition = middle - (middle % 7) + dayIndex;
+                weekPager.setCurrentItem(startPosition, false);
+            }
+        }
     }
 
     private void setupGuideRecyclerView() {

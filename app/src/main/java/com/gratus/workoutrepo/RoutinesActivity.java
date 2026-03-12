@@ -103,6 +103,8 @@ public class RoutinesActivity extends BaseActivity {
             // Overwrite active routine
             RoutineRepository.saveActiveRoutine(RoutinesActivity.this, routine);
             Toast.makeText(RoutinesActivity.this, "Routine Applied!", Toast.LENGTH_SHORT).show();
+            // Trigger widget refresh
+            com.gratus.workoutrepo.widgets.WorkoutsWidgetProvider.Companion.sendRefreshBroadcast(RoutinesActivity.this);
             // Optional: Close activity to return to main
             loadData();
         }

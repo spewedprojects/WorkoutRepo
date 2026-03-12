@@ -38,6 +38,9 @@ public class WorkoutStorage {
             if (RoutineRepository.isRoutineSaved(context, active.id)) {
                 RoutineRepository.saveRoutineToLibrary(context, active);
             }
+            
+            // Trigger widget refresh
+            com.gratus.workoutrepo.widgets.WorkoutsWidgetProvider.Companion.sendRefreshBroadcast(context);
         }
     }
 

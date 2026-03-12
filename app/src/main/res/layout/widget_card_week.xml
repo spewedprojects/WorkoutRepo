@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardViewWeek"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/widget_background"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/weekDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.04"
+        android:text="MONDAY"
+        android:textColor="@color/black_white"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/workoutType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weekDay"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:hint="(Workout type)"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.04"
+        android:paddingBottom="16dp"
+        android:textColor="@color/onPrimary2"
+        android:textSize="22sp"
+        android:textStyle="bold|italic" />
+
+    <ListView
+        android:id="@+id/workouts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:divider="@null"
+        android:fontFamily="sans-serif"
+        android:gravity="start"
+        android:hint="• Major wokrouts"
+        android:includeFontPadding="false"
+        android:textColor="@color/black_white"
+        android:textSize="18sp"
+        tools:listitem="@layout/list_item_major"
+        android:layout_below="@id/workoutType"/>
+</RelativeLayout>
