@@ -12,7 +12,8 @@
             motion:touchAnchorId="@id/guide_container"
             motion:touchAnchorSide="bottom"
             motion:dragDirection="dragUp"
-            motion:nestedScrollFlags="supportScrollUp"/>
+            motion:nestedScrollFlags="supportScrollUp|disablePostScroll"
+            motion:moveWhenScrollAtTop="true"/>
     </Transition>
 
     <ConstraintSet android:id="@+id/start_hidden">

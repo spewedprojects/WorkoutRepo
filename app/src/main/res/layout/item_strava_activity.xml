@@ -101,7 +101,6 @@
             android:alpha="0.75"
             android:layout_marginTop="3dp"
             android:gravity="end"
-            android:paddingBottom="4dp"
             android:layout_alignParentEnd="true"
             android:layout_alignBottom="@id/tvActivityTitle"/>
 

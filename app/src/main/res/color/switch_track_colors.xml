@@ -6,11 +6,11 @@
         android:state_checked="true"/>
 
     <!-- Disabled -->
-    <item android:color="@color/black_white_0.1"
+    <item android:color="@color/black_white_0.04"
         android:state_enabled="false"/>
 
     <!-- Default -->
-    <item android:color="@color/black_white_0.1"
+    <item android:color="@color/black_white_0.04"
         android:state_checked="false"/>
 
 </selector>

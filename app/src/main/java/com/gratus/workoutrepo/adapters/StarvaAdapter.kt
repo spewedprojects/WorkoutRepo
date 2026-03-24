@@ -78,9 +78,11 @@ class StravaAdapter(private var items: List<StravaActivity>,
         }
 
         // 2. Normal Click -> Load Details
+        // 2. Normal Click -> Load (or Reload) Details
         holder.itemView.setOnClickListener {
-            // Only fetch if description is missing
-            if (item.description.isNullOrBlank()) {
+            // Removed the isNullOrBlank check.
+            // Now, as long as it's not currently loading, a tap will force a fresh API call.
+            if (loadingActivityId != item.id) {
                 onActivityClick(item.id)
             }
         }

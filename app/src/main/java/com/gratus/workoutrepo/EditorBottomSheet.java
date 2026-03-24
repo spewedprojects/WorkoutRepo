@@ -124,7 +124,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     }
 
     // 01/02/2026 - clear focus when keyboard not visible
-    private static void clearFocusOnKeyboardHide(EditText editText, View rootView) {
+    public static void clearFocusOnKeyboardHide(EditText editText, View rootView) {
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
             boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
             if (!imeVisible) {

@@ -8,6 +8,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.gratus.workoutrepo.data.StravaActivity
 import com.gratus.workoutrepo.network.StravaService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -53,7 +57,8 @@ object StravaRepository {
         val cacheDurationMs = cacheDurationHours * 60 * 60 * 1000
 
         if (forceRefresh || (isAutoRefresh && shouldFetchFromNetwork(cacheDurationMs))) {
-            fetchAndSaveActivities(context)
+            // Pass forceRefresh as the isDeepSync parameter
+            fetchAndSaveActivities(context, isDeepSync = forceRefresh)
         }
 
         // 3. Return Filtered List (from whatever we have now)
@@ -151,20 +156,41 @@ object StravaRepository {
         }
     }
 
-    // 2. THE NEW ACCUMULATOR LOGIC
-    private suspend fun fetchAndSaveActivities(context: Context) {
+    // 2. THE NEW ACCUMULATOR LOGIC (800 Activities) (25/03/2026)
+    private suspend fun fetchAndSaveActivities(context: Context, isDeepSync: Boolean) {
         val token = getValidToken() ?: return
 
         try {
-            // A. Fetch Latest 180 from Strava
-            val freshActivities = api.getActivities(token = token, perPage = 180)
+            // A. Fetch Latest 800 from Strava (4 pages of 200 concurrently)
+            val freshActivities = mutableListOf<StravaActivity>()
+
+            // SMART LOGIC: 4 pages for manual refresh, 1 page for auto-refresh
+            val pagesToFetch = if (isDeepSync) 1..4 else 1..1
+
+            coroutineScope {
+                // Fire off 4 simultaneous network requests
+                val deferredPages = pagesToFetch.map { pageNum ->
+                    async(Dispatchers.IO) {
+                        try {
+                            api.getActivities(token = token, perPage = 200, page = pageNum)
+                        } catch (e: Exception) {
+                            Log.e("StravaRepo", "Failed to fetch page $pageNum", e)
+                            emptyList<StravaActivity>() // Return empty list for this page if it fails
+                        }
+                    }
+                }
+
+                // Wait for all 4 requests to finish, then combine them into one massive list
+                freshActivities.addAll(deferredPages.awaitAll().flatten())
+            }
+
+            Log.d("StravaRepo", "Successfully fetched ${freshActivities.size} fresh items from API.")
 
             // B. Load what we already have (The "Bank")
             if (cachedActivities == null) loadFromDisk(context)
             val existingBank = cachedActivities ?: emptyList()
 
             // C. MERGE: Fresh + Bank
-            // We use a Map to handle duplicates automatically (Key = ID)
             val mergedMap = HashMap<Long, StravaActivity>()
 
             // 1. Put all OLD activities in the map first
@@ -174,11 +200,10 @@ object StravaRepository {
 
             // 2. Overlay the NEW activities
             for (newItem in freshActivities) {
-                // If we already have this ID, we need to be careful not to delete our saved Description
                 val existing = mergedMap[newItem.id]
 
                 val itemToSave = if (existing?.description != null && newItem.description.isNullOrBlank()) {
-                    // PRESERVE: Old one has description, new one doesn't. Keep the description.
+                    // PRESERVE: Old one has description, new one doesn't.
                     newItem.copy(description = existing.description)
                 } else {
                     // OVERWRITE: New one is newer/better.

@@ -45,6 +45,6 @@
             app:strokeColor="?attr/colorOnSurface"
             app:strokeWidth="1.5dp"
             android:backgroundTint="?attr/colorPrimaryVariant"
-            app:cornerRadius="10dp"/>
+            app:cornerRadius="12dp"/>
 
     </LinearLayout>

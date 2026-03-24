@@ -42,7 +42,6 @@ public class MainActivity extends BaseActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        applyTheme();
         super.onCreate(savedInstanceState);
 
         // --- NEW: Fix SSL Handshake errors on older Emulators ---

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_root"
     android:background="@drawable/bg_bottomsheet_rounded"
     android:fitsSystemWindows="false"
-    android:elevation="20dp"
+    android:elevation="10dp"
     android:clipToPadding="false"
     android:clipChildren="true"
     android:layout_marginTop="56dp"
-    android:layout_marginHorizontal="56dp">
+    android:orientation="vertical">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/Sdrag_handle"
@@ -19,15 +19,13 @@
         android:layout_height="14dp"
         android:elevation="4dp"
         android:padding="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_gravity="center"/>
 
     <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:paddingHorizontal="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,28 +73,154 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="18dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activitySearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/activityFilter"
+            android:layout_alignParentStart="true"
+            android:padding="0dp"
+            android:layout_marginStart="24dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeWidth="0dp"
+            android:hint="'Easy', 'Nigdi', etc."
+            app:hintMaxLines="1"
+            app:startIconDrawable="@drawable/search_24dp"
+            app:boxBackgroundColor="@color/black_white_0.1"
+            app:endIconCheckable="true"
+            android:orientation="horizontal"
+            android:preferKeepClear="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activitySearchInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:imeOptions="actionDone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/activityFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/filter_list_24"
+            android:padding="10dp"
+            android:background="@color/transparent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/activitySearch"
+            android:layout_alignTop="@id/activitySearch"/>
+
+        <HorizontalScrollView
+            android:id="@+id/filterItemsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="0dp"
+            android:layout_below="@id/activitySearch"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_filter_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@color/white_black_0.4"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/black_white_0.4"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="12dp"
+                    android:text="By type: Ride"
+                    android:textSize="15sp"
+                    app:cornerRadius="12dp" />
+
+                <ImageView
+                    android:id="@+id/btn_clear_filters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:paddingHorizontal="12dp"
+                    android:src="@drawable/close_small_24dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <HorizontalScrollView
+            android:id="@+id/chipGroupContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="24dp"
+            android:visibility="gone"
+            android:layout_marginTop="-2dp"
+            android:scrollbars="none"
+            android:layout_below="@id/filterItemsContainer">
+
+            <!-- ChipGroup for dynamic filters -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:chipSpacing="8dp"
+                android:layout_marginTop="-2dp"
+                app:singleLine="true"
+                app:selectionRequired="false" />
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_NoMatch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+        android:textStyle="italic"
+        android:layout_margin="24dp"
+        android:textSize="20sp"
+        android:text="No activities match your search."
+        android:visibility="gone"/>
+
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_gravity="center"
         android:indeterminateTint="#80fc4c02"
-        android:indeterminateBehavior="cycle"
-        app:layout_constraintBottom_toTopOf="@id/rvActivities"
-        app:layout_constraintTop_toBottomOf="@id/header_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:indeterminateBehavior="cycle"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvActivities"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintHeight_max="600dp"
         android:clipToPadding="false"
+        android:layout_gravity="center"
+        android:layout_marginTop="-10dp"
         android:requiresFadingEdge="vertical"
-        android:layout_marginBottom="28dp"
-        app:layout_constraintTop_toBottomOf="@id/header_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginBottom="12dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
