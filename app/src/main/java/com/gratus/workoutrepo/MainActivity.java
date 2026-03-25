@@ -184,17 +184,19 @@ public class MainActivity extends BaseActivity {
             }
         };
 
+        Runnable openArchiveAction = () -> {
+            startActivity(new Intent(MainActivity.this, StravaArchiveActivity.class));
+        };
+
         // SINGLE CLICK LISTENER
         stravaaccess.setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
 
-            // If long click is assigned to Strava, short click opens Sheet.
-            // If long click is assigned to Sheet (false), short click opens Strava.
             if (longClickStravaAction) {
                 openSheetAction.run();
             } else {
-                openUrlAction.run();
+                openArchiveAction.run();
             }
         });
 
@@ -216,13 +218,11 @@ public class MainActivity extends BaseActivity {
 
         // LONG CLICK LISTENER
         stravaaccess.setOnLongClickListener(v -> {
-            //SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
 
-            // If long click is assigned to Strava (true), open Url.
-            // Else open Sheet.
+            // If long click is assigned to Archive (true), open Archive.
             if (longClickStravaAction) {
-                openUrlAction.run();
+                openArchiveAction.run();
             } else {
                 openSheetAction.run();
             }

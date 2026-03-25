@@ -168,7 +168,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     // Helper method to update text
     private void updateSwitchText(TextView tv, boolean isStrava) {
         if (isStrava) {
-            tv.setText("Long click opens Strava Profile");
+            tv.setText("Long click opens Strava Archive");
         } else {
             tv.setText("Long click opens Strava Activities");
         }

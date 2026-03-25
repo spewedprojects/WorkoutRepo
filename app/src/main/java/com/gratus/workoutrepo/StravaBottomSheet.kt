@@ -23,6 +23,7 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.gratus.workoutrepo.utils.FilterEngine
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.OnApplyWindowInsetsListener
@@ -75,6 +76,7 @@ class StravaBottomSheet(
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvActivities)
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar) // Optional: Add a progress bar to your layout
         val refreshBtn = view.findViewById<ImageButton>(R.id.refresh_btn)
+        val stravaProfile = view.findViewById<ImageButton>(R.id.stravaProfile)
 
         val activitySearchInput = view.findViewById<TextInputEditText>(R.id.activitySearchInput)
         val activityFilterBtn = view.findViewById<ImageButton>(R.id.activityFilter)
@@ -102,19 +104,25 @@ class StravaBottomSheet(
             repeatCount = Animation.INFINITE
         }
 
+        stravaProfile.setOnClickListener {
+            val prefs = requireContext().getSharedPreferences(BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+            val url = prefs.getString("CustomStravaUrl", "https://www.strava.com/athletes/32298220")
+            try {
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Invalid URL saved", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         fun applyFilters() {
-            var filtered = allActivities
-            if (currentSearchQuery.isNotEmpty()) {
-                filtered = filtered.filter {
-                    it.name.contains(currentSearchQuery, ignoreCase = true) ||
-                            (it.description?.contains(currentSearchQuery, ignoreCase = true) == true)
-                }
-            }
-            if (currentFilterType != null) {
-                filtered = filtered.filter {
-                    it.type.equals(currentFilterType, ignoreCase = true)
-                }
-            }
+            val filtered = FilterEngine.filterItems(
+                items = allActivities,
+                searchQuery = currentSearchQuery,
+                searchableTextSelector = { listOf(it.name, it.description) },
+                typeFilter = currentFilterType,
+                typeSelector = { it.type }
+            )
 
             val adapter = recyclerView.adapter as? StravaAdapter
             adapter?.updateList(filtered)

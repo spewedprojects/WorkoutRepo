@@ -73,6 +73,30 @@ object StravaRepository {
         } ?: emptyList()
     }
 
+    /**
+     * SMART FUNCTION: Gets all activities without filtering by day of week.
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getAllActivities(context: Context, forceRefresh: Boolean = false): List<StravaActivity> {
+        // 1. Initialize Cache from Disk if Memory is empty
+        if (cachedActivities == null) {
+            loadFromDisk(context)
+        }
+
+        // 2. Decide: Fetch or Use Cache?
+        val prefs = context.getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val isAutoRefresh = prefs.getBoolean("EnableAutoRefresh", true)
+        val cacheDurationHours = prefs.getLong("CacheDurationHours", 48)
+        val cacheDurationMs = cacheDurationHours * 60 * 60 * 1000
+
+        if (forceRefresh || (isAutoRefresh && shouldFetchFromNetwork(cacheDurationMs))) {
+            fetchAndSaveActivities(context, isDeepSync = forceRefresh)
+        }
+
+        // 3. Return full list
+        return cachedActivities ?: emptyList()
+    }
+
     // --- NEW: FILE BASED STORAGE ---
 
     private fun saveToDisk(context: Context, list: List<StravaActivity>, time: Long) {
