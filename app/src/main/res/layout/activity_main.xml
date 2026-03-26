@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     app:layoutDescription="@xml/activity_main_scene"
-    app:layout_constraintVertical_chainStyle="packed">
+    app:layout_constraintVertical_chainStyle="packed"
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"

@@ -109,9 +109,10 @@
             app:hintMaxLines="1"
             app:startIconDrawable="@drawable/search_24dp"
             app:boxBackgroundColor="@color/black_white_0.1"
-            app:endIconCheckable="true"
+            app:endIconMode="clear_text"
+            app:endIconDrawable="@drawable/close_small_24dp"
             android:orientation="horizontal"
-            android:preferKeepClear="true">
+            android:preferKeepClear="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activitySearchInput"
