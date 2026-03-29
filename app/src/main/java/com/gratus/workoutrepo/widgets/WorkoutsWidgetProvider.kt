@@ -23,6 +23,18 @@ class WorkoutsWidgetProvider : AppWidgetProvider() {
         }
     }
 
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+
+        val action = intent.action
+        if (action == Intent.ACTION_DATE_CHANGED ||
+            action == "android.intent.action.TIME_SET" ||
+            action == "android.intent.action.TIMEZONE_CHANGED") {
+
+            sendRefreshBroadcast(context)
+        }
+    }
+
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.widget_card_week)
 

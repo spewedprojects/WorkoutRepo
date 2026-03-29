@@ -1,6 +1,7 @@
 package com.gratus.workoutrepo.network
 
 import com.gratus.workoutrepo.data.StravaActivity
+import com.gratus.workoutrepo.data.StravaAthlete
 import com.gratus.workoutrepo.data.TokenResponse
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -13,7 +14,7 @@ interface StravaService {
     @GET("athlete/activities")
     suspend fun getActivities(
         @Query("access_token") token: String,
-        @Query("per_page") perPage: Int = 180, // Grab last 50 to find matching days
+        @Query("per_page") perPage: Int = 200, // Grab last 50 to find matching days
         @Query("page") page: Int = 1
     ): List<StravaActivity>
 
@@ -32,4 +33,10 @@ interface StravaService {
         @Path("id") id: Long,
         @Query("access_token") token: String
     ): StravaActivity
+
+    // Add to StravaService interface
+    @GET("athlete")
+    suspend fun getAuthenticatedAthlete(
+        @Query("access_token") token: String
+    ): StravaAthlete
 }

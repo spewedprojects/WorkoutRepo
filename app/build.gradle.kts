@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
@@ -13,8 +14,8 @@ android {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 40
-        versionName = "11.1.1" // major.minor.patch
+        versionCode = 41
+        versionName = "11.2.0" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
@@ -64,4 +65,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation(libs.glide)
+    kapt(libs.compiler)
 }

@@ -35,6 +35,10 @@ data class StravaActivity(
     // Activity type (e.g., "Ride", "Run", "WeightTraining")
     val type: String,
 
+    // NEW: Strava's internal tag for workouts/races
+    @SerializedName("workout_type")
+    val workoutType: Int?,
+
     // NEW: The user's description/notes
     val description: String?
 )
@@ -44,4 +48,12 @@ data class TokenResponse(
     @SerializedName("access_token") val accessToken: String,
     @SerializedName("refresh_token") val refreshToken: String,
     @SerializedName("expires_at") val expiresAt: Long
+)
+
+// Add this to StravaModels.kt
+data class StravaAthlete(
+    val id: Long,
+    val firstname: String?,
+    val lastname: String?,
+    val profile: String? // This is the URL to your profile picture
 )

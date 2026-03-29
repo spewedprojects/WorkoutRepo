@@ -164,13 +164,15 @@ class StravaAdapter(private var items: List<StravaActivity>,
 
         holder.date.text = dateOutput
 
-        // 5. Dynamic Icon Logic
+        // 5. Dynamic Icon Logic (With Race Support)
+        val isRace = item.workoutType == 1 || item.workoutType == 11
+
         val iconRes = when (item.type) {
-            "Ride", "VirtualRide", "E-BikeRide" -> R.drawable.strava_roadbike
-            "Run" -> R.drawable.strava_run
+            "Ride", "VirtualRide", "E-BikeRide" -> if (isRace) R.drawable.strava_roadbikerace else R.drawable.strava_roadbike
+            "Run" -> if (isRace) R.drawable.strava_runrace else R.drawable.strava_run
             "Walk" -> R.drawable.strava_walk
             "Hike" -> R.drawable.strava_hike
-            "WeightTraining", "CrossFit" -> R.drawable.strava_weighttraing // check spelling in your file
+            "WeightTraining", "CrossFit" -> R.drawable.strava_weighttraing
             "Soccer" -> R.drawable.strava_football
             "Workout" -> R.drawable.strava_workout
             else -> R.drawable.strava_workout // Fallback default

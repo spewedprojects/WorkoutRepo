@@ -1,4 +1,4 @@
-## Latest: v11.0.0
+## Latest: v11.2.0
 - Minor finishing touches remain.
 
 ### App progression so far:

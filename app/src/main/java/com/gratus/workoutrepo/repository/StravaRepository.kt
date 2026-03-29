@@ -290,4 +290,27 @@ object StravaRepository {
         // 3. Return the loaded time (or 0 if file doesn't exist)
         return lastCacheTime
     }
+
+    // In StravaRepository.kt
+    suspend fun getProfilePictureUrl(context: Context): String? {
+        val prefs = context.getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+
+        // 1. Check local storage first
+        val cachedUrl = prefs.getString("StravaProfileUrl", null)
+        if (cachedUrl != null) return cachedUrl
+
+        // 2. If not found, fetch from API
+        val token = getValidToken() ?: return null
+        return try {
+            val athlete = api.getAuthenticatedAthlete(token)
+            val url = athlete.profile
+
+            // 3. Save it for next time
+            prefs.edit().putString("StravaProfileUrl", url).apply()
+            url
+        } catch (e: Exception) {
+            Log.e("StravaRepo", "Failed to fetch athlete profile", e)
+            null
+        }
+    }
 }

@@ -64,33 +64,39 @@ class WorkoutsRemoteViewsFactory(private val context: Context, intent: Intent) :
 
     override fun getCount(): Int = listItems.size
 
+    // Now we only have 2 types: Header and Workout
+    override fun getViewTypeCount(): Int = 2
+
     override fun getViewAt(position: Int): RemoteViews {
         val item = listItems[position]
+
         return when (item) {
             is ListItem.Header -> {
-                val views = RemoteViews(context.packageName, R.layout.list_item_header)
-                views.setTextViewText(R.id.headerText, item.title)
-                views
+                RemoteViews(context.packageName, R.layout.list_item_header).apply {
+                    setTextViewText(R.id.headerText, item.title)
+                }
             }
             is ListItem.Workout -> {
-                val layoutRes = if (item.isMajor) R.layout.list_item_major else R.layout.list_item_minor
-                val views = RemoteViews(context.packageName, layoutRes)
-                
-                val textId = if (item.isMajor) R.id.workoutsMajor else R.id.workoutsMinor
-                val formattedText = com.gratus.workoutrepo.utils.TextFormatUtils.formatBulletsForWidget(item.text)
-                views.setTextViewText(textId, formattedText)
+                // Use the single unified layout
+                RemoteViews(context.packageName, R.layout.list_item_workout).apply {
+                    val formattedText = com.gratus.workoutrepo.utils.TextFormatUtils.formatBulletsForWidget(item.text)
+                    setTextViewText(R.id.workoutText, formattedText)
 
-                val fillInIntent = Intent()
-                fillInIntent.putExtra("EXTRA_DAY_INDEX", dayIndex)
-                views.setOnClickFillInIntent(textId, fillInIntent)
-                views
+                    // Style based on major/minor if needed (e.g., bolding major)
+                    if (item.isMajor) {
+                        // You can add logic here to change text color or style programmatically
+                    }
+
+                    val fillInIntent = Intent().apply {
+                        putExtra("EXTRA_DAY_INDEX", dayIndex)
+                    }
+                    setOnClickFillInIntent(R.id.workoutText, fillInIntent)
+                }
             }
         }
     }
 
     override fun getLoadingView(): RemoteViews? = null
-
-    override fun getViewTypeCount(): Int = 2
 
     override fun getItemId(position: Int): Long = position.toLong()
 
