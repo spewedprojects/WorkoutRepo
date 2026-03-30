@@ -58,7 +58,7 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
+        //setStyle(DialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme);
         Bundle a = getArguments();
         if (a != null) {
             day = a.getString(ARG_DAY);
