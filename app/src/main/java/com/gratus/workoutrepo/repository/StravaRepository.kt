@@ -102,7 +102,7 @@ object StravaRepository {
     private fun saveToDisk(context: Context, list: List<StravaActivity>, time: Long) {
         try {
             // 1. Create a wrapper object to hold data + timestamp
-            val cacheData = CacheData(time, list)
+            val cacheData = CacheData(time, 0L,list)
             val jsonString = Gson().toJson(cacheData)
 
             // 2. Write to a real file
@@ -143,7 +143,8 @@ object StravaRepository {
     // --- HELPER CLASS ---
     // We need this tiny class to bundle the timestamp inside the JSON file
     private data class CacheData(
-        val timestamp: Long,
+        val timestamp: Long,           // This will now be "Last Global List Sync"
+        val lastEditTime: Long = 0,    // This tracks individual detail fetches
         val activities: List<StravaActivity>
     )
 
@@ -164,13 +165,15 @@ object StravaRepository {
             // If the list is null, we start a new list with just this item
             val currentList = cachedActivities ?: emptyList()
 
-            val updatedList = if (currentList.any { it.id == activityId }) {
-                currentList.map { if (it.id == activityId) detailedActivity else it }
-            } else {
-                currentList + detailedActivity
+            val updatedList = currentList.map {
+                if (it.id == activityId) detailedActivity else it
             }
 
             cachedActivities = updatedList
+
+            // --- CRITICAL CHANGE ---
+            // Save to disk but keep the ORIGINAL lastCacheTime
+            // so the 48-hour clock doesn't reset!
             saveToDisk(context, updatedList, lastCacheTime)
 
             detailedActivity

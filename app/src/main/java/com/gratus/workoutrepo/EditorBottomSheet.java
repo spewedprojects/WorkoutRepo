@@ -13,9 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+
+import java.util.List;
 
 import com.gratus.workoutrepo.R;
 
@@ -125,12 +128,21 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
     // 01/02/2026 - clear focus when keyboard not visible
     public static void clearFocusOnKeyboardHide(EditText editText, View rootView) {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
-            boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
-            if (!imeVisible) {
-                editText.clearFocus();
+        ViewCompat.setWindowInsetsAnimationCallback(editText, new WindowInsetsAnimationCompat.Callback(WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_STOP) {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onProgress(@NonNull WindowInsetsCompat insets, @NonNull List<WindowInsetsAnimationCompat> runningAnimations) {
+                return insets;
             }
-            return insets;
+
+            @Override
+            public void onEnd(@NonNull WindowInsetsAnimationCompat animation) {
+                super.onEnd(animation);
+                WindowInsetsCompat insets = ViewCompat.getRootWindowInsets(editText);
+                if (insets != null && !insets.isVisible(WindowInsetsCompat.Type.ime())) {
+                    editText.clearFocus();
+                }
+            }
         });
     }
 
