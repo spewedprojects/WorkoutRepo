@@ -67,7 +67,7 @@ class StravaStatsManager(rootView: View) {
         val totalDistanceMeters = activities.sumOf { it.distance.toDouble() }
         val totalDistanceKm = totalDistanceMeters / 1000.0
         val formattedDistance = if (totalDistanceKm > 100) {
-            String.format("%.0fk", totalDistanceKm)
+            String.format("%.0f", totalDistanceKm) + "km"
         } else {
             String.format("%.1f", totalDistanceKm) + "km"
         }

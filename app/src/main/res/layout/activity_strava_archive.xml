@@ -245,7 +245,7 @@
                     android:text="Monthly stats"
                     android:textSize="20sp"
                     android:textColor="@color/black_white"
-                    android:alpha="0.75"
+                    android:alpha="0.85"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -259,7 +259,7 @@
                 android:text="March total: 24"
                 android:textSize="14sp"
                 android:textColor="@color/black_white"
-                android:alpha="0.7"
+                android:alpha="0.8"
                 android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                 android:textStyle="bold" />
 
@@ -297,7 +297,7 @@
                         android:text="18"
                         android:textSize="20sp"
                         android:textColor="@color/black_white"
-                        android:alpha="0.7"
+                        android:alpha="0.78"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -329,7 +329,7 @@
                         android:text="72h"
                         android:textSize="20sp"
                         android:textColor="@color/black_white"
-                        android:alpha="0.7"
+                        android:alpha="0.78"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -361,7 +361,7 @@
                         android:text="85%"
                         android:textSize="20sp"
                         android:textColor="@color/black_white"
-                        android:alpha="0.7"
+                        android:alpha="0.78"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -393,7 +393,7 @@
                         android:text="800k"
                         android:textSize="20sp"
                         android:textColor="@color/black_white"
-                        android:alpha="0.7"
+                        android:alpha="0.78"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                         android:textStyle="bold" />
                 </LinearLayout>

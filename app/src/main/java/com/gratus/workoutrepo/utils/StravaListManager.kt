@@ -196,6 +196,7 @@ class StravaListManager(
 
     // --- CLASS METHODS (No more circular dependency issues) ---
 
+    // Initiation of material date Picker while doing the filtering
     private fun showDatePicker() {
         if (allActivities.isEmpty()) return
 
@@ -269,7 +270,11 @@ class StravaListManager(
             }
 
             // update UI and apply filters
-            currentDateFilterTitle = "${currentDateStart?.format(DateTimeFormatter.ofPattern("MMM d"))} - ${currentDateEnd?.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))}"
+            currentDateFilterTitle = if (currentDateStart?.year == currentDateEnd?.year) {
+                "${currentDateStart?.format(DateTimeFormatter.ofPattern("MMM d"))} - ${currentDateEnd?.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))}"
+            } else {
+                "${currentDateStart?.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))} - ${currentDateEnd?.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))}"
+            }
             btnFilterDate.text = "Date: Range"
             btnClearFilters.visibility = View.VISIBLE
             applyFilters()
@@ -284,6 +289,7 @@ class StravaListManager(
         }
     }
 
+    // This will show the specific text after selecting one day inside date Picker, not the range.
     private fun showDurationDialog(selectedDate: LocalDate) {
         val options = arrayOf("This Day", "This Week", "This Month", "This Year")
         val dialog = MaterialAlertDialogBuilder(context)
@@ -342,6 +348,7 @@ class StravaListManager(
         }
     }
 
+    // This is basically Single click on the activity card to fetch the activity description.
     private fun onActivityClick(activityId: Long) {
         lifecycleScope.launch {
             val adapter = recyclerView.adapter as? StravaAdapter ?: return@launch
@@ -362,6 +369,7 @@ class StravaListManager(
         }
     }
 
+    // Simple function to bind items to the list
     private fun bindList(list: List<StravaActivity>, forceHardRedraw: Boolean = false) {
         if (recyclerView.adapter == null || forceHardRedraw) {
             recyclerView.adapter = StravaAdapter(list, ::onActivityClick) // Safe to reference here
@@ -426,9 +434,10 @@ class StravaListManager(
             recyclerView?.visibility = View.VISIBLE
         }
 
-        btnFilterType?.text = if (currentFilterType != null) "By type: $currentFilterType (${filtered.size})" else "By type"
+        btnFilterType?.text = if (currentFilterType != null) "By type: $currentFilterType (${listFiltered.size})" else "By type"
     }
 
+    // This function or method is to basically load data after a manual refresh or an auto refresh is done
     private fun loadData(forceRefresh: Boolean) {
         lifecycleScope.launch {
             if (forceRefresh) {
