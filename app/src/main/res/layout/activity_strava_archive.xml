@@ -4,10 +4,10 @@
     android:id="@+id/strava_archive_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/header_container"
@@ -15,91 +15,91 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:paddingHorizontal="24dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/stravaProfile"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:contentDescription="Open Strava Profile"
-            android:padding="10dp"
+            android:layout_alignTop="@id/tvTitle"
+            android:layout_alignParentStart="true"
             android:layout_marginEnd="0dp"
             android:background="@color/transparent"
-            android:src="@drawable/account_circle"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@id/tvTitle"/>
+            android:contentDescription="Open Strava Profile"
+            android:padding="10dp"
+            android:src="@drawable/account_circle" />
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Strava Activities (800)"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-            android:gravity="center"
-            android:textColor="@color/black_white"
+            android:layout_toEndOf="@id/stravaProfile"
             android:alpha="0.90"
             android:elevation="1dp"
-            android:layout_toEndOf="@id/stravaProfile"/>
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:gravity="center"
+            android:text="Strava Activities (800)"
+            android:textColor="@color/black_white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last synced (not synced yet)"
-            android:textSize="13sp"
-            android:textStyle="italic"
-            android:paddingEnd="8dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-            android:gravity="center"
-            android:textColor="@color/black_white"
+            android:layout_below="@id/tvTitle"
+            android:layout_toEndOf="@id/stravaProfile"
             android:alpha="0.70"
             android:elevation="1dp"
-            android:layout_toEndOf="@id/stravaProfile"
-            android:layout_below="@id/tvTitle"/>
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:gravity="center"
+            android:paddingEnd="8dp"
+            android:text="Last synced (not synced yet)"
+            android:textColor="@color/black_white"
+            android:textSize="13sp"
+            android:textStyle="italic" />
 
         <ImageButton
             android:id="@+id/refresh_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="0dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:alpha="0.7"
             android:background="@color/transparent"
-            android:src="@drawable/outline_autorenew_24"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:padding="0dp"
+            android:src="@drawable/outline_autorenew_24" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="18dp">
+        android:layout_marginBottom="18dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activitySearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/activityFilter"
             android:layout_alignParentStart="true"
-            android:padding="0dp"
             android:layout_marginStart="24dp"
+            android:layout_toStartOf="@id/activityFilter"
+            android:hint="'Easy', 'Nigdi', etc."
+            android:orientation="horizontal"
+            android:padding="0dp"
+            android:preferKeepClear="false"
+            app:boxBackgroundColor="@color/black_white_0.1"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeWidth="0dp"
-            android:hint="'Easy', 'Nigdi', etc."
-            app:hintMaxLines="1"
-            app:startIconDrawable="@drawable/search_24dp"
-            app:boxBackgroundColor="@color/black_white_0.1"
-            app:endIconMode="clear_text"
             app:endIconDrawable="@drawable/close_small_24dp"
-            android:orientation="horizontal"
-            android:preferKeepClear="false">
+            app:endIconMode="clear_text"
+            app:hintMaxLines="1"
+            app:startIconDrawable="@drawable/search_24dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activitySearchInput"
@@ -115,24 +115,35 @@
             android:id="@+id/activityFilter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/filter_list_24"
-            android:padding="10dp"
-            android:background="@color/transparent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="24dp"
-            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/activitySearch"
             android:layout_alignBottom="@id/activitySearch"
-            android:layout_alignTop="@id/activitySearch"/>
+            android:layout_marginStart="10dp"
+            android:layout_toStartOf="@id/activityStat"
+            android:background="@color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/filter_list_24" />
+
+        <ImageButton
+            android:id="@+id/activityStat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/activitySearch"
+            android:layout_alignBottom="@id/activitySearch"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="24dp"
+            android:background="@color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/sports_score" />
 
         <HorizontalScrollView
             android:id="@+id/filterItemsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_below="@id/activitySearch"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="0dp"
-            android:layout_below="@id/activitySearch"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <LinearLayout
@@ -145,14 +156,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:backgroundTint="@color/white_black_0.4"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/black_white_0.4"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
                     android:includeFontPadding="false"
                     android:paddingHorizontal="12dp"
                     android:text="By type: Ride"
                     android:textSize="15sp"
-                    app:cornerRadius="12dp" />
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white_0.4"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_filter_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="6dp"
+                    android:backgroundTint="@color/white_black_0.4"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="12dp"
+                    android:text="By Date"
+                    android:textSize="15sp"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white_0.4"
+                    app:strokeWidth="1dp" />
 
                 <ImageView
                     android:id="@+id/btn_clear_filters"
@@ -161,7 +187,7 @@
                     android:layout_marginStart="6dp"
                     android:paddingHorizontal="12dp"
                     android:src="@drawable/close_small_24dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -171,24 +197,208 @@
             android:id="@+id/chipGroupContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_below="@id/filterItemsContainer"
             android:layout_marginHorizontal="24dp"
-            android:visibility="gone"
             android:layout_marginTop="-2dp"
+            android:orientation="horizontal"
             android:scrollbars="none"
-            android:layout_below="@id/filterItemsContainer">
+            android:visibility="gone">
 
             <!-- ChipGroup for dynamic filters -->
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupFilters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:chipSpacing="8dp"
                 android:layout_marginTop="-2dp"
+                app:chipSpacing="8dp"
+                app:selectionRequired="false"
                 app:singleLine="true"
-                app:selectionRequired="false" />
+                app:singleSelection="true" />
         </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/rootStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chipGroupContainer"
+            android:layout_marginHorizontal="22dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="4dp"
+            android:visibility="visible">
+
+            <!-- Title row: Monthly stats (left) + Period selector button (right) -->
+            <LinearLayout
+                android:id="@+id/titleRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvStatTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Monthly stats"
+                    android:textSize="20sp"
+                    android:textColor="@color/black_white"
+                    android:alpha="0.75"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- March total on top of the stats row -->
+            <TextView
+                android:id="@+id/tvMonthTotalActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                android:text="March total: 24"
+                android:textSize="14sp"
+                android:textColor="@color/black_white"
+                android:alpha="0.7"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                android:textStyle="bold" />
+
+            <!-- Horizontal stats row with equal distribution for each item -->
+            <LinearLayout
+                android:id="@+id/statsRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Total days active -->
+                <LinearLayout
+                    android:id="@+id/llDaysActive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDaysLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Days active"
+                        android:textSize="13sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvDaysValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="18"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Total hours -->
+                <LinearLayout
+                    android:id="@+id/llTotalHours"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvHoursLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total hours"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvHoursValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="72h"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Consistency -->
+                <LinearLayout
+                    android:id="@+id/llConsistency"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvConsistencyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Consistency"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvConsistencyValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="85%"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Distance -->
+                <LinearLayout
+                    android:id="@+id/llDistance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDistanceLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvDistanceValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="800k"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -197,31 +407,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-        android:textStyle="italic"
         android:layout_margin="24dp"
-        android:textSize="20sp"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
         android:text="No activities match your search."
-        android:visibility="gone"/>
+        android:textSize="20sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_gravity="center"
+        android:indeterminateBehavior="cycle"
         android:indeterminateTint="#80fc4c02"
-        android:indeterminateBehavior="cycle"/>
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvActivities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintHeight_max="600dp"
-        android:clipToPadding="false"
         android:layout_gravity="center"
         android:layout_marginTop="-10dp"
+        android:layout_marginBottom="12dp"
+        android:clipToPadding="false"
         android:requiresFadingEdge="vertical"
-        android:layout_marginBottom="12dp"/>
+        app:layout_constraintHeight_max="600dp" />
 
 </LinearLayout>
