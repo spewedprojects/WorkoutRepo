@@ -29,6 +29,8 @@ object StravaRepository {
     // NEW: File Name instead of Prefs Name
     private const val CACHE_FILE_NAME = "strava_activities_cache.json"
 
+    private val gson = com.google.gson.GsonBuilder().setPrettyPrinting().create()
+
     // Setup Retrofit
     private val api: StravaService by lazy {
         Retrofit.Builder()
@@ -314,6 +316,74 @@ object StravaRepository {
         } catch (e: Exception) {
             Log.e("StravaRepo", "Failed to fetch athlete profile", e)
             null
+        }
+    }
+
+    private fun mergeActivities(
+        existingList: List<StravaActivity>,
+        newList: List<StravaActivity>
+    ): List<StravaActivity> {
+        val mergedMap = HashMap<Long, StravaActivity>()
+
+        // 1. Seed with existing data
+        existingList.forEach { mergedMap[it.id] = it }
+
+        // 2. Process incoming data (from Sync or Import)
+        for (incoming in newList) {
+            val existing = mergedMap[incoming.id]
+
+            if (existing == null) {
+                mergedMap[incoming.id] = incoming
+            } else {
+                // EDGE CASE: Conflict Resolution
+                val resolved = when {
+                    // Priority 1: Completeness (Keep the one with a description)
+                    !incoming.description.isNullOrBlank() && existing.description.isNullOrBlank() -> incoming
+                    incoming.description.isNullOrBlank() && !existing.description.isNullOrBlank() -> existing
+
+                    // Priority 2: Recency (Both have, or both lack, description)
+                    incoming.lastModifiedLocal > existing.lastModifiedLocal -> incoming
+
+                    // Fallback
+                    else -> existing
+                }
+                mergedMap[incoming.id] = resolved
+            }
+        }
+        return mergedMap.values.sortedByDescending { it.startDateLocal }
+    }
+
+    // EXPORT
+    fun getExportData(context: Context): String {
+        if (cachedActivities == null) loadFromDisk(context)
+        val listToExport = cachedActivities ?: emptyList()
+        val cacheData = CacheData(System.currentTimeMillis(), 0L, listToExport)
+        return gson.toJson(cacheData) // Uses the pretty-print gson
+    }
+
+    // IMPORT
+    fun importArchive(context: Context, jsonString: String): Boolean {
+        return try {
+            val type = object : TypeToken<CacheData>() {}.type
+            val importedData: CacheData = gson.fromJson(jsonString, type)
+            val incomingActivities = importedData.activities
+
+            if (cachedActivities == null) loadFromDisk(context)
+            val existingActivities = cachedActivities ?: emptyList()
+
+            // Merge them using our new smart logic
+            val finalSortedList = mergeActivities(existingActivities, incomingActivities)
+
+            // Save the merged result back to your app's internal storage
+            cachedActivities = finalSortedList
+            lastCacheTime = System.currentTimeMillis()
+            saveToDisk(context, finalSortedList, lastCacheTime)
+
+            Log.d("StravaRepo", "Import successful. Total activities: ${finalSortedList.size}")
+            true
+        } catch (e: Exception) {
+            Log.e("StravaRepo", "Malformed JSON or Import Failed", e)
+            false
         }
     }
 }

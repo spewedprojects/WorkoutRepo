@@ -40,7 +40,10 @@ data class StravaActivity(
     val workoutType: Int?,
 
     // NEW: The user's description/notes
-    val description: String?
+    val description: String?,
+
+    // NEW: The "Local Receipt" timestamp for export/import logic
+    val lastModifiedLocal: Long = System.currentTimeMillis()
 )
 
 // 2. The Token Object (For refreshing authentication)

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +35,18 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final String PREF_ENABLE_STRAVA = "EnableStravaFeature";
     private static final String PREF_ENABLE_AUTO_REFRESH = "EnableAutoRefresh";
     private static final String PREF_CACHE_DURATION_HOURS = "CacheDurationHours";
+
+    public interface OnArchiveInteractionListener {
+        void onExportClicked();
+        void onImportClicked();
+    }
+
+    private final OnArchiveInteractionListener listener;
+
+    // Update your constructor to accept it:
+    public GuideAdapter(OnArchiveInteractionListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -128,6 +141,9 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return true;
             });
 
+            sHolder.btnExport.setOnClickListener(v -> { if (listener != null) listener.onExportClicked(); });
+            sHolder.btnImport.setOnClickListener(v -> { if (listener != null) listener.onImportClicked(); });
+
         } else {
             UsageViewHolder uHolder = (UsageViewHolder) holder;
 
@@ -198,6 +214,11 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         com.google.android.material.textfield.TextInputLayout tilAutoRefresh;
         TextInputEditText etAutoRefresh;
 
+        // Import/Export Buttons
+        ImageButton btnExport;
+        ImageButton btnImport;
+
+
         SettingsViewHolder(View v) {
             super(v);
             // Strava Feature
@@ -217,6 +238,10 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             switchAutoRefresh = v.findViewById(R.id.switch_enableautorefresh);
             tilAutoRefresh = v.findViewById(R.id.tilAutoRefresh);
             etAutoRefresh = v.findViewById(R.id.etAutoRefresh);
+
+            // Import/Export Buttons
+            btnExport = v.findViewById(R.id.Exp_S_Data);
+            btnImport = v.findViewById(R.id.Imp_S_Data);
         }
     }
 

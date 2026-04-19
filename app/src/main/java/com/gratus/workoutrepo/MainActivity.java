@@ -14,10 +14,13 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +33,10 @@ import java.util.Calendar;
 
 import com.gratus.workoutrepo.adapters.GuideAdapter;
 import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
+import com.gratus.workoutrepo.utils.StravaArchiveManager;
+
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.Dispatchers;
 
 public class MainActivity extends BaseActivity {
 
@@ -38,6 +45,9 @@ public class MainActivity extends BaseActivity {
     private MotionLayout motionLayout;
     // --- NEW: Keep a strong reference to the listener ---
     private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
+
+    private ActivityResultLauncher<String> exportLauncher;
+    private ActivityResultLauncher<String[]> importLauncher;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -96,6 +106,19 @@ public class MainActivity extends BaseActivity {
             return false;
         });
 
+        // Inside onCreate in MainActivity.java
+        exportLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("application/json"), uri -> {
+            if (uri != null) {
+                StravaArchiveManager.exportData(this, uri);
+            }
+        });
+
+        importLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null) {
+                StravaArchiveManager.importData(this, uri);
+            }
+        });
+
         setupGuideRecyclerView();
 
         setupThemeButtons();
@@ -129,7 +152,18 @@ public class MainActivity extends BaseActivity {
         RecyclerView guideRv = findViewById(R.id.guide_container);
         guideRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        GuideAdapter adapter = new GuideAdapter();
+        GuideAdapter adapter = new GuideAdapter(new GuideAdapter.OnArchiveInteractionListener() {
+            @Override
+            public void onExportClicked() {
+                String fileName = "Strava_Archive_" + System.currentTimeMillis() + ".json";
+                exportLauncher.launch(fileName);
+            }
+
+            @Override
+            public void onImportClicked() {
+                importLauncher.launch(new String[]{"application/json"});
+            }
+        });
         guideRv.setAdapter(adapter);
 
         // FIX: Pre-calculate the height of the 'Usage Info' page (the tallest one)

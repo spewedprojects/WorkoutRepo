@@ -70,7 +70,7 @@
                 android:id="@+id/tvSettingsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Strava Profile Settings"
+                android:text="Strava Settings"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:paddingBottom="6dp"
@@ -81,7 +81,6 @@
                 android:id="@+id/tilProfileUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Strava Profile URL"
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
@@ -89,14 +88,18 @@
                 app:cursorColor="?attr/colorAccent"
                 app:boxStrokeColor="@color/textbox_stroke"
                 android:saveEnabled="true"
+                app:hintEnabled="false"
                 app:endIconCheckable="true"
                 app:endIconDrawable="@drawable/check_24">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProfileUrl"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:inputType="textUri"
                     android:maxLines="1"
+                    android:paddingVertical="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:hint="Strava Profile URL"
                     android:imeOptions="actionDone"
                     android:saveEnabled="true"/>
 
@@ -224,8 +227,10 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAutoRefresh"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:textSize="12sp"
+                        android:paddingVertical="0dp"
+                        android:paddingHorizontal="12dp"
                         android:inputType="number"
                         android:textAlignment="center"
                         android:imeOptions="actionDone"
@@ -236,14 +241,13 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/ExpImp_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="4dp"
-                android:layout_marginTop="12dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/ExpImp_Container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -283,7 +287,7 @@
 
                     <ImageButton
                         android:id="@+id/Exp_S_Data"
-                        android:layout_width="wrap_content"
+                        android:layout_width="48dp"
                         android:layout_height="wrap_content"
                         android:padding="9dp"
                         android:alpha="0.7"
@@ -298,7 +302,7 @@
 
                     <ImageButton
                         android:id="@+id/Imp_S_Data"
-                        android:layout_width="wrap_content"
+                        android:layout_width="48dp"
                         android:layout_height="wrap_content"
                         android:padding="9dp"
                         android:alpha="0.7"

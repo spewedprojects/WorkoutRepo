@@ -15,7 +15,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 45
-        versionName = "11.3.1" // major.minor.patch
+        versionName = "11.4.0" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
