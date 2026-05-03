@@ -140,19 +140,19 @@ class StravaAdapter(private var items: List<StravaActivity>,
         val dateOutput = try {
             // Try parsing an ISO date-time with offset first
             val odt = OffsetDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
-            val fmt = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+            val fmt = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
             odt.format(fmt)
         } catch (e1: Exception) {
             try {
                 // Try parsing a local date-time without offset
                 val ldt = LocalDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
-                val fmt = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+                val fmt = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
                 ldt.format(fmt)
             } catch (e2: Exception) {
                 try {
                     // If it's date-only, show date and no time (or append 0000 if you prefer)
                     val ld = LocalDate.parse(dateInput, DateTimeFormatter.ISO_DATE)
-                    val fmtDateOnly = DateTimeFormatter.ofPattern("d MMM yyyy '৹' HH:mm", Locale.getDefault())
+                    val fmtDateOnly = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
                     // append 0000 as time when only date is available
                     ld.atStartOfDay().format(fmtDateOnly)
                 } catch (e3: Exception) {
@@ -168,7 +168,8 @@ class StravaAdapter(private var items: List<StravaActivity>,
         val isRace = item.workoutType == 1 || item.workoutType == 11
 
         val iconRes = when (item.type) {
-            "Ride", "VirtualRide", "E-BikeRide" -> if (isRace) R.drawable.strava_roadbikerace else R.drawable.strava_roadbike
+            "Ride", "E-BikeRide" -> if (isRace) R.drawable.strava_roadbikerace else R.drawable.strava_roadbike
+            "VirtualRide" -> if (isRace) R.drawable.strava_indoorroadbikerace else R.drawable.strava_indoorroadbike
             "Run" -> if (isRace) R.drawable.strava_runrace else R.drawable.strava_run
             "Walk" -> R.drawable.strava_walk
             "Hike" -> R.drawable.strava_hike
