@@ -4,4 +4,10 @@
     <string name="btn_auto_mode">Switch to Auto mode</string>
     <string name="btn_dark_mode">Switch to Dark mode</string>
     <string name="expand_notes_btn">Expand notes</string>
+
+    <!-- Confirmation Dialog -->
+    <string name="dialog_confirm_title">Confirm Action</string>
+    <string name="dialog_confirm_message">Exit without saving?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

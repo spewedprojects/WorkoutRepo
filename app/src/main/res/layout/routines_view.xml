@@ -140,7 +140,6 @@
                 android:padding="6dp"
                 android:alpha="0.9"
                 android:translationY="1dp"
-                android:layout_marginStart="5dp"
                 android:src="@drawable/edit_square_24dp_fill1"
                 android:background="@color/transparent" />
 
@@ -149,6 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
+                android:layout_marginStart="12dp"
                 android:src="@drawable/delete_icon_24dp"
                 android:background="@color/transparent"/>
 

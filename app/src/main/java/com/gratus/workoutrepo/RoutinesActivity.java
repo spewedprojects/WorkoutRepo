@@ -123,8 +123,22 @@ public class RoutinesActivity extends BaseActivity {
 
         @Override
         public void onDelete(Routine routine) {
-            RoutineRepository.deleteRoutine(RoutinesActivity.this, routine.id);
-            loadData(); // Refresh UI
+            android.app.Dialog dialog = new android.app.Dialog(RoutinesActivity.this);
+            dialog.setContentView(R.layout.dialog_confirmation);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            
+            android.widget.TextView message = dialog.findViewById(R.id.dialogMessage);
+            message.setText("Are you sure you want to delete " + routine.id + "?");
+            
+            dialog.findViewById(R.id.btnYes).setOnClickListener(v -> {
+                RoutineRepository.deleteRoutine(RoutinesActivity.this, routine.id);
+                loadData(); // Refresh UI
+                dialog.dismiss();
+            });
+            
+            dialog.findViewById(R.id.btnNo).setOnClickListener(v -> dialog.dismiss());
+            
+            dialog.show();
         }
 
         @Override

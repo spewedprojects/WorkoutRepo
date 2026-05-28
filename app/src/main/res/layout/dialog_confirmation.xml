@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_corners"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="16dp"
+    android:layout_margin="30dp"
+    android:elevation="14dp">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+        android:text="@string/dialog_confirm_title"
+        android:textColor="@color/black_white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/dialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:alpha="0.8"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+        android:text="@string/dialog_confirm_message"
+        android:textColor="@color/black_white"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:alpha="0.7"
+            android:backgroundTint="@color/transparent"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:text="@string/no"
+            android:textColor="?attr/colorOnPrimary"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/black_white_0.4"
+            app:strokeWidth="1dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/white_black"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:text="@string/yes"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/black_white"
+            app:strokeWidth="1dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
