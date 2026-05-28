@@ -16,6 +16,7 @@
     <color name="primaryVariant">#131313</color>
     <color name="switchbutton">#393939</color>
     <color name="deletebutton">#C62828</color>
+    <color name="editbutton">#3A7EAD</color>
     <color name="textHintcolor">#99FFFFFF</color>
     <color name="onPrimary2">#99FFFFFF</color>
     <color name="window_background">#131313</color>

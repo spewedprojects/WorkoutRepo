@@ -95,6 +95,12 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         String savedMinor = WorkoutStorage.getWorkout(context, day, "workoutsMinor", minors[dayIndex]);
         holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(savedMinor));
 
+        String savedMajorLabel = WorkoutStorage.getWorkout(context, day, "majorLabel", "Major:");
+        holder.major.setText(savedMajorLabel);
+
+        String savedMinorLabel = WorkoutStorage.getWorkout(context, day, "minorLabel", "Minor:");
+        holder.minor.setText(savedMinorLabel);
+
         String savedNotesRaw = WorkoutStorage.getWorkout(context, day, "notes", "");
         //holder.notesDetails.setText(TextFormatUtils.formatNotesForDisplay(savedNotesRaw));
         ExpandableNoteHelper.setupNoteState(holder.notesDetails, holder.expandBtn, savedNotesRaw);
@@ -104,12 +110,16 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         holder.workoutType.setOnLongClickListener(null);
         holder.workoutsMajor.setOnLongClickListener(null);
         holder.workoutsMinor.setOnLongClickListener(null);
+        holder.major.setOnLongClickListener(null);
+        holder.minor.setOnLongClickListener(null);
         holder.notesDetails.setOnLongClickListener(null); // for notes block
 
         // Attach long-press editors
         setupEditor(holder, "workoutType", day, position);
         setupEditor(holder, "workoutsMajor", day, position);
         setupEditor(holder, "workoutsMinor", day, position);
+        setupEditor(holder, "majorLabel", day, position);
+        setupEditor(holder, "minorLabel", day, position);
         setupEditor(holder, "notes", day, position); // for notes block
     }
 
@@ -121,7 +131,7 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
 
     static class WeekViewHolder extends RecyclerView.ViewHolder {
         public View expandBtn;
-        TextView weekDay, workoutType, workoutsMajor, workoutsMinor, notesDetails;
+        TextView weekDay, workoutType, workoutsMajor, workoutsMinor, notesDetails, major, minor;
 
         WeekViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,6 +140,8 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
             workoutsMajor = itemView.findViewById(R.id.workoutsMajor);
             workoutsMinor = itemView.findViewById(R.id.workoutsMinor);
             notesDetails = itemView.findViewById(R.id.notesDetails);
+            major = itemView.findViewById(R.id.major);
+            minor = itemView.findViewById(R.id.minor);
             expandBtn = itemView.findViewById(R.id.expand_notes_main);
         }
     }
@@ -142,6 +154,9 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
         TextView targetView = switch (fieldKey) {
             case "workoutType" -> holder.workoutType;
             case "workoutsMajor" -> holder.workoutsMajor;
+            case "workoutsMinor" -> holder.workoutsMinor;
+            case "majorLabel" -> holder.major;
+            case "minorLabel" -> holder.minor;
             case "notes" -> holder.notesDetails;
             default -> holder.workoutsMinor;
         };
@@ -164,6 +179,8 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
             String readableField = fieldKey;
             if(fieldKey.equals("workoutsMajor")) readableField = "Major Workouts";
             if(fieldKey.equals("workoutsMinor")) readableField = "Minor Workouts";
+            if(fieldKey.equals("majorLabel")) readableField = "Major Label";
+            if(fieldKey.equals("minorLabel")) readableField = "Minor Label";
             if(fieldKey.equals("workoutType")) readableField = "Type";
             if(fieldKey.equals("notes")) readableField = "Notes";
 
@@ -188,6 +205,8 @@ public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.Week
                             holder.workoutsMajor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
                     case "workoutsMinor" ->
                             holder.workoutsMinor.setText(TextFormatUtils.formatBulletsForDisplay(finalText));
+                    case "majorLabel" -> holder.major.setText(finalText.isEmpty() ? "Major:" : finalText);
+                    case "minorLabel" -> holder.minor.setText(finalText.isEmpty() ? "Minor:" : finalText);
                     case "notes" ->
                             ExpandableNoteHelper.setupNoteState(holder.notesDetails, holder.expandBtn, finalText);
                 }

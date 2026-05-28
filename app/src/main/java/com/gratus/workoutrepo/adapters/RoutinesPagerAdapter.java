@@ -22,6 +22,7 @@ import java.util.List;
 public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private String activeRoutineId; // New field
+    private String editingRoutineId = null; // Edit mode state
     private List<Routine> routines;
     private final RoutinesActivity.RoutineActionListener listener;
     private static final int TYPE_ROUTINE = 0;
@@ -80,7 +81,8 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
             ((AddViewHolder) holder).bind(listener);
         } else {
             // Pass active ID logic here
-            ((RoutineViewHolder) holder).bind(routines.get(position), activeRoutineId, listener);
+            Routine routine = routines.get(position);
+            ((RoutineViewHolder) holder).bind(routine, activeRoutineId, listener, routine.id.equals(editingRoutineId), this);
         }
     }
 
@@ -104,6 +106,7 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
         RecyclerView dayList;
         ImageButton btnDelete, btnExpand;
         MaterialButton btnApply, btnSave;
+        View btnEdit;
 
         RoutineViewHolder(View v) {
             super(v);
@@ -114,41 +117,70 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
             btnSave = v.findViewById(R.id.save_routine_btn);
             btnDelete = v.findViewById(R.id.delete_routine_btn);
             btnExpand = v.findViewById(R.id.expand_notes_rout);
+            btnEdit = v.findViewById(R.id.edit_routine_btn);
 
             // Setup internal RecyclerView for days (ReadOnlyDayAdapter not shown for brevity, but needed)
             dayList.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(v.getContext()));
         }
 
         // Update bind method
-        void bind(Routine routine, String activeId, RoutinesActivity.RoutineActionListener listener) {
+        void bind(Routine routine, String activeId, RoutinesActivity.RoutineActionListener listener, boolean isEditMode, RoutinesPagerAdapter adapter) {
             title.setText(routine.title);
             ExpandableNoteHelper.setupNoteState(notesDetails, btnExpand, routine.notes);
 
             btnExpand.setOnClickListener(v -> ExpandableNoteHelper.toggleNote(notesDetails, btnExpand));
             //notesDetails.setText(TextFormatUtils.formatNotesForDisplay(routine.notes));
-            RoutineDayAdapter dayAdapter = new RoutineDayAdapter(routine.days);
+            RoutineDayAdapter dayAdapter = new RoutineDayAdapter(routine, isEditMode, listener);
             dayList.setAdapter(dayAdapter);
 
-            // LOGIC: Hide delete button if this is the active routine
-            if (routine.id.equals(activeId)) {
-                btnDelete.setVisibility(View.INVISIBLE); // Or GONE
-                btnDelete.setOnClickListener(null);
-
-                // Optional: You can also disable the "APPLY" button since it's already applied
-                btnApply.setText("APPLIED");
+            if (isEditMode) {
+                btnDelete.setEnabled(false);
+                btnDelete.setAlpha(0.3f);
                 btnApply.setEnabled(false);
+                btnApply.setAlpha(0.3f);
+                btnSave.setText("CONFIRM");
+                btnSave.setOnClickListener(v -> {
+                    adapter.editingRoutineId = null;
+                    listener.onConfirmEdit(routine);
+                });
             } else {
-                btnDelete.setVisibility(View.VISIBLE);
-                btnDelete.setOnClickListener(v -> listener.onDelete(routine));
+                btnDelete.setEnabled(true);
+                btnDelete.setAlpha(1.0f);
+                btnApply.setAlpha(1.0f);
+                btnSave.setText("EXPORT");
+                btnSave.setOnClickListener(v -> listener.onExport(routine));
 
-                btnApply.setText("APPLY");
-                btnApply.setEnabled(true);
-                btnApply.setOnClickListener(v -> listener.onApply(routine));
+                // LOGIC: Hide delete button if this is the active routine
+                if (routine.id.equals(activeId)) {
+                    btnDelete.setVisibility(View.INVISIBLE); // Or GONE
+                    btnDelete.setOnClickListener(null);
+
+                    // Optional: You can also disable the "APPLY" button since it's already applied
+                    btnApply.setText("APPLIED");
+                    btnApply.setEnabled(false);
+                } else {
+                    btnDelete.setVisibility(View.VISIBLE);
+                    btnDelete.setOnClickListener(v -> listener.onDelete(routine));
+
+                    btnApply.setText("APPLY");
+                    btnApply.setEnabled(true);
+                    btnApply.setOnClickListener(v -> listener.onApply(routine));
+                }
+            }
+
+            if (btnEdit != null) {
+                btnEdit.setOnClickListener(v -> {
+                    if (isEditMode) {
+                        adapter.editingRoutineId = null;
+                    } else {
+                        adapter.editingRoutineId = routine.id;
+                    }
+                    adapter.notifyDataSetChanged();
+                });
             }
 
             title.setOnLongClickListener(v -> { listener.onEditRoutineMeta(routine, "title"); return true; });
             notesDetails.setOnLongClickListener(v -> { listener.onEditRoutineMeta(routine, "notes"); return true; });
-            btnSave.setOnClickListener(v -> listener.onExport(routine));
         }
     }
 }

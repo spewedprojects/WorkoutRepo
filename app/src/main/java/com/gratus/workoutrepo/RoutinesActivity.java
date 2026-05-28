@@ -172,6 +172,58 @@ public class RoutinesActivity extends BaseActivity {
             intent.setType("application/json");
             importLauncher.launch(intent);
         }
+
+        @Override
+        public void onEditRoutineField(Routine routine, String day, String fieldKey, String currentValue) {
+            String label = fieldKey;
+            if(fieldKey.equals("workoutsMajor")) label = "Major Workouts";
+            if(fieldKey.equals("workoutsMinor")) label = "Minor Workouts";
+            if(fieldKey.equals("majorLabel")) label = "Major Label";
+            if(fieldKey.equals("minorLabel")) label = "Minor Label";
+            if(fieldKey.equals("workoutType")) label = "Type";
+            if(fieldKey.equals("notes")) label = "Notes";
+
+            EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, label, currentValue, -1);
+            sheet.setOnSaveListener((text, pos) -> {
+                String finalText = text == null ? "" : text.trim();
+                if (fieldKey.equals("workoutsMajor") || fieldKey.equals("workoutsMinor")) {
+                    finalText = com.gratus.workoutrepo.utils.TextFormatUtils.cleanTextForStorage(finalText);
+                }
+
+                // Update the routine IN MEMORY ONLY
+                com.gratus.workoutrepo.model.DayWorkout dWorkout = null;
+                for (com.gratus.workoutrepo.model.DayWorkout d : routine.days) {
+                    if (d.dayName.equalsIgnoreCase(day)) {
+                        dWorkout = d;
+                        break;
+                    }
+                }
+                if (dWorkout != null) {
+                    switch (fieldKey) {
+                        case "workoutType": dWorkout.workoutType = finalText; break;
+                        case "workoutsMajor": dWorkout.majorWorkouts = finalText; break;
+                        case "workoutsMinor": dWorkout.minorWorkouts = finalText; break;
+                        case "majorLabel": dWorkout.majorLabel = finalText; break;
+                        case "minorLabel": dWorkout.minorLabel = finalText; break;
+                        case "notes": dWorkout.notes = finalText; break;
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            sheet.show(getSupportFragmentManager(), "field_edit");
+        }
+
+        @Override
+        public void onConfirmEdit(Routine routine) {
+            RoutineRepository.saveRoutineToLibrary(RoutinesActivity.this, routine);
+            Routine active = RoutineRepository.getActiveRoutine(RoutinesActivity.this);
+            if (active != null && active.id.equals(routine.id)) {
+                RoutineRepository.saveActiveRoutine(RoutinesActivity.this, routine);
+                com.gratus.workoutrepo.widgets.WorkoutsWidgetProvider.Companion.sendRefreshBroadcast(RoutinesActivity.this);
+            }
+            Toast.makeText(RoutinesActivity.this, "Routine changes saved!", Toast.LENGTH_SHORT).show();
+            adapter.notifyDataSetChanged(); // Just refresh view
+        }
     };
 
     // --- SAF Launchers ---
@@ -325,5 +377,7 @@ public class RoutinesActivity extends BaseActivity {
         void onEditRoutineMeta(Routine routine, String field);
         void onAddBlank();
         void onImport();
+        void onEditRoutineField(Routine routine, String day, String fieldKey, String currentValue);
+        void onConfirmEdit(Routine routine);
     }
 }

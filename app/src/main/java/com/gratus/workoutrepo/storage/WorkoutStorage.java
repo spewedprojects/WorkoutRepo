@@ -25,6 +25,8 @@ public class WorkoutStorage {
                 case "workoutType": day.workoutType = value; break;
                 case "workoutsMajor": day.majorWorkouts = value; break;
                 case "workoutsMinor": day.minorWorkouts = value; break;
+                case "majorLabel": day.majorLabel = value; break;
+                case "minorLabel": day.minorLabel = value; break;
                 case "notes": day.notes = value; break;
             }
 
@@ -53,6 +55,8 @@ public class WorkoutStorage {
                 case "workoutType": return (day.workoutType == null || day.workoutType.isEmpty()) ? defaultValue : day.workoutType;
                 case "workoutsMajor": return (day.majorWorkouts == null || day.majorWorkouts.isEmpty()) ? defaultValue : day.majorWorkouts;
                 case "workoutsMinor": return (day.minorWorkouts == null || day.minorWorkouts.isEmpty()) ? defaultValue : day.minorWorkouts;
+                case "majorLabel": return (day.majorLabel == null || day.majorLabel.isEmpty()) ? defaultValue : day.majorLabel;
+                case "minorLabel": return (day.minorLabel == null || day.minorLabel.isEmpty()) ? defaultValue : day.minorLabel;
                 case "notes": return (day.notes == null || day.notes.isEmpty()) ? defaultValue : day.notes;
             }
         }

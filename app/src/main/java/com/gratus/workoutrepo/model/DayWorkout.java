@@ -8,6 +8,8 @@ public class DayWorkout {
     public String workoutType;
     public String majorWorkouts;
     public String minorWorkouts;
+    public String majorLabel;
+    public String minorLabel;
     public String notes;
 
     public DayWorkout(String dayName) {
@@ -15,6 +17,8 @@ public class DayWorkout {
         this.workoutType = "";
         this.majorWorkouts = "";
         this.minorWorkouts = "";
+        this.majorLabel = "";
+        this.minorLabel = "";
         this.notes = "";
     }
 }
