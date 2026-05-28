@@ -128,7 +128,7 @@ public class RoutinesActivity extends BaseActivity {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             
             android.widget.TextView message = dialog.findViewById(R.id.dialogMessage);
-            message.setText("Are you sure you want to delete " + routine.id + "?");
+            message.setText("Are you sure you want to delete " + routine.title + "?");
             
             dialog.findViewById(R.id.btnYes).setOnClickListener(v -> {
                 RoutineRepository.deleteRoutine(RoutinesActivity.this, routine.id);

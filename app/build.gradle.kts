@@ -14,8 +14,8 @@ android {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 26
         targetSdk = 36
-        versionCode = 48
-        versionName = "11.5.1" // major.minor.patch
+        versionCode = 49
+        versionName = "11.5.2" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
