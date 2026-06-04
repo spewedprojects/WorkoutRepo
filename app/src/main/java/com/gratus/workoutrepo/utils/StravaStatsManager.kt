@@ -7,6 +7,7 @@ import com.gratus.workoutrepo.data.StravaActivity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 class StravaStatsManager(rootView: View) {
@@ -44,9 +45,12 @@ class StravaStatsManager(rootView: View) {
         }
 
         // 1. Calculate unique days active
+        // Inside StravaStatsManager.kt -> updateStats()
         val activeDates = activities.mapNotNull { activity ->
             try {
-                Instant.parse(activity.startDateLocal).atZone(ZoneId.systemDefault()).toLocalDate()
+                // Truncate to first 10 chars to safely evaluate local calendar date
+                val cleanDateStr = activity.startDateLocal.take(10)
+                LocalDate.parse(cleanDateStr)
             } catch (e: Exception) {
                 null
             }

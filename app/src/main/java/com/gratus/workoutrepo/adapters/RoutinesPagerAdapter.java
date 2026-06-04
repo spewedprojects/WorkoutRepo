@@ -35,6 +35,21 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.listener = listener;
     }
 
+    public String getEditingRoutineId() {
+        return editingRoutineId;
+    }
+
+    public void setEditingRoutineId(String id) {
+        this.editingRoutineId = id;
+    }
+
+    public void exitEditMode() {
+        if (editingRoutineId != null) {
+            editingRoutineId = null;
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         return (position == routines.size()) ? TYPE_ADD_NEW : TYPE_ROUTINE;
@@ -143,12 +158,18 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
                     adapter.editingRoutineId = null;
                     listener.onConfirmEdit(routine);
                 });
+                if (btnEdit != null) {
+                    btnEdit.setBackgroundResource(R.drawable.bg_edit_active_circle);
+                }
             } else {
                 btnDelete.setEnabled(true);
                 btnDelete.setAlpha(1.0f);
                 btnApply.setAlpha(1.0f);
                 btnSave.setText("EXPORT");
                 btnSave.setOnClickListener(v -> listener.onExport(routine));
+                if (btnEdit != null) {
+                    btnEdit.setBackgroundResource(android.R.color.transparent);
+                }
 
                 // LOGIC: Hide delete button if this is the active routine
                 if (routine.id.equals(activeId)) {

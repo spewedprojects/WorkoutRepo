@@ -6,27 +6,23 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.List;
 import android.view.KeyEvent;
 
-import com.gratus.workoutrepo.R;
-
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
 
 public class EditorBottomSheet extends BottomSheetDialogFragment {
 
@@ -151,21 +147,13 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
         String currentText = editText.getText() == null ? "" : editText.getText().toString();
         String originalText = editableText == null ? "" : editableText;
         if (!currentText.equals(originalText)) {
-            Dialog confirmDialog = new Dialog(requireContext());
-            confirmDialog.setContentView(R.layout.dialog_confirmation);
-            confirmDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            TextView message = confirmDialog.findViewById(R.id.dialogMessage);
-            message.setText("Exit without saving?");
-            
-            confirmDialog.findViewById(R.id.btnYes).setOnClickListener(v1 -> {
-                intentionalDismiss = true;
-                confirmDialog.dismiss();
-                dismissAllowingStateLoss();
+            ConfirmationDialogHelper.showConfirmationDialog(requireContext(), "Exit without saving?", new ConfirmationDialogHelper.ConfirmationListener() {
+                @Override
+                public void onYesClicked() {
+                    intentionalDismiss = true;
+                    dismissAllowingStateLoss();
+                }
             });
-            
-            confirmDialog.findViewById(R.id.btnNo).setOnClickListener(v1 -> confirmDialog.dismiss());
-            
-            confirmDialog.show();
         } else {
             intentionalDismiss = true;
             dismissAllowingStateLoss();
@@ -183,24 +171,21 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
             String currentText = editText.getText() == null ? "" : editText.getText().toString();
             String originalText = editableText == null ? "" : editableText;
             if (!currentText.equals(originalText)) {
-                Dialog confirmDialog = new Dialog(hostActivity);
-                confirmDialog.setContentView(R.layout.dialog_confirmation);
-                confirmDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                TextView message = confirmDialog.findViewById(R.id.dialogMessage);
-                message.setText("Exit without saving?");
-                
-                confirmDialog.findViewById(R.id.btnYes).setOnClickListener(v1 -> confirmDialog.dismiss());
-                
-                confirmDialog.findViewById(R.id.btnNo).setOnClickListener(v1 -> {
-                    confirmDialog.dismiss();
-                    if (!hostActivity.isFinishing() && !hostActivity.isDestroyed()) {
-                        EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, fieldKey, editableText, currentText, adapterPosition);
-                        sheet.setOnSaveListener(onSaveListener);
-                        sheet.show(hostActivity.getSupportFragmentManager(), fragmentTag);
+                ConfirmationDialogHelper.showConfirmationDialog(hostActivity, "Exit without saving?", new ConfirmationDialogHelper.ConfirmationListener() {
+                    @Override
+                    public void onYesClicked() {
+                        // Just let it dismiss
+                    }
+
+                    @Override
+                    public void onNoClicked() {
+                        if (!hostActivity.isFinishing() && !hostActivity.isDestroyed()) {
+                            EditorBottomSheet sheet = EditorBottomSheet.newInstance(day, fieldKey, editableText, currentText, adapterPosition);
+                            sheet.setOnSaveListener(onSaveListener);
+                            sheet.show(hostActivity.getSupportFragmentManager(), fragmentTag);
+                        }
                     }
                 });
-                
-                confirmDialog.show();
             }
         }
     }

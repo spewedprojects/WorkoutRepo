@@ -3,17 +3,21 @@ package com.gratus.workoutrepo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -40,6 +44,7 @@ import com.google.gson.GsonBuilder;
 import com.gratus.workoutrepo.adapters.RoutinesPagerAdapter;
 import com.gratus.workoutrepo.data.RoutineRepository;
 import com.gratus.workoutrepo.model.Routine;
+import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
 
 public class RoutinesActivity extends BaseActivity {
 
@@ -67,33 +72,99 @@ public class RoutinesActivity extends BaseActivity {
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(routinesRecycler);
 
-        loadData();
+        if (savedInstanceState != null) {
+            String json = savedInstanceState.getString("loaded_routines_json");
+            String editingId = savedInstanceState.getString("editing_routine_id");
+            int position = savedInstanceState.getInt("current_scroll_position", -1);
+            loadData(json, editingId, position);
+        } else {
+            loadData();
+        }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (adapter != null && adapter.getEditingRoutineId() != null) {
+                    ConfirmationDialogHelper.showConfirmationDialog(
+                            RoutinesActivity.this,
+                            "Are you sure you want to discard changes made in current routine?",
+                            new ConfirmationDialogHelper.ConfirmationListener() {
+                                @Override
+                                public void onYesClicked() {
+                                    loadData(); // Discard memory changes
+                                    adapter.exitEditMode();
+                                }
+                            }
+                    );
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (adapter != null) {
+            outState.putString("editing_routine_id", adapter.getEditingRoutineId());
+        }
+        if (routinesRecycler != null && routinesRecycler.getLayoutManager() instanceof LinearLayoutManager) {
+            LinearLayoutManager lm = (LinearLayoutManager) routinesRecycler.getLayoutManager();
+            int currentPos = lm.findFirstVisibleItemPosition();
+            if (currentPos != RecyclerView.NO_POSITION) {
+                outState.putInt("current_scroll_position", currentPos);
+            }
+        }
+        if (loadedRoutines != null) {
+            String json = new Gson().toJson(loadedRoutines);
+            outState.putString("loaded_routines_json", json);
+        }
     }
 
     private void loadData() {
-        loadedRoutines = RoutineRepository.getAllSavedRoutines(this);
+        loadData(null, null, -1);
+    }
+
+    private void loadData(String restoredRoutinesJson, String restoredEditingId, int restoredPosition) {
         Routine activeRoutine = RoutineRepository.getActiveRoutine(this);
+
+        if (restoredRoutinesJson != null) {
+            try {
+                java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<List<Routine>>(){}.getType();
+                loadedRoutines = new Gson().fromJson(restoredRoutinesJson, listType);
+            } catch (Exception e) {
+                loadedRoutines = RoutineRepository.getAllSavedRoutines(this);
+            }
+        } else {
+            loadedRoutines = RoutineRepository.getAllSavedRoutines(this);
+        }
 
         // Pass the Active ID to the adapter so it can hide the delete button
         adapter = new RoutinesPagerAdapter(loadedRoutines, activeRoutine.id, actionListener);
+        if (restoredEditingId != null) {
+            adapter.setEditingRoutineId(restoredEditingId);
+        }
         routinesRecycler.setAdapter(adapter);
 
-        // --- FIX STARTS HERE --- (02/02/26)
-        // Logic to Jump to the Active Routine
-        int activeIndex = -1;
-        for (int i = 0; i < loadedRoutines.size(); i++) {
-            // Compare the ID of the loaded routine with the active routine's ID
-            if (loadedRoutines.get(i).id.equals(activeRoutine.id)) {
-                activeIndex = i;
-                break; // Found it, stop searching
+        int targetIndex = -1;
+        if (restoredPosition != -1) {
+            targetIndex = restoredPosition;
+        } else {
+            // Logic to Jump to the Active Routine
+            for (int i = 0; i < loadedRoutines.size(); i++) {
+                if (loadedRoutines.get(i).id.equals(activeRoutine.id)) {
+                    targetIndex = i;
+                    break;
+                }
             }
         }
 
-        // Scroll immediately to the active card
-        if (activeIndex != -1) {
-            routinesRecycler.scrollToPosition(activeIndex);
+        if (targetIndex != -1 && targetIndex < loadedRoutines.size()) {
+            routinesRecycler.scrollToPosition(targetIndex);
         }
-        // --- FIX ENDS HERE ---
     }
 
     // --- Action Listener Implementation ---
@@ -123,22 +194,23 @@ public class RoutinesActivity extends BaseActivity {
 
         @Override
         public void onDelete(Routine routine) {
-            android.app.Dialog dialog = new android.app.Dialog(RoutinesActivity.this);
-            dialog.setContentView(R.layout.dialog_confirmation);
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            
-            android.widget.TextView message = dialog.findViewById(R.id.dialogMessage);
-            message.setText("Are you sure you want to delete " + routine.title + "?");
-            
-            dialog.findViewById(R.id.btnYes).setOnClickListener(v -> {
-                RoutineRepository.deleteRoutine(RoutinesActivity.this, routine.id);
-                loadData(); // Refresh UI
-                dialog.dismiss();
-            });
-            
-            dialog.findViewById(R.id.btnNo).setOnClickListener(v -> dialog.dismiss());
-            
-            dialog.show();
+            String fullText = "Are you sure you want to delete '" + routine.title + "' routine ?";
+            SpannableString spannable = new SpannableString(fullText);
+            int start = fullText.indexOf(routine.title);
+            int end = start + routine.title.length();
+            spannable.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            ConfirmationDialogHelper.showConfirmationDialog(
+                    RoutinesActivity.this,
+                    spannable,
+                    new ConfirmationDialogHelper.ConfirmationListener() {
+                        @Override
+                        public void onYesClicked() {
+                            RoutineRepository.deleteRoutine(RoutinesActivity.this, routine.id);
+                            loadData(); // Refresh UI
+                        }
+                    }
+            );
         }
 
         @Override

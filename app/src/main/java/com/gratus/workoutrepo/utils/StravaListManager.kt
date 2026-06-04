@@ -395,14 +395,16 @@ class StravaListManager(
         if (currentDateStart != null && currentDateEnd != null) {
             listFiltered = filtered.filter { item ->
                 try {
-                    val itemDate = Instant.parse(item.startDateLocal).atZone(ZoneId.systemDefault()).toLocalDate()
+                    // Fix: Parse safely without relying on strict Instant.parse formats
+                    val cleanDateStr = item.startDateLocal.take(10) // Extracts "yyyy-MM-dd" safely
+                    val itemDate = LocalDate.parse(cleanDateStr)
                     !itemDate.isBefore(currentDateStart) && !itemDate.isAfter(currentDateEnd)
                 } catch (e: Exception) {
                     false
                 }
             }
         }
-        
+
         val statsActivities = if (currentDateStart != null && currentDateEnd != null) {
             listFiltered
         } else {
@@ -411,7 +413,9 @@ class StravaListManager(
             val endOfThisMonth = now.withDayOfMonth(now.lengthOfMonth())
             filtered.filter { item ->
                 try {
-                    val itemDate = Instant.parse(item.startDateLocal).atZone(ZoneId.systemDefault()).toLocalDate()
+                    // Fix: Parse safely without relying on strict Instant.parse formats
+                    val cleanDateStr = item.startDateLocal.take(10) // Extracts "yyyy-MM-dd" safely
+                    val itemDate = LocalDate.parse(cleanDateStr)
                     !itemDate.isBefore(startOfThisMonth) && !itemDate.isAfter(endOfThisMonth)
                 } catch (e: Exception) {
                     false
