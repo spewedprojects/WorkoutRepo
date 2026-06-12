@@ -5,8 +5,9 @@ import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.gratus.workoutrepo.R
-import com.gratus.workoutrepo.data.RoutineRepository
-import com.gratus.workoutrepo.model.Routine
+import com.gratus.workoutrepo.routine.data.RoutineRepository
+import com.gratus.workoutrepo.routine.model.Routine
+import com.gratus.workoutrepo.routine.utils.TextFormatUtils
 import java.util.Calendar
 
 class WorkoutsRemoteViewsFactory(private val context: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
@@ -79,7 +80,7 @@ class WorkoutsRemoteViewsFactory(private val context: Context, intent: Intent) :
             is ListItem.Workout -> {
                 // Use the single unified layout
                 RemoteViews(context.packageName, R.layout.list_item_workout).apply {
-                    val formattedText = com.gratus.workoutrepo.utils.TextFormatUtils.formatBulletsForWidget(item.text)
+                    val formattedText = TextFormatUtils.formatBulletsForWidget(item.text)
                     setTextViewText(R.id.workoutText, formattedText)
 
                     // Style based on major/minor if needed (e.g., bolding major)

@@ -41,10 +41,12 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.gson.GsonBuilder;
-import com.gratus.workoutrepo.adapters.RoutinesPagerAdapter;
-import com.gratus.workoutrepo.data.RoutineRepository;
-import com.gratus.workoutrepo.model.Routine;
-import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
+import com.gratus.workoutrepo.routine.adapters.RoutinesPagerAdapter;
+import com.gratus.workoutrepo.routine.data.RoutineRepository;
+import com.gratus.workoutrepo.routine.model.Routine;
+import com.gratus.workoutrepo.routine.model.DayWorkout;
+import com.gratus.workoutrepo.routine.utils.ConfirmationDialogHelper;
+import com.gratus.workoutrepo.routine.utils.TextFormatUtils;
 
 public class RoutinesActivity extends BaseActivity {
 
@@ -273,12 +275,12 @@ public class RoutinesActivity extends BaseActivity {
             sheet.setOnSaveListener((text, pos) -> {
                 String finalText = text == null ? "" : text.trim();
                 if (fieldKey.equals("workoutsMajor") || fieldKey.equals("workoutsMinor")) {
-                    finalText = com.gratus.workoutrepo.utils.TextFormatUtils.cleanTextForStorage(finalText);
+                    finalText = TextFormatUtils.cleanTextForStorage(finalText);
                 }
 
                 // Update the routine IN MEMORY ONLY
-                com.gratus.workoutrepo.model.DayWorkout dWorkout = null;
-                for (com.gratus.workoutrepo.model.DayWorkout d : routine.days) {
+                DayWorkout dWorkout = null;
+                for (DayWorkout d : routine.days) {
                     if (d.dayName.equalsIgnoreCase(day)) {
                         dWorkout = d;
                         break;

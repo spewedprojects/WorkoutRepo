@@ -20,23 +20,16 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.gms.security.ProviderInstaller;
-import javax.net.ssl.SSLContext;
-
 import java.util.Calendar;
 
-import com.gratus.workoutrepo.adapters.GuideAdapter;
-import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
-import com.gratus.workoutrepo.utils.StravaArchiveManager;
-
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.Dispatchers;
+import com.gratus.workoutrepo.routine.adapters.GuideAdapter;
+import com.gratus.workoutrepo.routine.adapters.WeekPagerAdapter;
+import com.gratus.workoutrepo.strava.utils.StravaArchiveManager;
 
 public class MainActivity extends BaseActivity {
 

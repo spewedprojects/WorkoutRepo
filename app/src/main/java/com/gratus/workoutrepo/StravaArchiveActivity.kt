@@ -8,8 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.gratus.workoutrepo.utils.StravaListManager
-import com.gratus.workoutrepo.repository.StravaRepository
+import com.gratus.workoutrepo.strava.utils.StravaListManager
+import com.gratus.workoutrepo.strava.repository.StravaRepository
 
 class StravaArchiveActivity : BaseActivity() {
 

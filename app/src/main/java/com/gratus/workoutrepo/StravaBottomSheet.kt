@@ -10,8 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.gratus.workoutrepo.utils.StravaListManager
-import com.gratus.workoutrepo.repository.StravaRepository
+import com.gratus.workoutrepo.strava.utils.StravaListManager
+import com.gratus.workoutrepo.strava.repository.StravaRepository
 
 class StravaBottomSheet(
     private val dayOfWeek: String = "Monday"

@@ -5,13 +5,11 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.view.View
 import android.widget.RemoteViews
 import com.gratus.workoutrepo.MainActivity
 import com.gratus.workoutrepo.R
-import com.gratus.workoutrepo.data.RoutineRepository
-import com.gratus.workoutrepo.model.Routine
+import com.gratus.workoutrepo.routine.data.RoutineRepository
+import com.gratus.workoutrepo.routine.model.Routine
 import java.util.Calendar
 import androidx.core.net.toUri
 
