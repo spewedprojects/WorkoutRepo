@@ -7,7 +7,7 @@ import android.widget.RemoteViewsService
 import com.gratus.workoutrepo.R
 import com.gratus.workoutrepo.routine.data.RoutineRepository
 import com.gratus.workoutrepo.routine.model.Routine
-import com.gratus.workoutrepo.routine.utils.TextFormatUtils
+import com.gratus.workoutrepo.utils.TextFormatUtils
 import java.util.Calendar
 
 class WorkoutsRemoteViewsFactory(private val context: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {

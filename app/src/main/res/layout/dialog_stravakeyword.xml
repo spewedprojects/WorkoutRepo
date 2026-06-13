@@ -1,108 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_margin="30dp"
     android:background="@drawable/rounded_corners"
+    android:elevation="14dp"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical"
     android:paddingHorizontal="24dp"
     android:paddingTop="20dp"
-    android:paddingBottom="16dp"
-    android:layout_margin="30dp"
-    android:elevation="14dp">
-
-    <TextView
-        android:id="@+id/dialogTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:text="Enter keyword to enable"
-        android:textColor="@color/black_white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilKeyword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusTopStart="12dp"
-        app:cursorColor="?attr/colorAccent"
-        app:boxStrokeColor="@color/textbox_stroke"
-        android:saveEnabled="true"
-        app:hintEnabled="false"
-        app:endIconCheckable="true"
-        app:errorEnabled="true"
-        app:endIconDrawable="@drawable/check_24">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etKeyword"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:inputType="textVisiblePassword"
-            android:maxLines="1"
-            android:paddingVertical="0dp"
-            android:paddingHorizontal="12dp"
-            android:hint="Secret keyword"
-            android:imeOptions="actionDone"
-            android:saveEnabled="true"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/dialogMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:alpha="0.8"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:text="The app is hard-coded to load only Rajesh's strava history.\n\nIf you wish to see the UI/UX of this screen, please open GitHub repo for screenshots.\n\nIf you wish to use the feature for your own account, contact Rajesh and request the feature.\n\nThank you!"
-        android:textColor="@color/black_white"
-        android:textSize="16sp" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:alpha="0.5"
-        android:src="@drawable/pwrdby_strava_stack_orange"/>
+    android:paddingBottom="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:gravity="end"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:alpha="0.7"
-            android:backgroundTint="@color/transparent"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-            android:text="Go back"
-            android:textColor="?attr/colorOnPrimary"
-            app:cornerRadius="12dp"
-            app:strokeColor="@color/black_white_0.4"
-            app:strokeWidth="1dp"/>
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="Enter keyword to enable"
+            android:textColor="@color/black_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnProceed"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilKeyword"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#fc4c02"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-            android:text="Enable"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp"
-            app:strokeColor="@color/black_white"
-            app:strokeWidth="0dp" />
+            android:layout_marginTop="12dp"
+            android:saveEnabled="true"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeColor="@color/textbox_stroke"
+            app:cursorColor="?attr/colorAccent"
+            app:endIconCheckable="true"
+            app:endIconDrawable="@drawable/check_24"
+            app:errorEnabled="true"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etKeyword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Secret keyword"
+                android:imeOptions="actionDone"
+                android:inputType="textVisiblePassword"
+                android:maxLines="1"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="0dp"
+                android:saveEnabled="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/dialogMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:alpha="0.8"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="The app is hard-coded to load only Rajesh's strava history.\n\nIf you wish to see the UI/UX of this screen, please open GitHub repo for screenshots.\n\nIf you wish to use the feature for your own account, contact Rajesh and request the feature.\n\nThank you!"
+            android:textColor="@color/black_white"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:alpha="0.5"
+            android:src="@drawable/pwrdby_strava_stack_orange" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:alpha="0.7"
+                android:backgroundTint="@color/transparent"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                android:text="Go back"
+                android:textColor="?attr/colorOnPrimary"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/black_white_0.4"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnProceed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#fc4c02"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                android:text="Enable"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                app:strokeColor="@color/black_white"
+                app:strokeWidth="0dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

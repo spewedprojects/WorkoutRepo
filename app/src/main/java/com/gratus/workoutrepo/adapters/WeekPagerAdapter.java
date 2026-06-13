@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.routine.adapters; //class moved
+package com.gratus.workoutrepo.adapters; //class moved
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,8 +15,8 @@ import androidx.fragment.app.FragmentManager;
 import com.gratus.workoutrepo.EditorBottomSheet;
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.routine.storage.WorkoutStorage;
-import com.gratus.workoutrepo.routine.utils.ExpandableNoteHelper;
-import com.gratus.workoutrepo.routine.utils.TextFormatUtils;
+import com.gratus.workoutrepo.utils.ExpandableNoteHelper;
+import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 public class WeekPagerAdapter extends RecyclerView.Adapter<WeekPagerAdapter.WeekViewHolder> {
 

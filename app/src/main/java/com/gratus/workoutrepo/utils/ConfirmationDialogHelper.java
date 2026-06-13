@@ -1,7 +1,8 @@
-package com.gratus.workoutrepo.routine.utils;
+package com.gratus.workoutrepo.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import com.gratus.workoutrepo.R;
 
@@ -17,6 +18,7 @@ public class ConfirmationDialogHelper {
         confirmDialog.setContentView(R.layout.dialog_confirmation);
         if (confirmDialog.getWindow() != null) {
             confirmDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            confirmDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
         TextView message = confirmDialog.findViewById(R.id.dialogMessage);

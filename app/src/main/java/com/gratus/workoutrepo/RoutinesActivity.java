@@ -45,8 +45,8 @@ import com.gratus.workoutrepo.routine.adapters.RoutinesPagerAdapter;
 import com.gratus.workoutrepo.routine.data.RoutineRepository;
 import com.gratus.workoutrepo.routine.model.Routine;
 import com.gratus.workoutrepo.routine.model.DayWorkout;
-import com.gratus.workoutrepo.routine.utils.ConfirmationDialogHelper;
-import com.gratus.workoutrepo.routine.utils.TextFormatUtils;
+import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
+import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 public class RoutinesActivity extends BaseActivity {
 

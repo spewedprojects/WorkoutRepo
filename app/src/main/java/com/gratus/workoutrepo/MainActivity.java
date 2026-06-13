@@ -27,8 +27,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.Calendar;
 
-import com.gratus.workoutrepo.routine.adapters.GuideAdapter;
-import com.gratus.workoutrepo.routine.adapters.WeekPagerAdapter;
+import com.gratus.workoutrepo.adapters.GuideAdapter;
+import com.gratus.workoutrepo.adapters.WeekPagerAdapter;
 import com.gratus.workoutrepo.strava.utils.StravaArchiveManager;
 
 public class MainActivity extends BaseActivity {
@@ -369,13 +369,28 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        // --- NEW: Re-check Strava button visibility when returning to the app ---
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        // --- NEW: Re-check Strava button visibility when returning to the app ---
+
         boolean isStravaEnabled = prefs.getBoolean("EnableStravaFeature", false);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
         if (stravaaccess != null) {
             stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
         }
+
+        // 2. Register the listener (using the strong reference field you already have)
+        prefListener = (sharedPreferences, key) -> {
+            if ("EnableStravaFeature".equals(key)) {
+                boolean enabled = sharedPreferences.getBoolean("EnableStravaFeature", false);
+                // Ensure UI updates happen on the UI thread
+                runOnUiThread(() -> {
+                    if (stravaaccess != null) {
+                        stravaaccess.setVisibility(enabled ? View.VISIBLE : View.GONE);
+                    }
+                });
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
         // This forces the adapter to reload data from the JSON file which might have changed if you clicked "Apply" in the Routines screen
         if (findViewById(R.id.weekPager) != null) {
@@ -383,6 +398,16 @@ public class MainActivity extends BaseActivity {
             if (vp.getAdapter() != null) {
                 vp.getAdapter().notifyDataSetChanged();
             }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 3. Unregister to prevent leaks and redundant updates
+        if (prefListener != null) {
+            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    .unregisterOnSharedPreferenceChangeListener(prefListener);
         }
     }
 

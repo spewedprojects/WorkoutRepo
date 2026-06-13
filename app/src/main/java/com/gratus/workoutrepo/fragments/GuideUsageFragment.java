@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.routine.fragments;
+package com.gratus.workoutrepo.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.gratus.workoutrepo.R;
 
-public class GuideAppFragment extends Fragment {
+public class GuideUsageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.settings_app, container, false);
+        return inflater.inflate(R.layout.settings_usageinfo, container, false);
     }
 }

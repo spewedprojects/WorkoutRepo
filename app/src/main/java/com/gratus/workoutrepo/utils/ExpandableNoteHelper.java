@@ -1,4 +1,4 @@
-package com.gratus.workoutrepo.routine.utils;
+package com.gratus.workoutrepo.utils;
 
 import android.view.View;
 import android.view.ViewGroup;

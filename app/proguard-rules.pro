@@ -23,11 +23,12 @@
 # --- STRAVA DATA MODELS ---
 # Prevent R8 from renaming the fields in your data classes so Gson can find them
 -keep class com.gratus.workoutrepo.data.** { *; }
+-keep class com.gratus.workoutrepo.strava.data.** { *; }
 
 # --- REPOSITORY CACHE ---
 # Important! Your CacheData class is private inside an Object.
 # We must explicitly keep it so the JSON file saving/loading works.
--keep class com.gratus.workoutrepo.repository.StravaRepository$CacheData { *; }
+-keep class com.gratus.workoutrepo.strava.repository.StravaRepository$CacheData { *; }
 
 # --- GSON & RETROFIT GENERIC RULES (Just in case) ---
 -keepattributes Signature

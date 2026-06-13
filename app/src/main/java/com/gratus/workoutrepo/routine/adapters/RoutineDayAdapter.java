@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.routine.model.DayWorkout;
-import com.gratus.workoutrepo.routine.utils.TextFormatUtils;
+import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 import com.gratus.workoutrepo.RoutinesActivity;
 import com.gratus.workoutrepo.routine.model.Routine;

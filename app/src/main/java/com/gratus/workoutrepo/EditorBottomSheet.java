@@ -22,7 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.gratus.workoutrepo.routine.utils.ConfirmationDialogHelper;
+import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
 
 public class EditorBottomSheet extends BottomSheetDialogFragment {
 

@@ -12,7 +12,7 @@ import com.google.android.material.button.MaterialButton;
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.RoutinesActivity;
 import com.gratus.workoutrepo.routine.model.Routine;
-import com.gratus.workoutrepo.routine.utils.ExpandableNoteHelper;
+import com.gratus.workoutrepo.utils.ExpandableNoteHelper;
 
 import java.util.List;
 

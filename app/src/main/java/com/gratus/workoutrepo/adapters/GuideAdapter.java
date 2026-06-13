@@ -1,16 +1,14 @@
-package com.gratus.workoutrepo.routine.adapters;
+package com.gratus.workoutrepo.adapters;
 
 import static com.gratus.workoutrepo.BaseActivity.PREFS_NAME;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -200,6 +198,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_stravakeyword);
         if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             // Set background transparent so the rounded corners of dialog_stravakeyword root layout are visible
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
