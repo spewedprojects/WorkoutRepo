@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gratus.workoutrepo.R
-import com.gratus.workoutrepo.strava.data.StravaActivity
+import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.core.net.toUri
@@ -19,12 +19,12 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.util.Locale
 
-class StravaAdapter(private var items: List<StravaActivity>,
-                    private val onActivityClick: (Long) -> Unit // <--- callback
+class StravaAdapter(private var items: List<ArchiveActivity>,
+                    private val onActivityClick: (String) -> Unit // <--- callback
     ) : RecyclerView.Adapter<StravaAdapter.ViewHolder>() {
 
     // --- NEW: Track which item is loading ---
-    private var loadingActivityId: Long? = null
+    private var loadingActivityId: String? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.tvActivityTitle)
@@ -35,7 +35,7 @@ class StravaAdapter(private var items: List<StravaActivity>,
     }
 
     // --- NEW HELPER FUNCTION ---
-    fun updateList(newItems: List<StravaActivity>) {
+    fun updateList(newItems: List<ArchiveActivity>) {
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize() = items.size
             override fun getNewListSize() = newItems.size
@@ -55,7 +55,7 @@ class StravaAdapter(private var items: List<StravaActivity>,
     }
 
     // --- NEW: Helper to update UI without reloading everything ---
-    fun markItemLoading(id: Long?) {
+    fun markItemLoading(id: String?) {
         loadingActivityId = id
         notifyDataSetChanged() // Refresh the list to show the "Fetching..." text
     }
@@ -70,10 +70,20 @@ class StravaAdapter(private var items: List<StravaActivity>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        // 1. Long Click -> Open Browser
+        // 1. Long Click -> Open Browser based on Source
         holder.itemView.setOnLongClickListener {
-            val intent = Intent(Intent.ACTION_VIEW,"https://www.strava.com/activities/${item.id}".toUri())
-            holder.itemView.context.startActivity(intent)
+            val url = if (item.source == com.gratus.workoutrepo.archive.model.SourceProvider.STRAVA && item.stravaActivityId != null) {
+                "https://www.strava.com/activities/${item.stravaActivityId}"
+            } else if (item.source == com.gratus.workoutrepo.archive.model.SourceProvider.INTERVALS_ICU && item.intervalsActivityId != null) {
+                "https://intervals.icu/activities/${item.intervalsActivityId}"
+            } else {
+                null
+            }
+            
+            url?.let {
+                val intent = Intent(Intent.ACTION_VIEW, it.toUri())
+                holder.itemView.context.startActivity(intent)
+            }
             true
         }
 
@@ -168,15 +178,15 @@ class StravaAdapter(private var items: List<StravaActivity>,
         val isRace = item.workoutType == 1 || item.workoutType == 11
 
         val iconRes = when (item.type) {
-            "Ride", "E-BikeRide" -> if (isRace) R.drawable.strava_roadbikerace else R.drawable.strava_roadbike
-            "VirtualRide" -> if (isRace) R.drawable.strava_indoorroadbikerace else R.drawable.strava_indoorroadbike
-            "Run" -> if (isRace) R.drawable.strava_runrace else R.drawable.strava_run
-            "Walk" -> R.drawable.strava_walk
-            "Hike" -> R.drawable.strava_hike
-            "WeightTraining", "CrossFit" -> R.drawable.strava_weighttraing
-            "Soccer" -> R.drawable.strava_football
-            "Workout" -> R.drawable.strava_workout
-            else -> R.drawable.strava_workout // Fallback default
+            "Ride", "E-BikeRide" -> if (isRace) R.drawable.act_roadbikerace else R.drawable.act_roadbike
+            "VirtualRide" -> if (isRace) R.drawable.act_indoorroadbikerace else R.drawable.act_indoorroadbike
+            "Run" -> if (isRace) R.drawable.act_runrace else R.drawable.act_run
+            "Walk" -> R.drawable.act_walk
+            "Hike" -> R.drawable.act_hike
+            "WeightTraining", "CrossFit" -> R.drawable.act_weighttraing
+            "Soccer" -> R.drawable.act_football
+            "Workout" -> R.drawable.act_workout
+            else -> R.drawable.act_workout // Fallback default
         }
         holder.icon.setImageResource(iconRes)
     }

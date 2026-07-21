@@ -28,7 +28,7 @@ import com.gratus.workoutrepo.BaseActivity
 import com.gratus.workoutrepo.EditorBottomSheet
 import com.gratus.workoutrepo.R
 import com.gratus.workoutrepo.strava.adapters.StravaAdapter
-import com.gratus.workoutrepo.strava.data.StravaActivity
+import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import com.gratus.workoutrepo.strava.repository.StravaRepository
 
 import kotlinx.coroutines.Dispatchers
@@ -57,10 +57,10 @@ class StravaListManager(
     private val lifecycleScope: LifecycleCoroutineScope,
     private val rootView: View,
     private val titlePrefix: String,
-    private val fetchMasterList: suspend (forceRefresh: Boolean) -> List<StravaActivity>
+    private val fetchMasterList: suspend (forceRefresh: Boolean) -> List<ArchiveActivity>
 ) {
     // State Variables
-    private var allActivities: List<StravaActivity> = emptyList()
+    private var allActivities: List<ArchiveActivity> = emptyList()
     private var currentSearchQuery: String = ""
     private var currentFilterType: String? = null
     private var currentDateStart: LocalDate? = null
@@ -349,13 +349,15 @@ class StravaListManager(
     }
 
     // This is basically Single click on the activity card to fetch the activity description.
-    private fun onActivityClick(activityId: Long) {
+    private fun onActivityClick(activityId: String) {
         lifecycleScope.launch {
             val adapter = recyclerView.adapter as? StravaAdapter ?: return@launch
             adapter.markItemLoading(activityId)
 
             val detailedActivity = withContext(Dispatchers.IO) {
-                StravaRepository.getActivityDetails(context, activityId)
+                // Find it in the archive first
+                val archiveAct = allActivities.find { it.id == activityId } ?: return@withContext null
+                StravaRepository.getActivityDetails(context, archiveAct)
             }
 
             if (detailedActivity != null) {
@@ -370,7 +372,7 @@ class StravaListManager(
     }
 
     // Simple function to bind items to the list
-    private fun bindList(list: List<StravaActivity>, forceHardRedraw: Boolean = false) {
+    private fun bindList(list: List<ArchiveActivity>, forceHardRedraw: Boolean = false) {
         if (recyclerView.adapter == null || forceHardRedraw) {
             recyclerView.adapter = StravaAdapter(list, ::onActivityClick) // Safe to reference here
         } else {

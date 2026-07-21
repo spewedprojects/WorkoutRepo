@@ -31,11 +31,15 @@ class StravaBottomSheet(
         super.onViewCreated(view, savedInstanceState)
 
         // --- THIS IS ALL YOU NEED NOW ---
+        val prefs = requireContext().getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE)
+        val activeSource = prefs.getString("ActiveSyncSource", "STRAVA")
+        val sourceName = if ("INTERVALS_ICU" == activeSource) "Intervals.icu" else "Strava"
+
         val listManager = StravaListManager(
             context = requireContext(),
             lifecycleScope = lifecycleScope,
             rootView = view,
-            titlePrefix = "Strava Activities on ${dayOfWeek}s",
+            titlePrefix = "$sourceName Activities on ${dayOfWeek}s",
             fetchMasterList = { forceRefresh ->
                 // BottomSheet fetches only specific day
                 StravaRepository.getActivitiesForDay(requireContext(), dayOfWeek, forceRefresh)

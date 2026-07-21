@@ -98,32 +98,17 @@
                 android:id="@+id/container3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="0dp"
-                android:stretchColumns="1,3"
+                android:paddingHorizontal="4dp"
+                android:background="@drawable/cell_border_2"
+                android:stretchColumns="0,2"
                 android:showDividers="middle"
-                android:divider="@color/black_white"
+                android:divider="@color/black_white_0.4"
                 android:dividerPadding="0dp">
-                
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:padding="0dp">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1.5dp"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
-                </TableRow>
 
                 <!-- Row 1 -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                     <TextView
                         android:padding="2dp"
                         android:text="**Bold text**"
@@ -131,169 +116,105 @@
                         android:typeface="monospace"/>
                     <!-- Add this between TableRow elements -->
                     <View
-                        android:layout_width="1.5dp"
+                        android:layout_width="1dp"
                         android:layout_marginEnd="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
+                        android:background="@color/black_white_0.4"
+                        android:alpha="0.25"/>
                     <TextView
                         android:padding="2dp"
                         android:text="Bold text"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"/>
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                 </TableRow>
 
                 <!-- Row 2 -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                     <TextView
                         android:padding="2dp"
                         android:text="1./1) item"
                         android:textSize="13sp"
                         android:typeface="monospace"/>
                     <View
-                        android:layout_width="1.5dp"
+                        android:layout_width="1dp"
                         android:layout_marginEnd="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
+                        android:background="@color/black_white_0.4"
+                        android:alpha="0.25"/>
                     <TextView
                         android:padding="2dp"
                         android:text="1. Numbered line"
                         android:textSize="13sp"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                 </TableRow>
 
                 <!-- Row 3 -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                     <TextView
                         android:padding="2dp"
                         android:text="- item"
                         android:textSize="13sp"
                         android:typeface="monospace"/>
                     <View
-                        android:layout_width="1.5dp"
+                        android:layout_width="1dp"
                         android:layout_marginEnd="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
+                        android:background="@color/black_white_0.4"
+                        android:alpha="0.25"/>
                     <TextView
                         android:padding="2dp"
                         android:text="• Main bullet point"
                         android:textSize="13sp"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                 </TableRow>
 
                 <!-- Row 4 -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                     <TextView
                         android:padding="2dp"
                         android:text="-- item"
                         android:textSize="13sp"
                         android:typeface="monospace"/>
                     <View
-                        android:layout_width="1.5dp"
+                        android:layout_width="1dp"
                         android:layout_marginEnd="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
+                        android:background="@color/black_white_0.4"
+                        android:alpha="0.25"/>
                     <TextView
                         android:padding="2dp"
                         android:text="  • Indented bullet point"
                         android:textSize="13sp"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                 </TableRow>
 
                 <!-- Row 5 -->
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                     <TextView
                         android:padding="2dp"
                         android:text="--- item"
                         android:textSize="13sp"
                         android:typeface="monospace"/>
                     <View
-                        android:layout_width="1.5dp"
+                        android:layout_width="1dp"
                         android:layout_marginEnd="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
+                        android:background="@color/black_white_0.4"
+                        android:alpha="0.25"/>
                     <TextView
                         android:padding="2dp"
                         android:text="     ৹ Sub-bullet point"
                         android:textSize="13sp"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_variable"/>
-                    <View
-                        android:layout_width="1.5dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:padding="0dp">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1.5dp"
-                        android:background="@color/black_white"
-                        android:alpha="0.5"/>
                 </TableRow>
             </TableLayout>
 

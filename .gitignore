@@ -16,3 +16,7 @@
 .cxx
 local.properties
 /app/src/main/java/com/gratus/workoutrepo/strava/repository/TokenManager.kt
+
+.artifacts/
+.kotlin/
+.vscode/

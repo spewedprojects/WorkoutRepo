@@ -5,6 +5,8 @@ import static com.gratus.workoutrepo.BaseActivity.PREFS_NAME;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.gratus.workoutrepo.R;
+import com.gratus.workoutrepo.archive.model.SourceProvider;
+import com.gratus.workoutrepo.intervalsicu.repository.IntervalsRepository;
 import com.gratus.workoutrepo.strava.repository.TokenManager;
 
 public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -32,7 +39,8 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final String STRAVA_URL_KEY = "CustomStravaUrl";
     private static final String PREF_LONG_CLICK_STRAVA = "StravaButtonLongClickAction";
     // New Keys
-    private static final String PREF_ENABLE_STRAVA = "EnableStravaFeature";
+    private static final String PREF_ENABLE_SYNC = "EnableStravaFeature"; // Reusing key for backward compat
+    public static final String PREF_ACTIVE_SYNC_SOURCE = "ActiveSyncSource"; // "STRAVA" or "INTERVALS_ICU"
     private static final String PREF_ENABLE_AUTO_REFRESH = "EnableAutoRefresh";
     private static final String PREF_CACHE_DURATION_HOURS = "CacheDurationHours";
 
@@ -43,7 +51,6 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final OnArchiveInteractionListener listener;
 
-    // Update your constructor to accept it:
     public GuideAdapter(OnArchiveInteractionListener listener) {
         this.listener = listener;
     }
@@ -69,50 +76,116 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SettingsViewHolder sHolder) {
-            SharedPreferences prefs = sHolder.itemView.getContext()
-                    .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            Context context = sHolder.itemView.getContext();
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-            // --- STRAVA TOGGLE ---
-            boolean isStravaEnabled = prefs.getBoolean(PREF_ENABLE_STRAVA, false);
-            sHolder.switchEnableStrava.setOnCheckedChangeListener(null);
-            sHolder.switchEnableStrava.setChecked(isStravaEnabled);
-            updateStravaSubText(sHolder.tvEnableStravaSub, isStravaEnabled);
-            sHolder.stravaSettingsContainer.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
+            // --- SYNC TOGGLE ---
+            boolean isSyncEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
+            String activeSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
+            
+            sHolder.switchEnableSync.setOnCheckedChangeListener(null);
+            sHolder.switchEnableSync.setChecked(isSyncEnabled);
+            updateSyncSubText(sHolder.tvEnableSyncSub, isSyncEnabled);
+            sHolder.chooseBtns.setVisibility(isSyncEnabled ? View.VISIBLE : View.GONE);
+            sHolder.globalSettingsContainer.setVisibility((isSyncEnabled && !activeSource.isEmpty()) ? View.VISIBLE : View.GONE);
 
-            sHolder.switchEnableStrava.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    showKeywordDialog(sHolder, prefs);
-                } else {
-                    prefs.edit().putBoolean(PREF_ENABLE_STRAVA, false).apply();
-                    updateStravaSubText(sHolder.tvEnableStravaSub, false);
-                    sHolder.stravaSettingsContainer.setVisibility(View.GONE);
-                }
+            sHolder.switchEnableSync.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean(PREF_ENABLE_SYNC, isChecked).apply();
+                updateSyncSubText(sHolder.tvEnableSyncSub, isChecked);
+                sHolder.chooseBtns.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                String currentSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
+                sHolder.globalSettingsContainer.setVisibility((isChecked && !currentSource.isEmpty()) ? View.VISIBLE : View.GONE);
             });
 
-            // --- PROFILE URL ---
+            // --- SOURCE SELECTION ---
+            updateSourceButtons(sHolder, activeSource);
+            updateSettingsVisibility(sHolder, activeSource);
+
+            sHolder.btnSelectStrava.setOnClickListener(v -> {
+                showKeywordDialog(sHolder, prefs);
+            });
+
+            sHolder.btnSelectICU.setOnClickListener(v -> {
+                setSyncSource(sHolder, prefs, SourceProvider.INTERVALS_ICU.name());
+            });
+
+            // --- STRAVA PROFILE URL ---
             String savedUrl = prefs.getString(STRAVA_URL_KEY, "https://www.strava.com/athletes/32298220");
             sHolder.etUrl.setText(savedUrl);
-
-            // Save on Done
             sHolder.etUrl.setOnEditorActionListener((v, actionId, event) -> {
                 saveUrl(sHolder.etUrl, prefs, v);
                 return true;
             });
+            sHolder.tilUrl.setEndIconOnClickListener(v -> saveUrl(sHolder.etUrl, prefs, sHolder.etUrl));
 
-            // Save on End Icon Click
-            sHolder.tilUrl.setEndIconOnClickListener(v -> {
-                saveUrl(sHolder.etUrl, prefs, sHolder.etUrl);
+            // --- INTERVALS.ICU API KEY & DURATION ---
+            String savedApiKey = IntervalsRepository.INSTANCE.getApiKey(context);
+            if (savedApiKey != null) {
+                sHolder.etAPIKeyIcu.setText(savedApiKey);
+            }
+
+            int savedDurationYears = prefs.getInt("IntervalsDurationYears", 1);
+            if (sHolder.etDurationIcu != null) {
+                sHolder.etDurationIcu.setText(String.valueOf(savedDurationYears));
+            }
+
+            Runnable updateSaveBtnVisibility = () -> {
+                boolean hasFocus = (sHolder.etAPIKeyIcu != null && sHolder.etAPIKeyIcu.hasFocus())
+                        || (sHolder.etDurationIcu != null && sHolder.etDurationIcu.hasFocus());
+                WindowInsetsCompat insets = ViewCompat.getRootWindowInsets(sHolder.itemView);
+                boolean isImeVisible = insets != null && insets.isVisible(WindowInsetsCompat.Type.ime());
+                if (sHolder.btnSaveApiDetails != null) {
+                    sHolder.btnSaveApiDetails.setVisibility((hasFocus && isImeVisible) ? View.VISIBLE : View.GONE);
+                }
+            };
+
+            ViewCompat.setOnApplyWindowInsetsListener(sHolder.itemView, (v, insets) -> {
+                boolean isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+                boolean hasFocus = (sHolder.etAPIKeyIcu != null && sHolder.etAPIKeyIcu.hasFocus())
+                        || (sHolder.etDurationIcu != null && sHolder.etDurationIcu.hasFocus());
+                if (sHolder.btnSaveApiDetails != null) {
+                    sHolder.btnSaveApiDetails.setVisibility((hasFocus && isImeVisible) ? View.VISIBLE : View.GONE);
+                }
+                return insets;
             });
 
+            View.OnFocusChangeListener focusListener = (v, hasFocus) -> updateSaveBtnVisibility.run();
+            if (sHolder.etAPIKeyIcu != null) sHolder.etAPIKeyIcu.setOnFocusChangeListener(focusListener);
+            if (sHolder.etDurationIcu != null) sHolder.etDurationIcu.setOnFocusChangeListener(focusListener);
+
+            if (sHolder.btnSaveApiDetails != null) {
+                sHolder.btnSaveApiDetails.setOnClickListener(v -> saveIntervalsDetails(context, prefs, sHolder));
+            }
+
+            if (sHolder.etAPIKeyIcu != null) {
+                sHolder.etAPIKeyIcu.setOnEditorActionListener((v, actionId, event) -> {
+                    saveIntervalsDetails(context, prefs, sHolder);
+                    return true;
+                });
+            }
+            if (sHolder.tilAPIKeyIcu != null) {
+                sHolder.tilAPIKeyIcu.setEndIconOnClickListener(v -> saveIntervalsDetails(context, prefs, sHolder));
+            }
+
+            if (sHolder.etDurationIcu != null) {
+                sHolder.etDurationIcu.setOnEditorActionListener((v, actionId, event) -> {
+                    saveIntervalsDetails(context, prefs, sHolder);
+                    return true;
+                });
+            }
+            if (sHolder.tilDurationIcu != null) {
+                sHolder.tilDurationIcu.setEndIconOnClickListener(v -> saveIntervalsDetails(context, prefs, sHolder));
+            }
+
             // --- LONG/SHORT CLICK TOGGLE ---
-            boolean longClickStravaAction = prefs.getBoolean(PREF_LONG_CLICK_STRAVA, true);
+            boolean longClickAction = prefs.getBoolean(PREF_LONG_CLICK_STRAVA, true);
             sHolder.switchClick.setOnCheckedChangeListener(null);
-            sHolder.switchClick.setChecked(longClickStravaAction);
-            updateSwitchText(sHolder.tvClickSub, longClickStravaAction);
+            sHolder.switchClick.setChecked(longClickAction);
+            updateSwitchText(sHolder.tvClickSub, longClickAction, activeSource);
 
             sHolder.switchClick.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean(PREF_LONG_CLICK_STRAVA, isChecked).apply();
-                updateSwitchText(sHolder.tvClickSub, isChecked);
+                updateSwitchText(sHolder.tvClickSub, isChecked, prefs.getString(PREF_ACTIVE_SYNC_SOURCE, SourceProvider.STRAVA.name()));
             });
 
             // --- AUTO REFRESH TOGGLE ---
@@ -136,9 +209,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     try {
                         long hours = Long.parseLong(input);
                         prefs.edit().putLong(PREF_CACHE_DURATION_HOURS, hours).apply();
-                    } catch (NumberFormatException e) {
-                        // ignore
-                    }
+                    } catch (NumberFormatException e) { }
                 }
                 sHolder.etAutoRefresh.clearFocus();
                 hideKeyboard(v);
@@ -150,17 +221,43 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         } else {
             UsageViewHolder uHolder = (UsageViewHolder) holder;
-
             ImageView imageView = uHolder.itemView.findViewById(R.id.ivSwipeLeft);
-            // Start fade after 3 seconds
             imageView.postDelayed(() -> {
-                // Create a fade-out animation lasting 2 seconds
                 AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-                fadeOut.setDuration(2000); // 2 seconds
-                fadeOut.setFillAfter(true); // keep alpha at 0 after animation
+                fadeOut.setDuration(2000);
+                fadeOut.setFillAfter(true);
                 imageView.startAnimation(fadeOut);
             }, 8000);
             imageView.postDelayed(() -> imageView.setVisibility(View.GONE), 10000);
+        }
+    }
+
+    private void setSyncSource(SettingsViewHolder sHolder, SharedPreferences prefs, String source) {
+        prefs.edit().putString(PREF_ACTIVE_SYNC_SOURCE, source).apply();
+        sHolder.globalSettingsContainer.setVisibility(View.VISIBLE);
+        updateSourceButtons(sHolder, source);
+        updateSettingsVisibility(sHolder, source);
+        updateSwitchText(sHolder.tvClickSub, prefs.getBoolean(PREF_LONG_CLICK_STRAVA, true), source);
+    }
+
+    private void updateSourceButtons(SettingsViewHolder sHolder, String source) {
+        boolean isStrava = SourceProvider.STRAVA.name().equals(source);
+        boolean isICU = SourceProvider.INTERVALS_ICU.name().equals(source);
+        
+        sHolder.btnSelectStrava.setSelected(isStrava);
+        sHolder.btnSelectICU.setSelected(isICU);
+    }
+
+    private void updateSettingsVisibility(SettingsViewHolder sHolder, String source) {
+        boolean isStrava = SourceProvider.STRAVA.name().equals(source);
+        boolean isICU = SourceProvider.INTERVALS_ICU.name().equals(source);
+        sHolder.stravaURLSetting.setVisibility(isStrava ? View.VISIBLE : View.GONE);
+        sHolder.intervalsICUSetting.setVisibility(isICU ? View.VISIBLE : View.GONE);
+        
+        if (isStrava) {
+            sHolder.tvConfigBtn.setText("Configure Strava button");
+        } else if (isICU) {
+            sHolder.tvConfigBtn.setText("Configure Intervals.icu button");
         }
     }
 
@@ -173,33 +270,62 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         hideKeyboard(v);
     }
 
+    private void saveApiKey(Context context, TextInputEditText et, View v) {
+        String key = et.getText().toString().trim();
+        if (key.length() >= 20) {
+            IntervalsRepository.INSTANCE.saveApiKey(context, key);
+            et.clearFocus();
+        } else {
+            et.setError("Invalid API Key");
+        }
+        hideKeyboard(v);
+    }
+
+    private void saveIntervalsDetails(Context context, SharedPreferences prefs, SettingsViewHolder sHolder) {
+        if (sHolder.etAPIKeyIcu != null) {
+            String key = sHolder.etAPIKeyIcu.getText() != null ? sHolder.etAPIKeyIcu.getText().toString().trim() : "";
+            if (key.length() >= 20) {
+                IntervalsRepository.INSTANCE.saveApiKey(context, key);
+            } else if (!key.isEmpty()) {
+                sHolder.etAPIKeyIcu.setError("Invalid API Key");
+            }
+        }
+        if (sHolder.etDurationIcu != null) {
+            String durationStr = sHolder.etDurationIcu.getText() != null ? sHolder.etDurationIcu.getText().toString().trim() : "";
+            if (!durationStr.isEmpty()) {
+                try {
+                    int years = Integer.parseInt(durationStr);
+                    if (years > 0) {
+                        prefs.edit().putInt("IntervalsDurationYears", years).apply();
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+        if (sHolder.etAPIKeyIcu != null) sHolder.etAPIKeyIcu.clearFocus();
+        if (sHolder.etDurationIcu != null) sHolder.etDurationIcu.clearFocus();
+        hideKeyboard(sHolder.itemView);
+        if (sHolder.btnSaveApiDetails != null) {
+            sHolder.btnSaveApiDetails.setVisibility(View.GONE);
+        }
+    }
+
     private void hideKeyboard(View v) {
-        InputMethodManager imm = (InputMethodManager) v.getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
 
-    private void updateStravaSubText(TextView tv, boolean isEnabled) {
-        tv.setText(isEnabled ? "Strava feature enabled" : "Strava feature disabled");
+    private void updateSyncSubText(TextView tv, boolean isEnabled) {
+        tv.setText(isEnabled ? "Sync enabled" : "Sync disabled");
     }
 
-    /**
-     * Displays a custom keyword input dialog before enabling the Strava feature.
-     * The dialog asks for a secret keyword ("Hobdy"). If matches, the Strava
-     * feature will be activated; otherwise, the settings switch reverts to unchecked.
-     *
-     * @param sHolder the ViewHolder containing UI components for the settings
-     * @param prefs SharedPreferences to store configuration status
-     */
     private void showKeywordDialog(SettingsViewHolder sHolder, SharedPreferences prefs) {
         Context context = sHolder.itemView.getContext();
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_stravakeyword);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            // Set background transparent so the rounded corners of dialog_stravakeyword root layout are visible
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
@@ -208,88 +334,43 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         com.google.android.material.textfield.TextInputLayout tilKeyword = dialog.findViewById(R.id.tilKeyword);
         TextInputEditText etKeyword = dialog.findViewById(R.id.etKeyword);
 
-        final boolean[] isSuccess = {false};
-
-        // TextWatcher to clear errors when the user starts typing
         if (etKeyword != null && tilKeyword != null) {
             etKeyword.addTextChangedListener(new android.text.TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    tilKeyword.setError(null);
-                }
-
-                @Override
-                public void afterTextChanged(android.text.Editable s) {}
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) { tilKeyword.setError(null); }
+                @Override public void afterTextChanged(android.text.Editable s) {}
             });
         }
 
         if (btnProceed != null) {
             btnProceed.setOnClickListener(v -> {
-                String input = (etKeyword != null && etKeyword.getText() != null)
-                        ? etKeyword.getText().toString().trim() : "";
-
-                // Validate if user enters correct keyword from TokenManager
+                String input = (etKeyword != null && etKeyword.getText() != null) ? etKeyword.getText().toString().trim() : "";
                 if (TokenManager.INSTANCE.getAccessKeyword().equals(input)) {
-                    isSuccess[0] = true;
-                    // Persist the enabled state in SharedPreferences
-                    prefs.edit().putBoolean(PREF_ENABLE_STRAVA, true).apply();
-                    updateStravaSubText(sHolder.tvEnableStravaSub, true);
-                    sHolder.stravaSettingsContainer.setVisibility(View.VISIBLE);
-
-                    if (etKeyword != null) {
-                        hideKeyboard(etKeyword);
-                    }
+                    setSyncSource(sHolder, prefs, SourceProvider.STRAVA.name());
+                    if (etKeyword != null) hideKeyboard(etKeyword);
                     dialog.dismiss();
                 } else {
-                    if (tilKeyword != null) {
-                        tilKeyword.setError("Incorrect keyword");
-                    }
+                    if (tilKeyword != null) tilKeyword.setError("Incorrect keyword");
                 }
             });
         }
 
         if (btnCancel != null) {
             btnCancel.setOnClickListener(v -> {
-                if (etKeyword != null) {
-                    hideKeyboard(etKeyword);
-                }
+                if (etKeyword != null) hideKeyboard(etKeyword);
                 dialog.dismiss();
             });
         }
 
-        // Clean-up: If the validation was not successful (canceled, dismissed, or failed),
-        // revert the switch back to unchecked state.
-        dialog.setOnDismissListener(dialogInterface -> {
-            if (!isSuccess[0]) {
-                // Remove listener before changing checked status to avoid recursive loops
-                sHolder.switchEnableStrava.setOnCheckedChangeListener(null);
-                sHolder.switchEnableStrava.setChecked(false);
-
-                // Re-register the switch listener
-                sHolder.switchEnableStrava.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        showKeywordDialog(sHolder, prefs);
-                    } else {
-                        prefs.edit().putBoolean(PREF_ENABLE_STRAVA, false).apply();
-                        updateStravaSubText(sHolder.tvEnableStravaSub, false);
-                        sHolder.stravaSettingsContainer.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-
         dialog.show();
     }
 
-    // Helper method to update text
-    private void updateSwitchText(TextView tv, boolean isStrava) {
-        if (isStrava) {
-            tv.setText("Long click opens Strava Archive");
+    private void updateSwitchText(TextView tv, boolean isLongClickArchive, String activeSource) {
+        String sourceName = SourceProvider.STRAVA.name().equals(activeSource) ? "Strava" : "Intervals.icu";
+        if (isLongClickArchive) {
+            tv.setText("Long click opens " + sourceName + " Archive");
         } else {
-            tv.setText("Long click opens Strava Activities");
+            tv.setText("Long click opens " + sourceName + " Activities");
         }
     }
 
@@ -299,50 +380,64 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     static class SettingsViewHolder extends RecyclerView.ViewHolder {
-        // Strava Feature
-        MaterialSwitch switchEnableStrava;
-        TextView tvEnableStravaSub;
-        LinearLayout stravaSettingsContainer;
+        MaterialSwitch switchEnableSync;
+        TextView tvEnableSyncSub;
+        LinearLayout globalSettingsContainer;
 
-        // Profile URL
+        LinearLayout chooseBtns;
+        MaterialButton btnSelectStrava, btnSelectICU;
+        
+        LinearLayout stravaURLSetting;
         com.google.android.material.textfield.TextInputLayout tilUrl;
         TextInputEditText etUrl;
 
-        // Click Config
+        LinearLayout intervalsICUSetting;
+        com.google.android.material.textfield.TextInputLayout tilAPIKeyIcu;
+        TextInputEditText etAPIKeyIcu;
+        com.google.android.material.textfield.TextInputLayout tilDurationIcu;
+        TextInputEditText etDurationIcu;
+        MaterialButton btnSaveApiDetails;
+
+        TextView tvConfigBtn;
         MaterialSwitch switchClick;
         TextView tvClickSub;
 
-        // Auto Refresh
         MaterialSwitch switchAutoRefresh;
         com.google.android.material.textfield.TextInputLayout tilAutoRefresh;
         TextInputEditText etAutoRefresh;
 
-        // Import/Export Buttons
-        ImageButton btnExport;
-        ImageButton btnImport;
-
+        ImageButton btnExport, btnImport;
 
         SettingsViewHolder(View v) {
             super(v);
-            // Strava Feature
-            switchEnableStrava = v.findViewById(R.id.switch_enablestrava);
-            tvEnableStravaSub = v.findViewById(R.id.tvenablestrava_sub);
-            stravaSettingsContainer = v.findViewById(R.id.strava_settings_container);
+            switchEnableSync = v.findViewById(R.id.switch_enablestrava);
+            tvEnableSyncSub = v.findViewById(R.id.tvenablestrava_sub);
+            globalSettingsContainer = v.findViewById(R.id.global_settings_container);
 
-            // Profile URL
+            chooseBtns = v.findViewById(R.id.chooseBtns);
+            btnSelectStrava = v.findViewById(R.id.selectStrava);
+            btnSelectStrava.setEnabled(true); // Must be enabled now
+            btnSelectICU = v.findViewById(R.id.selectICU);
+
+            stravaURLSetting = v.findViewById(R.id.stravaURL_setting);
             tilUrl = v.findViewById(R.id.tilProfileUrl);
             etUrl = v.findViewById(R.id.etProfileUrl);
 
-            // Click Config
+            intervalsICUSetting = v.findViewById(R.id.intervalsICU_setting);
+            tilAPIKeyIcu = v.findViewById(R.id.tilAPIKey_icu);
+            etAPIKeyIcu = v.findViewById(R.id.etAPIKey_icu);
+            tilDurationIcu = v.findViewById(R.id.tilDuration_icu);
+            etDurationIcu = v.findViewById(R.id.etDuration_icu);
+            btnSaveApiDetails = v.findViewById(R.id.saveAPIDetails);
+
+            tvConfigBtn = v.findViewById(R.id.tvConfigBtn);
             switchClick = v.findViewById(R.id.switch_longshortClick);
             tvClickSub = v.findViewById(R.id.tvClick_sub);
 
-            // Auto Refresh
             switchAutoRefresh = v.findViewById(R.id.switch_enableautorefresh);
             tilAutoRefresh = v.findViewById(R.id.tilAutoRefresh);
             etAutoRefresh = v.findViewById(R.id.etAutoRefresh);
 
-            // Import/Export Buttons
             btnExport = v.findViewById(R.id.Exp_S_Data);
             btnImport = v.findViewById(R.id.Imp_S_Data);
         }

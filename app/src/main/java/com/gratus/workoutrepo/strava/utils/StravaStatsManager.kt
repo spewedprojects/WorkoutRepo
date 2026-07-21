@@ -3,7 +3,7 @@ package com.gratus.workoutrepo.strava.utils
 import android.view.View
 import android.widget.TextView
 import com.gratus.workoutrepo.R
-import com.gratus.workoutrepo.strava.data.StravaActivity
+import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -25,7 +25,7 @@ class StravaStatsManager(rootView: View) {
      * @param periodEnd The End Date of the selected period.
      */
     fun updateStats(
-        activities: List<StravaActivity>, 
+        activities: List<ArchiveActivity>, 
         title: String, 
         periodStart: LocalDate?, 
         periodEnd: LocalDate?

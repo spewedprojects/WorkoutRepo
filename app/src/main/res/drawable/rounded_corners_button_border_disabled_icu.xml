@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer stroke -->
+    <item>
+        <shape>
+            <solid android:color="@android:color/transparent"/>
+            <corners android:radius="12dp"/>
+            <stroke android:width="0dp" android:color="?attr/colorAccent"/>
+        </shape>
+    </item>
+
+    <!-- Inner fill with inset -->
+    <item android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp">
+        <shape>
+            <solid android:color="@color/intervals_icu_color"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+</layer-list>

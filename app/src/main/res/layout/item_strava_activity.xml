@@ -10,7 +10,7 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="2dp"
     app:strokeWidth="1.5dp"
-    app:strokeColor="#fc4c02">
+    app:strokeColor="@color/strava_color">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 android:id="@+id/ivActivityIcon"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/strava_roadbike" />
+                android:src="@drawable/act_roadbike" />
 
             <LinearLayout
                 android:layout_width="match_parent"

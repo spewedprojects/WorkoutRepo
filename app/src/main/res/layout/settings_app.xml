@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.8"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                    android:text="Enable Starva"
+                    android:text="Enable Starva/Intervals.icu"
                     android:textColor="@color/black_white"
                     android:textSize="16sp"/>
 
@@ -42,9 +42,10 @@
                     android:layout_marginTop="4dp"
                     android:alpha="0.65"
                     android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                    android:text="Strava feature enabled"
+                    android:text="Enabled | Choose below"
                     android:textColor="@color/black_white"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -55,68 +56,248 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
                 android:enabled="true"
-                android:checked="true"
-                app:thumbTint="@color/switch_thumb_colors"
-                app:trackTint="@color/switch_track_colors_strava"/>
+                android:checked="false"
+                app:thumbTint="@color/switch_thumb_colors"/>
 
         </RelativeLayout>
 
+        <!-- Buttons to choose which to use for syncing activities - Strava stays disabled (unclickable) until subscription is on -->
         <LinearLayout
-            android:id="@+id/strava_settings_container"
-            android:layout_width="wrap_content"
+            android:id="@+id/chooseBtns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:visibility="gone">
+
+            <!-- TODO -> Sets visibility-visible for id/stravaURL_setting -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/selectStrava"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:layout_margin="12dp"
+                android:textAlignment="center"
+                app:icon="@drawable/strava_2"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="40dp"
+                app:iconTint="@color/white"
+                android:elevation="4dp"
+                android:outlineSpotShadowColor="@color/black_white"
+                android:background="@drawable/button_background_selector_strava"
+                android:tooltipText="Choose Strava"
+                app:backgroundTint="@color/strava_color"
+                android:allowClickWhenDisabled="false"
+                android:enabled="false"/>
+
+            <!-- TODO -> Sets visibility-visible for id/intervalsICU_setting -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/selectICU"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:layout_margin="12dp"
+                app:icon="@drawable/intervals_icu_2"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="40dp"
+                app:iconTint="@color/white"
+                android:elevation="4dp"
+                android:outlineSpotShadowColor="@color/black_white"
+                android:background="@drawable/button_background_selector_icu"
+                app:backgroundTint="@color/intervals_icu_color"
+                android:tooltipText="Choose Intervals.icu"
+                android:enabled="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/global_settings_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvSettingsTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Strava Settings"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingBottom="6dp"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_variable" />
+            android:visibility="gone">
 
-            <!-- Profile URL Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilProfileUrl"
+            <!-- Strava URL input - mostly redundant - TODO -> user input client secret & ID instead of hardcoding keys. This will be visible when Strava is selected -->
+            <LinearLayout
+                android:id="@+id/stravaURL_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:cursorColor="?attr/colorAccent"
-                app:boxStrokeColor="@color/textbox_stroke"
-                android:saveEnabled="true"
-                app:hintEnabled="false"
-                app:endIconCheckable="true"
-                app:endIconDrawable="@drawable/check_24">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProfileUrl"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tvSettingsTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:inputType="textUri"
-                    android:maxLines="1"
-                    android:paddingVertical="0dp"
-                    android:paddingHorizontal="12dp"
-                    android:hint="Strava Profile URL"
-                    android:imeOptions="actionDone"
-                    android:saveEnabled="true"/>
+                    android:layout_height="wrap_content"
+                    android:text="Strava Settings"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="6dp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <!-- Profile URL Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilProfileUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:cursorColor="?attr/colorAccent"
+                    app:boxStrokeColor="@color/textbox_stroke"
+                    android:saveEnabled="true"
+                    app:hintEnabled="false"
+                    app:endIconCheckable="true"
+                    app:endIconDrawable="@drawable/check_24">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileUrl"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:inputType="textUri"
+                        android:maxLines="1"
+                        android:paddingVertical="0dp"
+                        android:paddingHorizontal="12dp"
+                        android:hint="Strava Profile URL"
+                        android:imeOptions="actionDone"
+                        android:saveEnabled="true"/>
 
-            <!-- Helper Text -->
-            <TextView
-                android:id="@+id/tvUrlHelper"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Helper Text -->
+                <TextView
+                    android:id="@+id/tvUrlHelper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Example: https://www.strava.com/athletes/123456"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Container for interval.icu settings - TODO -> For user to input the API key. this will be visible when Intervals.icu is selected -->
+            <LinearLayout
+                android:id="@+id/intervalsICU_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Example: https://www.strava.com/athletes/123456"
-                android:textSize="12sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginTop="4dp" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tvSettingsTitle_icu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Intervals.icu Settings"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="6dp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_variable" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="4"
+                    android:orientation="horizontal">
+
+                    <!-- API key Input - to be stored in encrypted shared prefs - TODO -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilAPIKey_icu"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:paddingEnd="4dp"
+                        android:layout_height="wrap_content"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:cursorColor="?attr/colorAccent"
+                        app:boxStrokeColor="@color/textbox_stroke"
+                        android:saveEnabled="true"
+                        app:hintEnabled="false"
+                        app:endIconCheckable="true"
+                        app:endIconDrawable="@drawable/check_24">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAPIKey_icu"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:paddingVertical="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:hint="Intervals.icu API key"
+                            android:imeOptions="actionNext"
+                            android:saveEnabled="true"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- API key Input - to be stored in encrypted shared prefs - TODO -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilDuration_icu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:saveEnabled="true"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxStrokeColor="@color/textbox_stroke"
+                        app:cursorColor="?attr/colorAccent"
+                        app:endIconCheckable="true"
+                        app:endIconDrawable="@drawable/check_24"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDuration_icu"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:hint="Duration"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="0dp"
+                            android:saveEnabled="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Helper Text -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="25 character API key from Intervals.icu account settings and set how much older activities you want to fetch."
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:layout_marginTop="4dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveAPIDetails"
+                    android:layout_width="58dp"
+                    android:layout_height="42dp"
+                    android:layout_gravity="end"
+                    android:text="Save"
+                    android:padding="2dp"
+                    android:includeFontPadding="false"
+                    app:backgroundTint="@color/white"
+                    android:elevation="2dp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
+                    android:letterSpacing="0.1"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="?attr/colorOnSurface"
+                    android:layout_toStartOf="@id/save_routine_btn"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="?attr/colorPrimaryVariant"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <!-- Toggle for launching either bottomsheet or full activity in pressing strava/intervals access button in home screen. -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,7 +311,9 @@
                     android:orientation="vertical"
                     android:layout_alignParentStart="true">
 
+                    <!-- TODO -> Dynamically changes text between Strava and Intervals.icu -->
                     <TextView
+                        android:id="@+id/tvConfigBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
@@ -146,7 +329,7 @@
                         android:layout_marginTop="4dp"
                         android:alpha="0.65"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                        android:text="Opens full Strava Archive"
+                        android:text="Opens full Archive"
                         android:textColor="@color/black_white"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -164,6 +347,7 @@
 
             </RelativeLayout>
 
+            <!-- Toggle for enabling and settings auto-refresh interval -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -242,6 +426,7 @@
 
             </RelativeLayout>
 
+            <!-- Buttons for exporting/importing the archive -->
             <RelativeLayout
                 android:id="@+id/ExpImp_Container"
                 android:layout_width="match_parent"
@@ -260,7 +445,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                        android:text="Strava Repository"
+                        android:text="Activity Repository"
                         android:textColor="@color/black_white"
                         android:textSize="16sp"/>
 
@@ -271,7 +456,7 @@
                         android:layout_marginTop="4dp"
                         android:alpha="0.65"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                        android:text="Export/Import Strava Data"
+                        android:text="Export/Import Archive"
                         android:textColor="@color/black_white"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -316,7 +501,6 @@
             </RelativeLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

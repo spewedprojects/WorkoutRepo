@@ -180,25 +180,9 @@ public class MainActivity extends BaseActivity {
     private void setupButtons() {
         ImageButton githubicon = findViewById(R.id.githubIcon);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
-
-        githubicon.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
-            v.getContext().startActivity(intent);
-        });
+        ImageButton intervalsICUAccess = findViewById(R.id.intervalsICUAccess);
 
         // Define the actions
-        Runnable openUrlAction = () -> {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            String url = prefs.getString("CustomStravaUrl", "https://www.strava.com/athletes/32298220");
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            } catch (Exception e) {
-                Toast.makeText(this, "Invalid URL saved", Toast.LENGTH_SHORT).show();
-            }
-        };
-
         Runnable openSheetAction = () -> {
             ViewPager2 weekPager = findViewById(R.id.weekPager);
             if (weekPager != null) {
@@ -215,46 +199,48 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(MainActivity.this, StravaArchiveActivity.class));
         };
 
-        // SINGLE CLICK LISTENER
-        stravaaccess.setOnClickListener(v -> {
+        View.OnClickListener clickListener = v -> {
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
+            boolean longClickAction = prefs.getBoolean("StravaButtonLongClickAction", true);
 
-            if (longClickStravaAction) {
+            if (longClickAction) {
                 openSheetAction.run();
             } else {
                 openArchiveAction.run();
-            }
-        });
-
-        // Set initial visibility based on preference
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        boolean isStravaEnabled = prefs.getBoolean("EnableStravaFeature", false);
-        stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
-
-        // Listen for changes
-        // --- UPDATED: Assign to the global variable ---
-        prefListener = (sharedPreferences, key) -> {
-            if ("EnableStravaFeature".equals(key)) {
-                boolean enabled = sharedPreferences.getBoolean("EnableStravaFeature", false);
-                stravaaccess.setVisibility(enabled ? View.VISIBLE : View.GONE);
             }
         };
-        // Register the strong reference
-        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
-        // LONG CLICK LISTENER
-        stravaaccess.setOnLongClickListener(v -> {
-            boolean longClickStravaAction = prefs.getBoolean("StravaButtonLongClickAction", true);
+        View.OnLongClickListener longClickListener = v -> {
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            boolean longClickAction = prefs.getBoolean("StravaButtonLongClickAction", true);
 
-            // If long click is assigned to Archive (true), open Archive.
-            if (longClickStravaAction) {
+            if (longClickAction) {
                 openArchiveAction.run();
             } else {
                 openSheetAction.run();
             }
-            return true; // Consume event
-        });
+            return true;
+        };
+
+        if (stravaaccess != null) {
+            stravaaccess.setOnClickListener(clickListener);
+            stravaaccess.setOnLongClickListener(longClickListener);
+        }
+
+        if (intervalsICUAccess != null) {
+            intervalsICUAccess.setOnClickListener(clickListener);
+            intervalsICUAccess.setOnLongClickListener(longClickListener);
+        }
+
+        updateSyncButtonsVisibility();
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefListener = (sharedPreferences, key) -> {
+            if ("EnableStravaFeature".equals(key) || "ActiveSyncSource".equals(key)) {
+                runOnUiThread(this::updateSyncButtonsVisibility);
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
         ImageButton guideBtn = findViewById(R.id.guide_btn);
         guideBtn.setOnClickListener(v -> {
@@ -365,29 +351,36 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void updateSyncButtonsVisibility() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isSyncEnabled = prefs.getBoolean("EnableStravaFeature", false);
+        String activeSource = prefs.getString("ActiveSyncSource", "");
+
+        ImageButton stravaaccess = findViewById(R.id.stravaAccess);
+        ImageButton intervalsICUAccess = findViewById(R.id.intervalsICUAccess);
+
+        if (!isSyncEnabled || activeSource.isEmpty()) {
+            if (stravaaccess != null) stravaaccess.setVisibility(View.GONE);
+            if (intervalsICUAccess != null) intervalsICUAccess.setVisibility(View.GONE);
+        } else if ("STRAVA".equals(activeSource)) {
+            if (stravaaccess != null) stravaaccess.setVisibility(View.VISIBLE);
+            if (intervalsICUAccess != null) intervalsICUAccess.setVisibility(View.GONE);
+        } else if ("INTERVALS_ICU".equals(activeSource)) {
+            if (stravaaccess != null) stravaaccess.setVisibility(View.GONE);
+            if (intervalsICUAccess != null) intervalsICUAccess.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
+        updateSyncButtonsVisibility();
+
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        // --- NEW: Re-check Strava button visibility when returning to the app ---
-
-        boolean isStravaEnabled = prefs.getBoolean("EnableStravaFeature", false);
-        ImageButton stravaaccess = findViewById(R.id.stravaAccess);
-        if (stravaaccess != null) {
-            stravaaccess.setVisibility(isStravaEnabled ? View.VISIBLE : View.GONE);
-        }
-
-        // 2. Register the listener (using the strong reference field you already have)
         prefListener = (sharedPreferences, key) -> {
-            if ("EnableStravaFeature".equals(key)) {
-                boolean enabled = sharedPreferences.getBoolean("EnableStravaFeature", false);
-                // Ensure UI updates happen on the UI thread
-                runOnUiThread(() -> {
-                    if (stravaaccess != null) {
-                        stravaaccess.setVisibility(enabled ? View.VISIBLE : View.GONE);
-                    }
-                });
+            if ("EnableStravaFeature".equals(key) || "ActiveSyncSource".equals(key)) {
+                runOnUiThread(this::updateSyncButtonsVisibility);
             }
         };
         prefs.registerOnSharedPreferenceChangeListener(prefListener);

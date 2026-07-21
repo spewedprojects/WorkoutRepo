@@ -40,7 +40,7 @@
             android:elevation="1dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
             android:gravity="center"
-            android:text="Strava Activities (800)"
+            android:text="Activities (800)"
             android:textColor="@color/black_white"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -397,6 +397,111 @@
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                         android:textStyle="bold" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fitnessRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <!-- Total days active -->
+                <LinearLayout
+                    android:id="@+id/llFitness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFitnessLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fitness"
+                        android:textSize="13sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvFitnessValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="53"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.78"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Total hours -->
+                <LinearLayout
+                    android:id="@+id/llFatigue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFatigueLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fatigue"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvFatigueValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="72"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.78"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Consistency -->
+                <LinearLayout
+                    android:id="@+id/llForm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFormLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Form"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.7"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular" />
+
+                    <TextView
+                        android:id="@+id/tvFormValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="-18"
+                        android:textSize="20sp"
+                        android:textColor="@color/black_white"
+                        android:alpha="0.78"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 

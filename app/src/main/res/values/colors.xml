@@ -34,4 +34,11 @@
     <color name="textbox_stroke_unfocused">#80000000</color>
     <color name="textbox_stroke_focused">#DA000000</color>
 
+    <!-- Logo colors -->
+    <color name="intervals_icu_color">#dc0746</color>
+    <color name="intervals_icu_color_0.4">#80DC0746</color>
+    <color name="strava_color">#fc4c02</color>
+    <color name="strava_color_0.4">#66FC4C02</color>
+    <color name="buttonDisabled">#000000</color>
+
 </resources>

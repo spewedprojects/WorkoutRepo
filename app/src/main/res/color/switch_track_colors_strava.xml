@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Checked -->
-    <item android:color="#fc4c02"
+    <item android:color="@color/strava_color"
         android:state_checked="true"
         android:state_enabled="true"/>
 

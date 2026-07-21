@@ -10,4 +10,6 @@
     <string name="dialog_confirm_message">Exit without saving?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="githubIcon_button">Go to GitHub Repository</string>
+    <string name="guide_button">Open Usage guide and app settings</string>
 </resources>
