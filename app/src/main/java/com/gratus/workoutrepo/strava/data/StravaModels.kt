@@ -1,8 +1,10 @@
 package com.gratus.workoutrepo.strava.data
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 // 1. The Activity Object (What Strava sends back)
+@Keep
 data class StravaActivity(
     // The unique ID of the activity
     val id: Long,
@@ -44,6 +46,7 @@ data class StravaActivity(
 )
 
 // 2. The Token Object (For refreshing authentication)
+@Keep
 data class TokenResponse(
     @SerializedName("access_token") val accessToken: String,
     @SerializedName("refresh_token") val refreshToken: String,
@@ -51,6 +54,7 @@ data class TokenResponse(
 )
 
 // Add this to StravaModels.kt
+@Keep
 data class StravaAthlete(
     val id: Long,
     val firstname: String?,

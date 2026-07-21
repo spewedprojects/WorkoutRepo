@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken
 import com.gratus.workoutrepo.BaseActivity
 import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import com.gratus.workoutrepo.archive.model.SourceProvider
+import com.gratus.workoutrepo.intervalsicu.data.IntervalsWellness
 import com.gratus.workoutrepo.strava.data.StravaActivity
 import java.io.File
 import java.io.FileReader
@@ -20,6 +21,7 @@ import kotlin.math.abs
 object ActivityArchiveManager {
     private const val TAG = "ActivityArchiveManager"
     private const val CACHE_FILE_NAME = "activities_cache.json"
+    private const val WELLNESS_CACHE_FILE_NAME = "wellness_cache.json"
     private const val LEGACY_CACHE_FILE_NAME = "strava_activities_cache.json"
     
     // Idempotency flag in shared preferences
@@ -28,6 +30,7 @@ object ActivityArchiveManager {
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
     private var cachedActivities: List<ArchiveActivity>? = null
+    private var cachedWellness: IntervalsWellness? = null
     private var lastCacheTime: Long = 0
 
     private data class CacheData(
@@ -213,6 +216,55 @@ object ActivityArchiveManager {
                 val existingDateStr = existing.startDateLocal.take(10)
                 candidateDateStr == existingDateStr && existing.movingTime == candidate.movingTime
             }
+        }
+    }
+
+    @Synchronized
+    fun getWellness(context: Context): IntervalsWellness? {
+        if (cachedWellness != null) {
+            return cachedWellness
+        }
+
+        try {
+            val file = File(context.filesDir, WELLNESS_CACHE_FILE_NAME)
+            if (!file.exists()) {
+                return null
+            }
+
+            val reader = FileReader(file)
+            val wellness: IntervalsWellness = gson.fromJson(reader, IntervalsWellness::class.java)
+            reader.close()
+            cachedWellness = wellness
+            return wellness
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load wellness cache file", e)
+            return null
+        }
+    }
+
+    @Synchronized
+    fun saveWellness(context: Context, wellness: IntervalsWellness) {
+        try {
+            val jsonString = gson.toJson(wellness)
+            val tempFile = File(context.filesDir, "$WELLNESS_CACHE_FILE_NAME.tmp")
+            val targetFile = File(context.filesDir, WELLNESS_CACHE_FILE_NAME)
+
+            val writer = FileWriter(tempFile)
+            writer.write(jsonString)
+            writer.flush()
+            writer.close()
+
+            if (targetFile.exists() && !targetFile.delete()) {
+                Log.e(TAG, "Failed to delete old wellness target file")
+            }
+            if (!tempFile.renameTo(targetFile)) {
+                Log.e(TAG, "Failed to rename wellness temp file")
+            } else {
+                Log.d(TAG, "Successfully saved wellness cache.")
+                cachedWellness = wellness
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to save wellness file", e)
         }
     }
 }

@@ -70,7 +70,7 @@
             android:gravity="center_horizontal"
             android:visibility="gone">
 
-            <!-- TODO -> Sets visibility-visible for id/stravaURL_setting -->
+            <!-- Select Strava button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/selectStrava"
                 android:layout_width="0dp"
@@ -92,7 +92,7 @@
                 android:allowClickWhenDisabled="false"
                 android:enabled="false"/>
 
-            <!-- TODO -> Sets visibility-visible for id/intervalsICU_setting -->
+            <!-- Select Intervals.icu button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/selectICU"
                 android:layout_width="0dp"
@@ -178,7 +178,7 @@
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
-            <!-- Container for interval.icu settings - TODO -> For user to input the API key. this will be visible when Intervals.icu is selected -->
+            <!-- Container for interval.icu settings -->
             <LinearLayout
                 android:id="@+id/intervalsICU_setting"
                 android:layout_width="match_parent"
@@ -203,7 +203,7 @@
                     android:weightSum="4"
                     android:orientation="horizontal">
 
-                    <!-- API key Input - to be stored in encrypted shared prefs - TODO -->
+                    <!-- API key Input - to be stored in encrypted shared prefs -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilAPIKey_icu"
                         android:layout_width="0dp"
@@ -234,7 +234,7 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- API key Input - to be stored in encrypted shared prefs - TODO -->
+                    <!-- API key Input - to be stored in encrypted shared prefs -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilDuration_icu"
                         android:layout_width="0dp"
@@ -271,7 +271,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="25 character API key from Intervals.icu account settings and set how much older activities you want to fetch."
+                    android:text="25 character API key from Intervals.icu account settings and set how much older activities you want to fetch in years."
                     android:textSize="12sp"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginTop="4dp" />
@@ -311,7 +311,7 @@
                     android:orientation="vertical"
                     android:layout_alignParentStart="true">
 
-                    <!-- TODO -> Dynamically changes text between Strava and Intervals.icu -->
+                    <!-- Dynamically changes text between Strava and Intervals.icu -->
                     <TextView
                         android:id="@+id/tvConfigBtn"
                         android:layout_width="wrap_content"
@@ -377,7 +377,7 @@
                         android:layout_marginTop="4dp"
                         android:alpha="0.65"
                         android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                        android:text="Set a custom duration"
+                        android:text="Set a custom interval"
                         android:textColor="@color/black_white"
                         android:textSize="14sp"/>
                 </LinearLayout>

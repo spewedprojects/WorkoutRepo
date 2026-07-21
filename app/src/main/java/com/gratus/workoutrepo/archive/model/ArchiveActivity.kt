@@ -1,8 +1,10 @@
 package com.gratus.workoutrepo.archive.model
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
+@Keep
 data class ArchiveActivity(
     val id: String = UUID.randomUUID().toString(),
     val stravaActivityId: Long? = null,

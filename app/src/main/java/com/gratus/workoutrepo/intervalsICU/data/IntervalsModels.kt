@@ -1,7 +1,9 @@
 package com.gratus.workoutrepo.intervalsicu.data
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class IntervalsActivity(
     val id: String,
     val name: String?,
@@ -15,12 +17,13 @@ data class IntervalsActivity(
     val description: String? = null
 )
 
+@Keep
 data class IntervalsMessage(
     val id: Long,
     val text: String?
 )
 
-
+@Keep
 data class IntervalsWellness(
     val id: String,
     val ctl: Float?,

@@ -297,16 +297,24 @@ object IntervalsRepository {
     }
 
     suspend fun getLatestWellness(context: Context): com.gratus.workoutrepo.intervalsicu.data.IntervalsWellness? {
-        val apiKey = getApiKey(context) ?: return null
+        val cached = ActivityArchiveManager.getWellness(context)
+
+        val apiKey = getApiKey(context) ?: return cached
         val currentService = service ?: buildService(apiKey)
 
         return try {
             val oldest = LocalDate.now().minusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE)
             val wellnessList = currentService.getWellness(oldest = oldest)
-            wellnessList.maxByOrNull { it.id } // The most recent date
+            val latest = wellnessList.maxByOrNull { it.id } // The most recent date
+            if (latest != null) {
+                ActivityArchiveManager.saveWellness(context, latest)
+                latest
+            } else {
+                cached
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch wellness data", e)
-            null
+            Log.e(TAG, "Failed to fetch wellness data from network, returning cache", e)
+            cached
         }
     }
 }

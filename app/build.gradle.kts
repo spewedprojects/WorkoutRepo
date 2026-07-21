@@ -15,12 +15,16 @@ android {
     namespace = "com.gratus.workoutrepo"
     compileSdk { version = release(37) { minorApiLevel = 0 } }
 
+    buildFeatures {
+        resValues = true
+    }
+
     defaultConfig {
         applicationId = "com.gratus.workoutrepo"
         minSdk = 26
         targetSdk = 36
-        versionCode = 56
-        versionName = "12.0.0" // major.minor.patch
+        versionCode = 57
+        versionName = "12.0.1" // major.minor.patch
 
         // Pass versionName to the app as a resource
         resValue(
@@ -55,9 +59,9 @@ android {
 androidComponents {
     onVariants { variant ->
         val baseName = if (variant.buildType == "debug") {
-            "WorkoutRepo-${variant.buildType}"
+            "WorkoutRepo_${variant.buildType}"
         } else {
-            "WorkoutRepo-${android.defaultConfig.versionName}-${variant.buildType}"
+            "WorkoutRepo_v${android.defaultConfig.versionName}-${variant.buildType}"
         }
         variant.outputs.forEach { output ->
             (output as? com.android.build.api.variant.impl.VariantOutputImpl)?.outputFileName?.set("$baseName.apk")
