@@ -441,6 +441,23 @@ class StravaListManager(
         }
 
         btnFilterType?.text = if (currentFilterType != null) "By type: $currentFilterType (${listFiltered.size})" else "By type"
+
+        val prefs = context.getSharedPreferences(BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val activeSource = prefs.getString("ActiveSyncSource", "STRAVA")
+        if ("INTERVALS_ICU" == activeSource) {
+            val targetDateStr = currentDateEnd?.toString()
+            val wellness = com.gratus.workoutrepo.archive.data.ActivityArchiveManager.getWellnessForDate(context, targetDateStr)
+            val fitnessRow = rootView.findViewById<View>(R.id.fitnessRow)
+            if (fitnessRow != null && fitnessRow.visibility == View.VISIBLE) {
+                val tvFitnessValue = rootView.findViewById<TextView>(R.id.tvFitnessValue)
+                val tvFatigueValue = rootView.findViewById<TextView>(R.id.tvFatigueValue)
+                val tvFormValue = rootView.findViewById<TextView>(R.id.tvFormValue)
+
+                tvFitnessValue?.text = wellness?.ctl?.toInt()?.toString() ?: "0"
+                tvFatigueValue?.text = wellness?.atl?.toInt()?.toString() ?: "0"
+                tvFormValue?.text = wellness?.tsb?.toInt()?.toString() ?: "0"
+            }
+        }
     }
 
     // This function or method is to basically load data after a manual refresh or an auto refresh is done

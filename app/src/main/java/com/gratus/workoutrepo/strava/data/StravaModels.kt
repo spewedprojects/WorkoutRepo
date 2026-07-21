@@ -7,12 +7,15 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class StravaActivity(
     // The unique ID of the activity
+    @SerializedName("id")
     val id: Long,
 
     // The title of the activity (e.g., "Morning Ride")
+    @SerializedName("name")
     val name: String,
 
     // Distance in meters (Strava always sends meters)
+    @SerializedName("distance")
     val distance: Float,
 
     // Moving time in seconds
@@ -35,6 +38,7 @@ data class StravaActivity(
     val totalElevationGain: Float?,
 
     // Activity type (e.g., "Ride", "Run", "WeightTraining")
+    @SerializedName("type")
     val type: String,
 
     // NEW: Strava's internal tag for workouts/races
@@ -42,6 +46,7 @@ data class StravaActivity(
     val workoutType: Int?,
 
     // NEW: The user's description/notes
+    @SerializedName("description")
     val description: String?
 )
 
@@ -56,8 +61,8 @@ data class TokenResponse(
 // Add this to StravaModels.kt
 @Keep
 data class StravaAthlete(
-    val id: Long,
-    val firstname: String?,
-    val lastname: String?,
-    val profile: String? // This is the URL to your profile picture
+    @SerializedName("id") val id: Long,
+    @SerializedName("firstname") val firstname: String?,
+    @SerializedName("lastname") val lastname: String?,
+    @SerializedName("profile") val profile: String? // This is the URL to your profile picture
 )

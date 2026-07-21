@@ -313,11 +313,22 @@ object StravaRepository {
                 val match = ActivityArchiveManager.findExistingMatch(imported, currentArchive)
                 if (match != null) {
                     val index = currentArchive.indexOf(match)
-                    val updated = match.copy(
-                        stravaActivityId = match.stravaActivityId ?: imported.stravaActivityId,
-                        intervalsActivityId = match.intervalsActivityId ?: imported.intervalsActivityId,
-                        description = match.description ?: imported.description
-                    )
+                    val isMatchUnknown = match.type.equals("Unknown", ignoreCase = true) || match.name.contains("Unknown", ignoreCase = true)
+                    val isImportedUnknown = imported.type.equals("Unknown", ignoreCase = true) || imported.name.contains("Unknown", ignoreCase = true)
+
+                    val updated = if (isMatchUnknown && !isImportedUnknown) {
+                        imported.copy(
+                            stravaActivityId = imported.stravaActivityId ?: match.stravaActivityId,
+                            intervalsActivityId = imported.intervalsActivityId ?: match.intervalsActivityId,
+                            description = if (!imported.description.isNullOrBlank()) imported.description else match.description
+                        )
+                    } else {
+                        match.copy(
+                            stravaActivityId = match.stravaActivityId ?: imported.stravaActivityId,
+                            intervalsActivityId = match.intervalsActivityId ?: imported.intervalsActivityId,
+                            description = if (!match.description.isNullOrBlank()) match.description else imported.description
+                        )
+                    }
                     currentArchive[index] = updated
                 } else {
                     currentArchive.add(imported)

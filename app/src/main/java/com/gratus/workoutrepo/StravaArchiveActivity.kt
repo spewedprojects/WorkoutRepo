@@ -41,7 +41,7 @@ class StravaArchiveActivity : BaseActivity() {
             val tvFormValue = findViewById<TextView>(R.id.tvFormValue)
             
             // Load and display cached wellness immediately
-            val cachedWellness = com.gratus.workoutrepo.archive.data.ActivityArchiveManager.getWellness(this)
+            val cachedWellness = com.gratus.workoutrepo.archive.data.ActivityArchiveManager.getLatestWellness(this)
             if (cachedWellness != null) {
                 tvFitnessValue.text = cachedWellness.ctl?.toInt()?.toString() ?: "0"
                 tvFatigueValue.text = cachedWellness.atl?.toInt()?.toString() ?: "0"

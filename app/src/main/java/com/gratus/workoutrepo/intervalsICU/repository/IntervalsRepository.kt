@@ -161,10 +161,24 @@ object IntervalsRepository {
                 val match = ActivityArchiveManager.findExistingMatch(newEntry, finalArchive)
                 if (match != null) {
                     val index = finalArchive.indexOf(match)
-                    val updated = match.copy(
-                        intervalsActivityId = newEntry.intervalsActivityId,
-                        description = match.description ?: newEntry.description
-                    )
+                    val isMatchUnknown = match.type.equals("Unknown", ignoreCase = true) || match.name.contains("Unknown", ignoreCase = true)
+                    val isNewUnknown = newEntry.type.equals("Unknown", ignoreCase = true) || newEntry.name.contains("Unknown", ignoreCase = true)
+
+                    val updated = if (isMatchUnknown && !isNewUnknown) {
+                        newEntry.copy(
+                            stravaActivityId = newEntry.stravaActivityId ?: match.stravaActivityId,
+                            intervalsActivityId = newEntry.intervalsActivityId ?: match.intervalsActivityId,
+                            description = if (!newEntry.description.isNullOrBlank()) newEntry.description else match.description
+                        )
+                    } else {
+                        match.copy(
+                            intervalsActivityId = match.intervalsActivityId ?: newEntry.intervalsActivityId,
+                            stravaActivityId = match.stravaActivityId ?: newEntry.stravaActivityId,
+                            description = if (!match.description.isNullOrBlank()) match.description else newEntry.description,
+                            name = if (isMatchUnknown && !isNewUnknown) newEntry.name else match.name,
+                            type = if (isMatchUnknown && !isNewUnknown) newEntry.type else match.type
+                        )
+                    }
                     finalArchive[index] = updated
                 } else {
                     finalArchive.add(newEntry)
@@ -240,6 +254,7 @@ object IntervalsRepository {
             var fetchedDesc: String? = null
             var fetchedName: String? = targetActivity.name
             var fetchedWatts: Float? = targetActivity.averageWatts
+            var fetchedType: String = targetActivity.type
 
             // 1. Fetch single activity details (contains description edited on Intervals.icu website)
             try {
@@ -252,6 +267,9 @@ object IntervalsRepository {
                 }
                 if (singleActivity.averageWatts != null) {
                     fetchedWatts = singleActivity.averageWatts
+                }
+                if (!singleActivity.type.isNullOrBlank()) {
+                    fetchedType = SportTypeMapper.mapIntervalsType(singleActivity.type)
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Could not fetch single activity details for $intervalsId, falling back to messages", e)
@@ -277,6 +295,7 @@ object IntervalsRepository {
             val updatedActivity = targetActivity.copy(
                 name = fetchedName ?: targetActivity.name,
                 averageWatts = fetchedWatts,
+                type = fetchedType,
                 description = finalDescription,
                 lastModifiedLocal = System.currentTimeMillis()
             )
@@ -297,21 +316,21 @@ object IntervalsRepository {
     }
 
     suspend fun getLatestWellness(context: Context): com.gratus.workoutrepo.intervalsicu.data.IntervalsWellness? {
-        val cached = ActivityArchiveManager.getWellness(context)
+        val cached = ActivityArchiveManager.getLatestWellness(context)
 
         val apiKey = getApiKey(context) ?: return cached
         val currentService = service ?: buildService(apiKey)
 
         return try {
-            val oldest = LocalDate.now().minusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE)
+            val prefs = context.getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+            val durationYears = prefs.getInt("IntervalsDurationYears", 2).coerceAtLeast(1)
+            val oldest = LocalDate.now().minusYears(durationYears.toLong()).format(DateTimeFormatter.ISO_LOCAL_DATE)
+
             val wellnessList = currentService.getWellness(oldest = oldest)
-            val latest = wellnessList.maxByOrNull { it.id } // The most recent date
-            if (latest != null) {
-                ActivityArchiveManager.saveWellness(context, latest)
-                latest
-            } else {
-                cached
+            if (wellnessList.isNotEmpty()) {
+                ActivityArchiveManager.saveWellnessList(context, wellnessList)
             }
+            ActivityArchiveManager.getLatestWellness(context)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch wellness data from network, returning cache", e)
             cached

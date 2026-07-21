@@ -20,18 +20,27 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# --- STRAVA DATA MODELS ---
-# Prevent R8 from renaming the fields in your data classes so Gson can find them
--keep class com.gratus.workoutrepo.data.** { *; }
+# --- DATA MODELS & SERIALIZATION ---
+-keep class com.gratus.workoutrepo.archive.model.** { *; }
+-keep class com.gratus.workoutrepo.archive.data.** { *; }
+-keep class com.gratus.workoutrepo.intervalsicu.data.** { *; }
+-keep class com.gratus.workoutrepo.intervalsicu.repository.** { *; }
 -keep class com.gratus.workoutrepo.strava.data.** { *; }
+-keep class com.gratus.workoutrepo.strava.repository.** { *; }
+-keep class com.gratus.workoutrepo.routine.model.** { *; }
 
-# --- REPOSITORY CACHE ---
-# Important! Your CacheData class is private inside an Object.
-# We must explicitly keep it so the JSON file saving/loading works.
--keep class com.gratus.workoutrepo.strava.repository.StravaRepository$CacheData { *; }
+# Keep inner data classes (e.g. CacheData) and Gson annotated fields
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
 
-# --- GSON & RETROFIT GENERIC RULES (Just in case) ---
+# --- GSON & RETROFIT GENERIC RULES ---
 -keepattributes Signature
 -keepattributes *Annotation*
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+
+-keepclassmembers enum * { *; }
+
 -dontwarn okhttp3.**
 -dontwarn retrofit2.**
