@@ -258,6 +258,7 @@ public class RoutinesActivity extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("application/json");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             importLauncher.launch(intent);
         }
 
@@ -329,8 +330,22 @@ public class RoutinesActivity extends BaseActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Uri uri = result.getData().getData();
-                    readRoutineFromFile(uri);
+                    Intent data = result.getData();
+                    List<Uri> uris = new java.util.ArrayList<>();
+                    if (data.getClipData() != null) {
+                        int count = data.getClipData().getItemCount();
+                        for (int i = 0; i < count; i++) {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            if (uri != null) {
+                                uris.add(uri);
+                            }
+                        }
+                    } else if (data.getData() != null) {
+                        uris.add(data.getData());
+                    }
+                    if (!uris.isEmpty()) {
+                        readRoutinesFromFiles(uris);
+                    }
                 }
             });
 
@@ -396,47 +411,95 @@ public class RoutinesActivity extends BaseActivity {
         }
     }
 
-    private void readRoutineFromFile(Uri uri) {
-        try (InputStream is = getContentResolver().openInputStream(uri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+    private void readRoutinesFromFiles(List<Uri> uris) {
+        if (uris == null || uris.isEmpty()) return;
 
-            Routine imported = new Gson().fromJson(reader, Routine.class);
+        List<Routine> existingRoutines = RoutineRepository.getAllSavedRoutines(this);
+        int successCount = 0;
+        String firstImportedId = null;
+        String lastImportedTitle = null;
 
-            // 1. Validate Structure
-            if (imported.days == null || imported.days.size() != 7) {
-                throw new Exception("Invalid Format");
+        for (Uri uri : uris) {
+            try (InputStream is = getContentResolver().openInputStream(uri);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+                String jsonString = jsonBuilder.toString().trim();
+
+                List<Routine> routinesInFile = new java.util.ArrayList<>();
+
+                // Try parsing as single Routine first
+                try {
+                    Routine single = new Gson().fromJson(jsonString, Routine.class);
+                    if (single != null && single.days != null && single.days.size() == 7) {
+                        routinesInFile.add(single);
+                    }
+                } catch (Exception ignored) {}
+
+                // If not single Routine, try parsing as List<Routine>
+                if (routinesInFile.isEmpty()) {
+                    try {
+                        java.lang.reflect.Type listType = new com.google.gson.reflect.TypeToken<List<Routine>>(){}.getType();
+                        List<Routine> list = new Gson().fromJson(jsonString, listType);
+                        if (list != null) {
+                            for (Routine r : list) {
+                                if (r != null && r.days != null && r.days.size() == 7) {
+                                    routinesInFile.add(r);
+                                }
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                if (routinesInFile.isEmpty()) {
+                    continue;
+                }
+
+                for (Routine imported : routinesInFile) {
+                    // 1. FORCE NEW UUID
+                    imported.id = java.util.UUID.randomUUID().toString();
+                    if (firstImportedId == null) {
+                        firstImportedId = imported.id;
+                    }
+
+                    // 2. HANDLE TITLE COLLISIONS
+                    String originalTitle = (imported.title != null && !imported.title.trim().isEmpty()) ? imported.title.trim() : "Imported Routine";
+                    String uniqueTitle = originalTitle;
+                    int counter = 2;
+                    while (titleExists(existingRoutines, uniqueTitle)) {
+                        uniqueTitle = originalTitle + "_" + counter;
+                        counter++;
+                    }
+                    imported.title = uniqueTitle;
+                    lastImportedTitle = uniqueTitle;
+
+                    // 3. Save to internal library
+                    RoutineRepository.saveRoutineToLibrary(this, imported);
+                    existingRoutines.add(imported);
+                    successCount++;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
 
-            // 2. FORCE NEW UUID
-            // This handles missing UUIDs (sets one) and duplicates (avoids overwrite)
-            imported.id = java.util.UUID.randomUUID().toString();
-
-            // 3. HANDLE TITLE COLLISIONS (Suffix Logic)
-            List<Routine> existingRoutines = RoutineRepository.getAllSavedRoutines(this);
-            String originalTitle = imported.title;
-            String uniqueTitle = originalTitle;
-            int counter = 2;
-
-            while (titleExists(existingRoutines, uniqueTitle)) {
-                uniqueTitle = originalTitle + "_" + counter;
-                counter++;
-            }
-            imported.title = uniqueTitle;
-
-            // 4. Save to internal library
-            RoutineRepository.saveRoutineToLibrary(this, imported);
-
-            // 5. Refresh UI and scroll to the new item
+        if (successCount > 0) {
             loadData();
-            // Scroll to the newly added item (it will be at the end due to timestamp sort)
-            // Or find it by ID if you want to be precise
-            int newIndex = findRoutineIndex(imported.id);
-            if (newIndex != -1) routinesRecycler.scrollToPosition(newIndex);
-
-            Toast.makeText(this, "Imported: " + uniqueTitle, Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (firstImportedId != null) {
+                int newIndex = findRoutineIndex(firstImportedId);
+                if (newIndex != -1) routinesRecycler.scrollToPosition(newIndex);
+            }
+            if (successCount == 1) {
+                Toast.makeText(this, "Imported: " + lastImportedTitle, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Imported " + successCount + " routines successfully!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
             Toast.makeText(this, "Import Failed: Invalid JSON format", Toast.LENGTH_LONG).show();
         }
     }

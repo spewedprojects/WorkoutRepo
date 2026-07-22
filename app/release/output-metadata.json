@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 59,
-      "versionName": "12.0.3",
-      "outputFile": "WorkoutRepo_v12.0.3-release.apk"
+      "versionCode": 60,
+      "versionName": "12.0.4",
+      "outputFile": "WorkoutRepo_v12.0.4-release.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/WorkoutRepo_v12.0.3-release.dm"
+        "baselineProfiles/1/WorkoutRepo_v12.0.4-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/WorkoutRepo_v12.0.3-release.dm"
+        "baselineProfiles/0/WorkoutRepo_v12.0.4-release.dm"
       ]
     }
   ],
