@@ -14,6 +14,7 @@ data class IntervalsActivity(
     @SerializedName("average_heartrate") val averageHeartrate: Float?,
     @SerializedName("total_elevation_gain") val totalElevationGain: Float?,
     @SerializedName(value = "type", alternate = ["icu_type", "sport"]) val type: String?,
+    @SerializedName("source") val source: String? = null,
     @SerializedName("description") val description: String? = null
 )
 
@@ -29,4 +30,7 @@ data class IntervalsWellness(
     @SerializedName("ctl") val ctl: Float?,
     @SerializedName("atl") val atl: Float?,
     @SerializedName("tsb") val tsb: Float?
-)
+) {
+    val computedTsb: Float?
+        get() = tsb ?: if (ctl != null && atl != null) ctl - atl else null
+}

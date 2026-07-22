@@ -3,7 +3,6 @@ package com.gratus.workoutrepo;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -190,13 +189,13 @@ public class MainActivity extends BaseActivity {
                 int dayIndex = currentItem % 7;
                 String dayName = getDayNameFromIndex(dayIndex);
 
-                StravaBottomSheet bottomSheet = new StravaBottomSheet(dayName);
+                ActivityBottomSheet bottomSheet = new ActivityBottomSheet(dayName);
                 bottomSheet.show(getSupportFragmentManager(), "StravaSheet");
             }
         };
 
         Runnable openArchiveAction = () -> {
-            startActivity(new Intent(MainActivity.this, StravaArchiveActivity.class));
+            startActivity(new Intent(MainActivity.this, ArchiveActivity.class));
         };
 
         View.OnClickListener clickListener = v -> {

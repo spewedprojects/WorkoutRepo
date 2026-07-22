@@ -13,13 +13,13 @@ import com.gratus.workoutrepo.strava.utils.StravaListManager
 import com.gratus.workoutrepo.strava.repository.StravaRepository
 import kotlinx.coroutines.launch
 
-class StravaArchiveActivity : BaseActivity() {
+class ArchiveActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.enableEdgeToEdge()
-        setContentView(R.layout.activity_strava_archive)
+        setContentView(R.layout.activity_archive)
 
         val rootView = findViewById<View>(android.R.id.content)
 
@@ -31,7 +31,6 @@ class StravaArchiveActivity : BaseActivity() {
 
         val prefs = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE)
         val activeSource = prefs.getString("ActiveSyncSource", "STRAVA")
-        val sourceName = if ("INTERVALS_ICU" == activeSource) "Intervals.icu" else "Strava"
 
         val fitnessRow = findViewById<View>(R.id.fitnessRow)
         if ("INTERVALS_ICU" == activeSource) {
@@ -45,15 +44,15 @@ class StravaArchiveActivity : BaseActivity() {
             if (cachedWellness != null) {
                 tvFitnessValue.text = cachedWellness.ctl?.toInt()?.toString() ?: "0"
                 tvFatigueValue.text = cachedWellness.atl?.toInt()?.toString() ?: "0"
-                tvFormValue.text = cachedWellness.tsb?.toInt()?.toString() ?: "0"
+                tvFormValue.text = cachedWellness.computedTsb?.toInt()?.toString() ?: "0"
             }
 
             lifecycleScope.launch {
-                val wellness = com.gratus.workoutrepo.intervalsicu.repository.IntervalsRepository.getLatestWellness(this@StravaArchiveActivity)
+                val wellness = com.gratus.workoutrepo.intervalsicu.repository.IntervalsRepository.getLatestWellness(this@ArchiveActivity)
                 if (wellness != null) {
                     tvFitnessValue.text = wellness.ctl?.toInt()?.toString() ?: "0"
                     tvFatigueValue.text = wellness.atl?.toInt()?.toString() ?: "0"
-                    tvFormValue.text = wellness.tsb?.toInt()?.toString() ?: "0"
+                    tvFormValue.text = wellness.computedTsb?.toInt()?.toString() ?: "0"
                 }
             }
         } else {
@@ -64,7 +63,7 @@ class StravaArchiveActivity : BaseActivity() {
             context = this,
             lifecycleScope = lifecycleScope,
             rootView = rootView,
-            titlePrefix = "$sourceName Activities",
+            titlePrefix = "Activities",
             fetchMasterList = { forceRefresh ->
                 StravaRepository.getAllActivities(this, forceRefresh)
             }

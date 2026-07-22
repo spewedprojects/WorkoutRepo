@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.gratus.workoutrepo.strava.utils.StravaListManager
 import com.gratus.workoutrepo.strava.repository.StravaRepository
 
-class StravaBottomSheet(
+class ActivityBottomSheet(
     private val dayOfWeek: String = "Monday"
 ) : BottomSheetDialogFragment() {
 
@@ -23,7 +23,7 @@ class StravaBottomSheet(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottomsheet_strava_actvities, container, false)
+        return inflater.inflate(R.layout.bottomsheet_actvities, container, false)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -31,15 +31,11 @@ class StravaBottomSheet(
         super.onViewCreated(view, savedInstanceState)
 
         // --- THIS IS ALL YOU NEED NOW ---
-        val prefs = requireContext().getSharedPreferences(com.gratus.workoutrepo.BaseActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE)
-        val activeSource = prefs.getString("ActiveSyncSource", "STRAVA")
-        val sourceName = if ("INTERVALS_ICU" == activeSource) "Intervals.icu" else "Strava"
-
         val listManager = StravaListManager(
             context = requireContext(),
             lifecycleScope = lifecycleScope,
             rootView = view,
-            titlePrefix = "$sourceName Activities on ${dayOfWeek}s",
+            titlePrefix = "Activities on ${dayOfWeek}s",
             fetchMasterList = { forceRefresh ->
                 // BottomSheet fetches only specific day
                 StravaRepository.getActivitiesForDay(requireContext(), dayOfWeek, forceRefresh)

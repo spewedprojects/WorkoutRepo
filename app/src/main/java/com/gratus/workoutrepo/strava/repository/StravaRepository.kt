@@ -8,6 +8,7 @@ import com.gratus.workoutrepo.BaseActivity
 import com.gratus.workoutrepo.archive.data.ActivityArchiveManager
 import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import com.gratus.workoutrepo.archive.model.SourceProvider
+import com.gratus.workoutrepo.archive.model.isPlaceholder
 import com.gratus.workoutrepo.archive.utils.SportTypeMapper
 import com.gratus.workoutrepo.strava.data.StravaActivity
 import com.gratus.workoutrepo.strava.network.StravaService
@@ -313,10 +314,10 @@ object StravaRepository {
                 val match = ActivityArchiveManager.findExistingMatch(imported, currentArchive)
                 if (match != null) {
                     val index = currentArchive.indexOf(match)
-                    val isMatchUnknown = match.type.equals("Unknown", ignoreCase = true) || match.name.contains("Unknown", ignoreCase = true)
-                    val isImportedUnknown = imported.type.equals("Unknown", ignoreCase = true) || imported.name.contains("Unknown", ignoreCase = true)
+                    val isMatchPlaceholder = match.isPlaceholder()
+                    val isImportedPlaceholder = imported.isPlaceholder()
 
-                    val updated = if (isMatchUnknown && !isImportedUnknown) {
+                    val updated = if (isMatchPlaceholder && !isImportedPlaceholder) {
                         imported.copy(
                             stravaActivityId = imported.stravaActivityId ?: match.stravaActivityId,
                             intervalsActivityId = imported.intervalsActivityId ?: match.intervalsActivityId,

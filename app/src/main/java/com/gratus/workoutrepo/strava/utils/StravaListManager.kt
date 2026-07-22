@@ -455,7 +455,7 @@ class StravaListManager(
 
                 tvFitnessValue?.text = wellness?.ctl?.toInt()?.toString() ?: "0"
                 tvFatigueValue?.text = wellness?.atl?.toInt()?.toString() ?: "0"
-                tvFormValue?.text = wellness?.tsb?.toInt()?.toString() ?: "0"
+                tvFormValue?.text = wellness?.computedTsb?.toInt()?.toString() ?: "0"
             }
         }
     }

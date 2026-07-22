@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter
 import androidx.core.net.toUri
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.util.Locale
 
 class StravaAdapter(private var items: List<ArchiveActivity>,
@@ -27,6 +28,7 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
     private var loadingActivityId: String? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val cardView: com.google.android.material.card.MaterialCardView = view.findViewById(R.id.activityCardView)
         val title: TextView = view.findViewById(R.id.tvActivityTitle)
         val summary: TextView = view.findViewById(R.id.tvActivitySummary)
         val details: TextView = view.findViewById(R.id.tvActivityDetails)
@@ -62,13 +64,21 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_strava_activity, parent, false)
+            .inflate(R.layout.item_activity, parent, false)
         return ViewHolder(view)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+
+        // Set stroke color according to activity source
+        val strokeColorRes = if (item.source == com.gratus.workoutrepo.archive.model.SourceProvider.INTERVALS_ICU) {
+            R.color.intervals_icu_color
+        } else {
+            R.color.strava_color
+        }
+        holder.cardView.strokeColor = androidx.core.content.ContextCompat.getColor(holder.itemView.context, strokeColorRes)
 
         // 1. Long Click -> Open Browser based on Source
         holder.itemView.setOnLongClickListener {
@@ -148,8 +158,9 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
         val dateInput = item.startDateLocal // e.g. "2026-02-22T14:05:00Z" or "2026-02-22T14:05:00" or "2026-02-22"
 
         val dateOutput = try {
-            // Try parsing an ISO date-time with offset first
+            // Try parsing an ISO date-time with offset first and convert to local system zone
             val odt = OffsetDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
+                .atZoneSameInstant(ZoneId.systemDefault())
             val fmt = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
             odt.format(fmt)
         } catch (e1: Exception) {

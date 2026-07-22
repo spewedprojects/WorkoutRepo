@@ -50,7 +50,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Strava Activities today"
+            android:text="Activities today"
             android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="@font/atkinsonhyperlegiblenext_regular"

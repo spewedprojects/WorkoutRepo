@@ -22,3 +22,11 @@ data class ArchiveActivity(
     @SerializedName("description") val description: String?,
     @SerializedName("lastModifiedLocal") val lastModifiedLocal: Long = System.currentTimeMillis()
 )
+
+fun ArchiveActivity.isPlaceholder(): Boolean {
+    return type.equals("Unknown", ignoreCase = true) ||
+           type.equals("Strava", ignoreCase = true) ||
+           name.equals("Unknown Activity", ignoreCase = true) ||
+           name.equals("Strava Activity", ignoreCase = true) ||
+           name.contains("Unknown", ignoreCase = true)
+}

@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken
 import com.gratus.workoutrepo.BaseActivity
 import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import com.gratus.workoutrepo.archive.model.SourceProvider
+import com.gratus.workoutrepo.archive.model.isPlaceholder
 import com.gratus.workoutrepo.intervalsicu.data.IntervalsWellness
 import com.gratus.workoutrepo.strava.data.StravaActivity
 import java.io.File
@@ -199,8 +200,8 @@ object ActivityArchiveManager {
         // Heuristic matching
         return archive.find { existing ->
             val typeMatches = existing.type.equals(candidate.type, ignoreCase = true) || 
-                              existing.type.equals("Unknown", ignoreCase = true) || 
-                              candidate.type.equals("Unknown", ignoreCase = true)
+                              existing.isPlaceholder() || 
+                              candidate.isPlaceholder()
             if (!typeMatches) return@find false
 
             val existingTime = parseToLocalDateTime(existing.startDateLocal)
@@ -225,8 +226,8 @@ object ActivityArchiveManager {
     }
 
     /**
-     * Scans the archive list and removes dead "Unknown Activity" duplicates if a more detailed
-     * activity exists for the same local date and time.
+     * Scans the archive list and removes dead "Unknown Activity" or "Strava Activity" placeholders
+     * if a more detailed activity exists for the same local date and time.
      */
     fun deduplicateUnknownActivities(archive: List<ArchiveActivity>): List<ArchiveActivity> {
         if (archive.isEmpty()) return archive
@@ -238,36 +239,34 @@ object ActivityArchiveManager {
             val itemA = result[i]
             if (toRemove.contains(itemA)) continue
 
-            val isUnknownA = itemA.type.equals("Unknown", ignoreCase = true) ||
-                             itemA.name.contains("Unknown", ignoreCase = true)
+            val isPlaceholderA = itemA.isPlaceholder()
 
             for (j in i + 1 until result.size) {
                 val itemB = result[j]
                 if (toRemove.contains(itemB)) continue
 
-                val isUnknownB = itemB.type.equals("Unknown", ignoreCase = true) ||
-                                 itemB.name.contains("Unknown", ignoreCase = true)
+                val isPlaceholderB = itemB.isPlaceholder()
 
-                // Only compare when one is unknown and the other is detailed
-                if (isUnknownA == isUnknownB) continue
+                // Only compare when one is placeholder and the other is detailed
+                if (isPlaceholderA == isPlaceholderB) continue
 
-                // Check if they match via date/time/duration heuristics
+                // Check if they match via date/time/duration heuristics or IDs
                 val match = findExistingMatch(itemA, listOf(itemB))
                 if (match != null) {
-                    val unknownItem = if (isUnknownA) itemA else itemB
-                    val detailedItem = if (isUnknownA) itemB else itemA
+                    val placeholderItem = if (isPlaceholderA) itemA else itemB
+                    val detailedItem = if (isPlaceholderA) itemB else itemA
                     val detailedIndex = result.indexOf(detailedItem)
 
                     if (detailedIndex != -1) {
-                        // Merge IDs & description from unknown item into detailed item
+                        // Merge IDs & description from placeholder item into detailed item
                         val mergedDetailed = result[detailedIndex].copy(
-                            stravaActivityId = result[detailedIndex].stravaActivityId ?: unknownItem.stravaActivityId,
-                            intervalsActivityId = result[detailedIndex].intervalsActivityId ?: unknownItem.intervalsActivityId,
-                            description = if (!result[detailedIndex].description.isNullOrBlank()) result[detailedIndex].description else unknownItem.description
+                            stravaActivityId = result[detailedIndex].stravaActivityId ?: placeholderItem.stravaActivityId,
+                            intervalsActivityId = result[detailedIndex].intervalsActivityId ?: placeholderItem.intervalsActivityId,
+                            description = if (!result[detailedIndex].description.isNullOrBlank()) result[detailedIndex].description else placeholderItem.description
                         )
                         result[detailedIndex] = mergedDetailed
                     }
-                    toRemove.add(unknownItem)
+                    toRemove.add(placeholderItem)
                 }
             }
         }

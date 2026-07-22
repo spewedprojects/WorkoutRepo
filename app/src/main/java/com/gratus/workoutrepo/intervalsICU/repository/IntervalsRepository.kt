@@ -7,6 +7,7 @@ import androidx.security.crypto.MasterKeys
 import com.gratus.workoutrepo.archive.data.ActivityArchiveManager
 import com.gratus.workoutrepo.archive.model.ArchiveActivity
 import com.gratus.workoutrepo.archive.model.SourceProvider
+import com.gratus.workoutrepo.archive.model.isPlaceholder
 import com.gratus.workoutrepo.archive.utils.SportTypeMapper
 import com.gratus.workoutrepo.intervalsicu.network.IntervalsService
 import okhttp3.Interceptor
@@ -135,19 +136,24 @@ object IntervalsRepository {
             val freshIntervals = currentService.getActivities(oldest = oldest)
             
             val newArchiveEntries = freshIntervals.map { intervalsAct ->
-                val mappedType = SportTypeMapper.mapIntervalsType(intervalsAct.type ?: "Unknown")
+                val isStravaSource = intervalsAct.source?.equals("STRAVA", ignoreCase = true) == true
+                val extractedStravaId = if (isStravaSource) intervalsAct.id.toLongOrNull() else null
+
+                val mappedType = if (isStravaSource) "Strava" else SportTypeMapper.mapIntervalsType(intervalsAct.type ?: "Unknown")
+                val fallbackName = if (isStravaSource) "Strava Activity" else "$mappedType Activity"
+
                 ArchiveActivity(
-                    stravaActivityId = null,
+                    stravaActivityId = extractedStravaId,
                     intervalsActivityId = intervalsAct.id,
-                    source = SourceProvider.INTERVALS_ICU,
-                    name = intervalsAct.name ?: "$mappedType Activity",
+                    source = if (isStravaSource) SourceProvider.STRAVA else SourceProvider.INTERVALS_ICU,
+                    name = if (!intervalsAct.name.isNullOrBlank()) intervalsAct.name else fallbackName,
                     distance = intervalsAct.distance ?: 0f,
                     movingTime = intervalsAct.movingTime ?: 0,
                     startDateLocal = intervalsAct.startDateLocal ?: "",
                     averageWatts = intervalsAct.averageWatts,
                     averageHeartrate = intervalsAct.averageHeartrate,
                     totalElevationGain = intervalsAct.totalElevationGain,
-                    type = SportTypeMapper.mapIntervalsType(intervalsAct.type ?: "Unknown"),
+                    type = if (!intervalsAct.type.isNullOrBlank()) SportTypeMapper.mapIntervalsType(intervalsAct.type) else mappedType,
                     workoutType = null,
                     description = intervalsAct.description,
                     lastModifiedLocal = System.currentTimeMillis()
@@ -161,10 +167,10 @@ object IntervalsRepository {
                 val match = ActivityArchiveManager.findExistingMatch(newEntry, finalArchive)
                 if (match != null) {
                     val index = finalArchive.indexOf(match)
-                    val isMatchUnknown = match.type.equals("Unknown", ignoreCase = true) || match.name.contains("Unknown", ignoreCase = true)
-                    val isNewUnknown = newEntry.type.equals("Unknown", ignoreCase = true) || newEntry.name.contains("Unknown", ignoreCase = true)
+                    val isMatchPlaceholder = match.isPlaceholder()
+                    val isNewPlaceholder = newEntry.isPlaceholder()
 
-                    val updated = if (isMatchUnknown && !isNewUnknown) {
+                    val updated = if (isMatchPlaceholder && !isNewPlaceholder) {
                         newEntry.copy(
                             stravaActivityId = newEntry.stravaActivityId ?: match.stravaActivityId,
                             intervalsActivityId = newEntry.intervalsActivityId ?: match.intervalsActivityId,
@@ -175,8 +181,8 @@ object IntervalsRepository {
                             intervalsActivityId = match.intervalsActivityId ?: newEntry.intervalsActivityId,
                             stravaActivityId = match.stravaActivityId ?: newEntry.stravaActivityId,
                             description = if (!match.description.isNullOrBlank()) match.description else newEntry.description,
-                            name = if (isMatchUnknown && !isNewUnknown) newEntry.name else match.name,
-                            type = if (isMatchUnknown && !isNewUnknown) newEntry.type else match.type
+                            name = if (isMatchPlaceholder && !isNewPlaceholder) newEntry.name else match.name,
+                            type = if (isMatchPlaceholder && !isNewPlaceholder) newEntry.type else match.type
                         )
                     }
                     finalArchive[index] = updated
