@@ -86,6 +86,7 @@ class StravaListManager(
     private val chipGroupContainer by lazy { rootView.findViewById<View>(R.id.chipGroupContainer) }
     private val chipGroupFilters by lazy { rootView.findViewById<ChipGroup>(R.id.chipGroupFilters) }
     private val textNoMatch by lazy { rootView.findViewById<TextView>(R.id.text_NoMatch) }
+    private val textNoAPIKeys by lazy { rootView.findViewById<TextView>(R.id.text_NoAPIKeys) }
     private val stravaProfile by lazy { rootView.findViewById<ImageButton>(R.id.stravaProfile) }
 
     private val rotateAnim = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
@@ -463,6 +464,28 @@ class StravaListManager(
     // This function or method is to basically load data after a manual refresh or an auto refresh is done
     private fun loadData(forceRefresh: Boolean) {
         lifecycleScope.launch {
+            val prefs = context.getSharedPreferences(BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
+            val activeSource = prefs.getString("ActiveSyncSource", "STRAVA")
+            val hasKeys = if ("INTERVALS_ICU" == activeSource) {
+                com.gratus.workoutrepo.intervalsicu.repository.IntervalsRepository.hasValidCredentials(context)
+            } else {
+                com.gratus.workoutrepo.strava.repository.TokenManager.hasValidCredentials(context)
+            }
+
+            if (!hasKeys) {
+                refreshBtn?.clearAnimation()
+                refreshBtn?.isEnabled = true
+                progressBar?.visibility = View.GONE
+                recyclerView?.visibility = View.GONE
+                textNoMatch?.visibility = View.GONE
+                textNoAPIKeys?.visibility = View.VISIBLE
+                tvTitle?.text = "No API Keys Configured"
+                allActivities = emptyList()
+                return@launch
+            }
+
+            textNoAPIKeys?.visibility = View.GONE
+
             if (forceRefresh) {
                 refreshBtn?.startAnimation(rotateAnim)
                 refreshBtn?.isEnabled = false

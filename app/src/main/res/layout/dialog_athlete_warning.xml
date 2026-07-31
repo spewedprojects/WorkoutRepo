@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    android:background="@drawable/rounded_corners"
+    android:elevation="14dp"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="Athlete Credentials Warning"
+            android:textColor="@color/black_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dialogMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:alpha="0.85"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+            android:text="You are updating API credentials.\n\nIf you are switching to a different athlete's account, please back up your current archive using Export Archive.\n\nIf these keys belong to the same athlete, tap 'Same Athlete' to save and keep your existing archive."
+            android:textColor="@color/black_white"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnExportFirst"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:alpha="0.9"
+                    android:backgroundTint="@color/transparent"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                    android:text="Export Archive"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white_0.4"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSameAthlete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:backgroundTint="@color/strava_color"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                    android:text="Same Athlete"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/black_white"
+                    app:strokeWidth="0dp" />
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/transparent"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+                android:text="Cancel"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="13sp"
+                app:cornerRadius="12dp"
+                app:strokeWidth="0dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

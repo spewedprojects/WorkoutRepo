@@ -97,7 +97,7 @@ object StravaRepository {
         // 2. Try Strava if stravaActivityId is available
         val stravaId = archiveActivity.stravaActivityId
         if (stravaId != null) {
-            val token = getValidToken()
+            val token = getValidToken(context)
             if (token != null) {
                 try {
                     val detailedActivity = api.getActivityDetails(stravaId, token)
@@ -139,7 +139,7 @@ object StravaRepository {
     }
 
     private suspend fun fetchAndSaveActivities(context: Context, isDeepSync: Boolean) {
-        val token = getValidToken() ?: return
+        val token = getValidToken(context) ?: return
 
         try {
             val freshActivities = mutableListOf<StravaActivity>()
@@ -208,19 +208,20 @@ object StravaRepository {
         }
     }
 
-    private suspend fun getValidToken(): String? {
+    private suspend fun getValidToken(context: Context): String? {
         if (TokenManager.accessToken != null) return TokenManager.accessToken
 
         return try {
             val response = api.refreshToken(
-                TokenManager.CLIENT_ID,
-                TokenManager.CLIENT_SECRET,
-                TokenManager.refreshToken
+                TokenManager.getClientId(context),
+                TokenManager.getClientSecret(context),
+                TokenManager.getRefreshToken(context)
             )
             TokenManager.accessToken = response.accessToken
-            TokenManager.refreshToken = response.refreshToken
+            TokenManager.saveRefreshToken(context, response.refreshToken)
             response.accessToken
         } catch (e: Exception) {
+            Log.e("StravaRepo", "Failed to refresh token", e)
             null
         }
     }
@@ -234,7 +235,7 @@ object StravaRepository {
         val cachedUrl = prefs.getString("StravaProfileUrl", null)
         if (cachedUrl != null) return cachedUrl
 
-        val token = getValidToken() ?: return null
+        val token = getValidToken(context) ?: return null
         return try {
             val athlete = api.getAuthenticatedAthlete(token)
             val url = athlete.profile

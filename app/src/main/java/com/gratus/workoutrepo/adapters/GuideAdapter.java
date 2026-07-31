@@ -79,34 +79,38 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Context context = sHolder.itemView.getContext();
             SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
-            // --- SYNC TOGGLE ---
+            // --- SOURCE SELECTION & SYNC ---
             boolean isSyncEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
             String activeSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
-            
-            sHolder.switchEnableSync.setOnCheckedChangeListener(null);
-            sHolder.switchEnableSync.setChecked(isSyncEnabled);
-            updateSyncSubText(sHolder.tvEnableSyncSub, isSyncEnabled);
-            sHolder.chooseBtns.setVisibility(isSyncEnabled ? View.VISIBLE : View.GONE);
-            sHolder.globalSettingsContainer.setVisibility((isSyncEnabled && !activeSource.isEmpty()) ? View.VISIBLE : View.GONE);
+            boolean isStravaActive = isSyncEnabled && SourceProvider.STRAVA.name().equals(activeSource);
+            boolean isICUActive = isSyncEnabled && SourceProvider.INTERVALS_ICU.name().equals(activeSource);
 
-            sHolder.switchEnableSync.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                prefs.edit().putBoolean(PREF_ENABLE_SYNC, isChecked).apply();
-                updateSyncSubText(sHolder.tvEnableSyncSub, isChecked);
-                sHolder.chooseBtns.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                String currentSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
-                sHolder.globalSettingsContainer.setVisibility((isChecked && !currentSource.isEmpty()) ? View.VISIBLE : View.GONE);
-            });
-
-            // --- SOURCE SELECTION ---
-            updateSourceButtons(sHolder, activeSource);
-            updateSettingsVisibility(sHolder, activeSource);
+            updateSourceButtons(sHolder, isSyncEnabled ? activeSource : "");
+            updateSettingsVisibility(sHolder, isSyncEnabled ? activeSource : "");
+            sHolder.globalSettingsContainer.setVisibility((isStravaActive || isICUActive) ? View.VISIBLE : View.GONE);
 
             sHolder.btnSelectStrava.setOnClickListener(v -> {
-                showKeywordDialog(sHolder, prefs);
+                boolean currentlyEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
+                String currentSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
+                boolean currentlyStrava = currentlyEnabled && SourceProvider.STRAVA.name().equals(currentSource);
+
+                if (currentlyStrava) {
+                    clearSyncSource(sHolder, prefs);
+                } else {
+                    showKeywordDialog(sHolder, prefs);
+                }
             });
 
             sHolder.btnSelectICU.setOnClickListener(v -> {
-                setSyncSource(sHolder, prefs, SourceProvider.INTERVALS_ICU.name());
+                boolean currentlyEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
+                String currentSource = prefs.getString(PREF_ACTIVE_SYNC_SOURCE, "");
+                boolean currentlyICU = currentlyEnabled && SourceProvider.INTERVALS_ICU.name().equals(currentSource);
+
+                if (currentlyICU) {
+                    clearSyncSource(sHolder, prefs);
+                } else {
+                    setSyncSource(sHolder, prefs, SourceProvider.INTERVALS_ICU.name());
+                }
             });
 
             // --- STRAVA PROFILE URL ---
@@ -117,6 +121,64 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return true;
             });
             sHolder.tilUrl.setEndIconOnClickListener(v -> saveUrl(sHolder.etUrl, prefs, sHolder.etUrl));
+
+            // --- STRAVA CREDENTIALS ---
+            if (sHolder.etClientId != null) {
+                sHolder.etClientId.setText(TokenManager.getClientId(context));
+            }
+            if (sHolder.etClientSecret != null) {
+                sHolder.etClientSecret.setText(TokenManager.getClientSecret(context));
+            }
+            if (sHolder.etRefreshToken != null) {
+                sHolder.etRefreshToken.setText(TokenManager.getRefreshToken(context));
+            }
+
+            Runnable updateSaveClientBtnVisibility = () -> {
+                boolean hasFocus = (sHolder.etClientId != null && sHolder.etClientId.hasFocus())
+                        || (sHolder.etClientSecret != null && sHolder.etClientSecret.hasFocus())
+                        || (sHolder.etRefreshToken != null && sHolder.etRefreshToken.hasFocus());
+                WindowInsetsCompat insets = ViewCompat.getRootWindowInsets(sHolder.itemView);
+                boolean isImeVisible = insets != null && insets.isVisible(WindowInsetsCompat.Type.ime());
+                if (sHolder.btnSaveClientDetails != null) {
+                    sHolder.btnSaveClientDetails.setVisibility((hasFocus && isImeVisible) ? View.VISIBLE : View.GONE);
+                }
+            };
+
+            View.OnFocusChangeListener clientFocusListener = (v, hasFocus) -> updateSaveClientBtnVisibility.run();
+            if (sHolder.etClientId != null) sHolder.etClientId.setOnFocusChangeListener(clientFocusListener);
+            if (sHolder.etClientSecret != null) sHolder.etClientSecret.setOnFocusChangeListener(clientFocusListener);
+            if (sHolder.etRefreshToken != null) sHolder.etRefreshToken.setOnFocusChangeListener(clientFocusListener);
+
+            if (sHolder.btnSaveClientDetails != null) {
+                sHolder.btnSaveClientDetails.setOnClickListener(v -> saveStravaDetails(context, sHolder));
+            }
+
+            if (sHolder.etRefreshToken != null) {
+                sHolder.etRefreshToken.setOnEditorActionListener((v, actionId, event) -> {
+                    saveStravaDetails(context, sHolder);
+                    return true;
+                });
+            }
+            if (sHolder.tilRefreshToken != null) {
+                sHolder.tilRefreshToken.setEndIconOnClickListener(v -> saveStravaDetails(context, sHolder));
+            }
+
+            if (sHolder.etClientId != null) {
+                sHolder.etClientId.setOnEditorActionListener((v, actionId, event) -> {
+                    saveStravaDetails(context, sHolder);
+                    return true;
+                });
+            }
+            if (sHolder.tilClientId != null) {
+                sHolder.tilClientId.setEndIconOnClickListener(v -> saveStravaDetails(context, sHolder));
+            }
+
+            if (sHolder.etClientSecret != null) {
+                sHolder.etClientSecret.setOnEditorActionListener((v, actionId, event) -> {
+                    saveStravaDetails(context, sHolder);
+                    return true;
+                });
+            }
 
             // --- INTERVALS.ICU API KEY & DURATION ---
             String savedApiKey = IntervalsRepository.INSTANCE.getApiKey(context);
@@ -141,10 +203,16 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             ViewCompat.setOnApplyWindowInsetsListener(sHolder.itemView, (v, insets) -> {
                 boolean isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
-                boolean hasFocus = (sHolder.etAPIKeyIcu != null && sHolder.etAPIKeyIcu.hasFocus())
+                boolean hasIcuFocus = (sHolder.etAPIKeyIcu != null && sHolder.etAPIKeyIcu.hasFocus())
                         || (sHolder.etDurationIcu != null && sHolder.etDurationIcu.hasFocus());
                 if (sHolder.btnSaveApiDetails != null) {
-                    sHolder.btnSaveApiDetails.setVisibility((hasFocus && isImeVisible) ? View.VISIBLE : View.GONE);
+                    sHolder.btnSaveApiDetails.setVisibility((hasIcuFocus && isImeVisible) ? View.VISIBLE : View.GONE);
+                }
+                boolean hasClientFocus = (sHolder.etClientId != null && sHolder.etClientId.hasFocus())
+                        || (sHolder.etClientSecret != null && sHolder.etClientSecret.hasFocus())
+                        || (sHolder.etRefreshToken != null && sHolder.etRefreshToken.hasFocus());
+                if (sHolder.btnSaveClientDetails != null) {
+                    sHolder.btnSaveClientDetails.setVisibility((hasClientFocus && isImeVisible) ? View.VISIBLE : View.GONE);
                 }
                 return insets;
             });
@@ -162,9 +230,6 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     saveIntervalsDetails(context, prefs, sHolder);
                     return true;
                 });
-            }
-            if (sHolder.tilAPIKeyIcu != null) {
-                sHolder.tilAPIKeyIcu.setEndIconOnClickListener(v -> saveIntervalsDetails(context, prefs, sHolder));
             }
 
             if (sHolder.etDurationIcu != null) {
@@ -233,24 +298,41 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void setSyncSource(SettingsViewHolder sHolder, SharedPreferences prefs, String source) {
-        prefs.edit().putString(PREF_ACTIVE_SYNC_SOURCE, source).apply();
+        prefs.edit()
+                .putBoolean(PREF_ENABLE_SYNC, true)
+                .putString(PREF_ACTIVE_SYNC_SOURCE, source)
+                .apply();
         sHolder.globalSettingsContainer.setVisibility(View.VISIBLE);
         updateSourceButtons(sHolder, source);
         updateSettingsVisibility(sHolder, source);
         updateSwitchText(sHolder.tvClickSub, prefs.getBoolean(PREF_LONG_CLICK_STRAVA, true), source);
     }
 
+    private void clearSyncSource(SettingsViewHolder sHolder, SharedPreferences prefs) {
+        prefs.edit()
+                .putBoolean(PREF_ENABLE_SYNC, false)
+                .putString(PREF_ACTIVE_SYNC_SOURCE, "")
+                .apply();
+        sHolder.btnSelectStrava.setSelected(false);
+        sHolder.btnSelectICU.setSelected(false);
+        sHolder.globalSettingsContainer.setVisibility(View.GONE);
+    }
+
     private void updateSourceButtons(SettingsViewHolder sHolder, String source) {
-        boolean isStrava = SourceProvider.STRAVA.name().equals(source);
-        boolean isICU = SourceProvider.INTERVALS_ICU.name().equals(source);
+        SharedPreferences prefs = sHolder.itemView.getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isSyncEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
+        boolean isStrava = isSyncEnabled && SourceProvider.STRAVA.name().equals(source);
+        boolean isICU = isSyncEnabled && SourceProvider.INTERVALS_ICU.name().equals(source);
         
         sHolder.btnSelectStrava.setSelected(isStrava);
         sHolder.btnSelectICU.setSelected(isICU);
     }
 
     private void updateSettingsVisibility(SettingsViewHolder sHolder, String source) {
-        boolean isStrava = SourceProvider.STRAVA.name().equals(source);
-        boolean isICU = SourceProvider.INTERVALS_ICU.name().equals(source);
+        SharedPreferences prefs = sHolder.itemView.getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isSyncEnabled = prefs.getBoolean(PREF_ENABLE_SYNC, false);
+        boolean isStrava = isSyncEnabled && SourceProvider.STRAVA.name().equals(source);
+        boolean isICU = isSyncEnabled && SourceProvider.INTERVALS_ICU.name().equals(source);
         sHolder.stravaURLSetting.setVisibility(isStrava ? View.VISIBLE : View.GONE);
         sHolder.intervalsICUSetting.setVisibility(isICU ? View.VISIBLE : View.GONE);
         
@@ -281,31 +363,111 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         hideKeyboard(v);
     }
 
-    private void saveIntervalsDetails(Context context, SharedPreferences prefs, SettingsViewHolder sHolder) {
-        if (sHolder.etAPIKeyIcu != null) {
-            String key = sHolder.etAPIKeyIcu.getText() != null ? sHolder.etAPIKeyIcu.getText().toString().trim() : "";
-            if (key.length() >= 20) {
-                IntervalsRepository.INSTANCE.saveApiKey(context, key);
-            } else if (!key.isEmpty()) {
-                sHolder.etAPIKeyIcu.setError("Invalid API Key");
+    private void confirmCredentialChange(Context context, SettingsViewHolder sHolder, Runnable onConfirm) {
+        if (!com.gratus.workoutrepo.archive.data.ActivityArchiveManager.INSTANCE.getActivities(context).isEmpty()) {
+            Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.dialog_athlete_warning);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
-        }
-        if (sHolder.etDurationIcu != null) {
-            String durationStr = sHolder.etDurationIcu.getText() != null ? sHolder.etDurationIcu.getText().toString().trim() : "";
-            if (!durationStr.isEmpty()) {
-                try {
-                    int years = Integer.parseInt(durationStr);
-                    if (years > 0) {
-                        prefs.edit().putInt("IntervalsDurationYears", years).apply();
+
+            MaterialButton btnExportFirst = dialog.findViewById(R.id.btnExportFirst);
+            MaterialButton btnSameAthlete = dialog.findViewById(R.id.btnSameAthlete);
+            MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+
+            if (btnSameAthlete != null) {
+                btnSameAthlete.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    onConfirm.run();
+                });
+            }
+
+            if (btnExportFirst != null) {
+                btnExportFirst.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    if (sHolder.btnExport != null) {
+                        sHolder.btnExport.performClick();
                     }
-                } catch (NumberFormatException ignored) {}
+                    onConfirm.run();
+                });
             }
+
+            if (btnCancel != null) {
+                btnCancel.setOnClickListener(v -> dialog.dismiss());
+            }
+
+            dialog.show();
+        } else {
+            onConfirm.run();
         }
-        if (sHolder.etAPIKeyIcu != null) sHolder.etAPIKeyIcu.clearFocus();
-        if (sHolder.etDurationIcu != null) sHolder.etDurationIcu.clearFocus();
-        hideKeyboard(sHolder.itemView);
-        if (sHolder.btnSaveApiDetails != null) {
-            sHolder.btnSaveApiDetails.setVisibility(View.GONE);
+    }
+
+    private void saveStravaDetails(Context context, SettingsViewHolder sHolder) {
+        String clientId = sHolder.etClientId != null && sHolder.etClientId.getText() != null ? sHolder.etClientId.getText().toString().trim() : "";
+        String clientSecret = sHolder.etClientSecret != null && sHolder.etClientSecret.getText() != null ? sHolder.etClientSecret.getText().toString().trim() : "";
+        String refreshToken = sHolder.etRefreshToken != null && sHolder.etRefreshToken.getText() != null ? sHolder.etRefreshToken.getText().toString().trim() : "";
+
+        String existingId = TokenManager.getClientId(context);
+        String existingSecret = TokenManager.getClientSecret(context);
+        String existingRefresh = TokenManager.getRefreshToken(context);
+
+        boolean isChanged = !clientId.equals(existingId) || !clientSecret.equals(existingSecret) || !refreshToken.equals(existingRefresh);
+
+        Runnable performSave = () -> {
+            TokenManager.saveCredentials(context, clientId, clientSecret, refreshToken);
+            if (sHolder.etClientId != null) sHolder.etClientId.clearFocus();
+            if (sHolder.etClientSecret != null) sHolder.etClientSecret.clearFocus();
+            if (sHolder.etRefreshToken != null) sHolder.etRefreshToken.clearFocus();
+            hideKeyboard(sHolder.itemView);
+            if (sHolder.btnSaveClientDetails != null) {
+                sHolder.btnSaveClientDetails.setVisibility(View.GONE);
+            }
+        };
+
+        if (isChanged) {
+            confirmCredentialChange(context, sHolder, performSave);
+        } else {
+            performSave.run();
+        }
+    }
+
+    private void saveIntervalsDetails(Context context, SharedPreferences prefs, SettingsViewHolder sHolder) {
+        String newKey = sHolder.etAPIKeyIcu != null && sHolder.etAPIKeyIcu.getText() != null ? sHolder.etAPIKeyIcu.getText().toString().trim() : "";
+        String existingKey = IntervalsRepository.INSTANCE.getApiKey(context);
+        boolean isKeyChanged = !newKey.isEmpty() && (existingKey == null || !newKey.equals(existingKey));
+
+        Runnable performSave = () -> {
+            if (sHolder.etAPIKeyIcu != null) {
+                if (newKey.length() >= 20) {
+                    IntervalsRepository.INSTANCE.saveApiKey(context, newKey);
+                } else if (!newKey.isEmpty()) {
+                    sHolder.etAPIKeyIcu.setError("Invalid API Key");
+                }
+            }
+            if (sHolder.etDurationIcu != null) {
+                String durationStr = sHolder.etDurationIcu.getText() != null ? sHolder.etDurationIcu.getText().toString().trim() : "";
+                if (!durationStr.isEmpty()) {
+                    try {
+                        int years = Integer.parseInt(durationStr);
+                        if (years > 0) {
+                            prefs.edit().putInt("IntervalsDurationYears", years).apply();
+                        }
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            if (sHolder.etAPIKeyIcu != null) sHolder.etAPIKeyIcu.clearFocus();
+            if (sHolder.etDurationIcu != null) sHolder.etDurationIcu.clearFocus();
+            hideKeyboard(sHolder.itemView);
+            if (sHolder.btnSaveApiDetails != null) {
+                sHolder.btnSaveApiDetails.setVisibility(View.GONE);
+            }
+        };
+
+        if (isKeyChanged) {
+            confirmCredentialChange(context, sHolder, performSave);
+        } else {
+            performSave.run();
         }
     }
 
@@ -380,16 +542,22 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     static class SettingsViewHolder extends RecyclerView.ViewHolder {
-        MaterialSwitch switchEnableSync;
-        TextView tvEnableSyncSub;
         LinearLayout globalSettingsContainer;
 
         LinearLayout chooseBtns;
-        MaterialButton btnSelectStrava, btnSelectICU;
+        View btnSelectStrava, btnSelectICU;
         
         LinearLayout stravaURLSetting;
         com.google.android.material.textfield.TextInputLayout tilUrl;
         TextInputEditText etUrl;
+
+        com.google.android.material.textfield.TextInputLayout tilClientId;
+        TextInputEditText etClientId;
+        com.google.android.material.textfield.TextInputLayout tilClientSecret;
+        TextInputEditText etClientSecret;
+        com.google.android.material.textfield.TextInputLayout tilRefreshToken;
+        TextInputEditText etRefreshToken;
+        MaterialButton btnSaveClientDetails;
 
         LinearLayout intervalsICUSetting;
         com.google.android.material.textfield.TextInputLayout tilAPIKeyIcu;
@@ -410,18 +578,25 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         SettingsViewHolder(View v) {
             super(v);
-            switchEnableSync = v.findViewById(R.id.switch_enablestrava);
-            tvEnableSyncSub = v.findViewById(R.id.tvenablestrava_sub);
             globalSettingsContainer = v.findViewById(R.id.global_settings_container);
 
             chooseBtns = v.findViewById(R.id.chooseBtns);
-            btnSelectStrava = v.findViewById(R.id.selectStrava);
-            btnSelectStrava.setEnabled(true); // Must be enabled now
-            btnSelectICU = v.findViewById(R.id.selectICU);
+            btnSelectStrava = v.findViewById(R.id.selectStravaNew);
+            if (btnSelectStrava != null) btnSelectStrava.setEnabled(true);
+            btnSelectICU = v.findViewById(R.id.selectICUNew);
+            if (btnSelectICU != null) btnSelectICU.setEnabled(true);
 
             stravaURLSetting = v.findViewById(R.id.stravaURL_setting);
             tilUrl = v.findViewById(R.id.tilProfileUrl);
             etUrl = v.findViewById(R.id.etProfileUrl);
+
+            tilClientId = v.findViewById(R.id.tilClientId);
+            etClientId = v.findViewById(R.id.etClientId);
+            tilClientSecret = v.findViewById(R.id.tilClientSecret);
+            etClientSecret = v.findViewById(R.id.etClientSecret);
+            tilRefreshToken = v.findViewById(R.id.tilRefreshToken);
+            etRefreshToken = v.findViewById(R.id.etRefreshToken);
+            btnSaveClientDetails = v.findViewById(R.id.saveClientDetails);
 
             intervalsICUSetting = v.findViewById(R.id.intervalsICU_setting);
             tilAPIKeyIcu = v.findViewById(R.id.tilAPIKey_icu);

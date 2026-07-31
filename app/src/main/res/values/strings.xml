@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">WorkoutRepo</string>
-    <string name="btn_light_mode">Switch to Light mode</string>
-    <string name="btn_auto_mode">Switch to Auto mode</string>
-    <string name="btn_dark_mode">Switch to Dark mode</string>
+    <string name="btn_light_mode">Current mode Auto, Switch to Light mode</string>
+    <string name="btn_auto_mode">Current mode Dark, Switch to Auto mode</string>
+    <string name="btn_dark_mode">Current mode Light, Switch to Dark mode</string>
     <string name="expand_notes_btn">Expand notes</string>
 
     <!-- Confirmation Dialog -->

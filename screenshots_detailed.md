@@ -5,12 +5,14 @@ Home Screen and  App settings
     <td width="20%">Guide</td>
     <td width="20%">Settings Strava</td>
     <td width="20%">Settings Intervals.icu</td>
+    <td width="20%">Sync disabled</td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/home/home_01.png" width="100%"></td>
     <td><img src="docs/screenshots/home/home_02_guide.png" width="100%"></td>
     <td><img src="docs/screenshots/home/home_03_settingsStrava.png" width="100%"></td>
     <td><img src="docs/screenshots/home/home_03_settingsICU.png" width="100%"></td>
+    <td><img src="docs/screenshots/home/home_05_settingsSync.png" width="100%"></td>
   </tr>
 </table>
 

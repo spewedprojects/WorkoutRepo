@@ -37,6 +37,8 @@ object IntervalsRepository {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
+    private const val KEY_INTERVALS_ATHLETE_ID = "intervals_athlete_id"
+
     fun saveApiKey(context: Context, key: String) {
         getSecurePrefs(context).edit().putString(KEY_API_KEY, key).apply()
         cachedApiKey = key
@@ -49,6 +51,19 @@ object IntervalsRepository {
             cachedApiKey?.let { service = buildService(it) }
         }
         return cachedApiKey
+    }
+
+    fun hasValidCredentials(context: Context): Boolean {
+        val key = getApiKey(context)
+        return !key.isNullOrBlank() && key.length >= 20
+    }
+
+    fun getIntervalsAthleteId(context: Context): String? {
+        return getSecurePrefs(context).getString(KEY_INTERVALS_ATHLETE_ID, null)
+    }
+
+    fun saveIntervalsAthleteId(context: Context, athleteId: String) {
+        getSecurePrefs(context).edit().putString(KEY_INTERVALS_ATHLETE_ID, athleteId).apply()
     }
 
     private fun buildService(apiKey: String): IntervalsService {

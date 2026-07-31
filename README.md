@@ -5,7 +5,7 @@
 </div>
 
 **WorkoutRepo** is a workout routine managment app that can be simply put as a GUI for your workout excel sheet, _more like a workout reminder_.
-Additionally, this app has the ability to sycn your workout history from Strava and Intervals.icu using personal API keys.
+Additionally, this app has the ability to sync your workout history from Strava and Intervals.icu using personal API keys.
 ##### Not to be mistaken for a *workout logger*.
 
 #### _Google Play protect may ask to scan the app before installing; let it scan. **The app is safe to use.**_

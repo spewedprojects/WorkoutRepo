@@ -14,52 +14,15 @@
         android:orientation="vertical"
         android:animateLayoutChanges="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.8"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-                    android:text="Enable Starva/Intervals.icu"
-                    android:textColor="@color/black_white"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/tvenablestrava_sub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:alpha="0.65"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-                    android:text="Enabled | Choose below"
-                    android:textColor="@color/black_white"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
-            </LinearLayout>
-
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switch_enablestrava"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="8dp"
-                android:enabled="true"
-                android:checked="false"
-                app:thumbTint="@color/switch_thumb_colors"/>
-
-        </RelativeLayout>
+            android:alpha="0.8"
+            android:layout_marginVertical="4dp"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
+            android:text="Choose below to enable sync"
+            android:textColor="@color/black_white"
+            android:textSize="16sp"/>
 
         <!-- Buttons to choose which to use for syncing activities - Strava stays disabled (unclickable) until subscription is on -->
         <LinearLayout
@@ -67,50 +30,88 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:visibility="gone">
+            android:layout_marginVertical="6dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:visibility="visible">
 
-            <!-- Select Strava button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/selectStrava"
+            <LinearLayout
+                android:id="@+id/selectStravaNew"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:layout_margin="12dp"
-                android:textAlignment="center"
-                app:icon="@drawable/strava_2"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconSize="40dp"
-                app:iconTint="@color/white"
-                android:elevation="4dp"
-                android:outlineSpotShadowColor="@color/black_white"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:enabled="true"
                 android:background="@drawable/button_background_selector_strava"
-                android:tooltipText="Choose Strava"
-                app:backgroundTint="@color/strava_color"
-                android:allowClickWhenDisabled="false"
-                android:enabled="false"/>
+                android:layout_marginHorizontal="2dp"
+                android:paddingHorizontal="4.5dp">
 
-            <!-- Select Intervals.icu button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/selectICU"
+                <!-- Text on the left -->
+                <TextView
+                    android:id="@+id/stravaText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Strava"
+                    android:paddingHorizontal="10dp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+
+                <!-- Icon on the right -->
+                <ImageView
+                    android:id="@+id/stravaIcon"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/strava_2"
+                    android:background="@drawable/rounded_corners_strava"
+                    android:contentDescription="Strava icon"/>
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="1dp"
+                android:layout_height="32dp"
+                android:layout_marginHorizontal="4dp"/>
+
+            <LinearLayout
+                android:id="@+id/selectICUNew"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:layout_margin="12dp"
-                app:icon="@drawable/intervals_icu_2"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconSize="40dp"
-                app:iconTint="@color/white"
-                android:elevation="4dp"
-                android:outlineSpotShadowColor="@color/black_white"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:enabled="true"
+                android:paddingHorizontal="4.5dp"
                 android:background="@drawable/button_background_selector_icu"
-                app:backgroundTint="@color/intervals_icu_color"
-                android:tooltipText="Choose Intervals.icu"
-                android:enabled="true"/>
+                android:layout_marginHorizontal="2dp">
+
+                <!-- Text on the left -->
+                <TextView
+                    android:id="@+id/intervals_Text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Intervals.icu"
+                    android:paddingHorizontal="10dp"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+
+                <!-- Icon on the right -->
+                <ImageView
+                    android:id="@+id/intervalsIcon"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/intervals_icu_2"
+                    android:background="@drawable/rounded_corners_intervalsicu"
+                    android:contentDescription="Intervals.icu icon"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -118,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <!-- Strava URL input - mostly redundant - TODO -> user input client secret & ID instead of hardcoding keys. This will be visible when Strava is selected -->
             <LinearLayout
@@ -166,13 +167,147 @@
                         android:saveEnabled="true"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <!-- Helper Text -->
                 <TextView
                     android:id="@+id/tvUrlHelper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Example: https://www.strava.com/athletes/123456"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:layout_marginTop="2dp" />
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Client ID Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilClientId"
+                        android:layout_marginEnd="4dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:cursorColor="?attr/colorAccent"
+                        app:boxStrokeColor="@color/textbox_stroke"
+                        android:saveEnabled="true"
+                        app:hintEnabled="false"
+                        app:endIconCheckable="true"
+                        app:endIconDrawable="@drawable/check_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etClientId"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingVertical="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:hint="Client ID"
+                            android:imeOptions="actionNext"
+                            android:saveEnabled="true"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Client Secret Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilClientSecret"
+                        android:layout_marginStart="4dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:cursorColor="?attr/colorAccent"
+                        app:boxStrokeColor="@color/textbox_stroke"
+                        android:saveEnabled="true"
+                        app:hintEnabled="false"
+                        app:endIconMode="password_toggle">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etClientSecret"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:paddingVertical="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:hint="Client Secret"
+                            android:imeOptions="actionNext"
+                            android:saveEnabled="true"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Refresh Token Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilRefreshToken"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:cursorColor="?attr/colorAccent"
+                        app:boxStrokeColor="@color/textbox_stroke"
+                        android:saveEnabled="true"
+                        app:hintEnabled="false"
+                        app:endIconCheckable="true"
+                        app:endIconDrawable="@drawable/check_24">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRefreshToken"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingVertical="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:hint="Refresh Token"
+                            android:imeOptions="actionDone"
+                            android:saveEnabled="true"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/saveClientDetails"
+                        android:layout_width="65dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end|center_vertical"
+                        android:text="Save"
+                        android:padding="2dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:layout_marginStart="8dp"
+                        android:includeFontPadding="false"
+                        app:backgroundTint="@color/white"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
+                        android:letterSpacing="0.1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorOnSurface"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="?attr/colorPrimaryVariant"
+                        android:visibility="gone"/>
+                </LinearLayout>
+                <!-- Helper Text for Strava -->
+                <TextView
+                    android:id="@+id/tvStravaCredentialsHelper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Client ID, Secret, and Refresh Token from your Strava API settings. Ensure credentials belong to the same athlete across Strava and Intervals.icu."
                     android:textSize="12sp"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginTop="4dp" />
@@ -184,7 +319,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <!-- Title -->
                 <TextView
@@ -200,14 +335,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="4"
                     android:orientation="horizontal">
 
                     <!-- API key Input - to be stored in encrypted shared prefs -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilAPIKey_icu"
                         android:layout_width="0dp"
-                        android:layout_weight="3"
+                        android:layout_weight="2.8"
                         android:paddingEnd="4dp"
                         android:layout_height="wrap_content"
                         app:boxCornerRadiusBottomEnd="12dp"
@@ -218,8 +352,8 @@
                         app:boxStrokeColor="@color/textbox_stroke"
                         android:saveEnabled="true"
                         app:hintEnabled="false"
-                        app:endIconCheckable="true"
-                        app:endIconDrawable="@drawable/check_24">
+                        app:endIconMode="password_toggle"
+                        app:endIconContentDescription="Toggle API Key visibility">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etAPIKey_icu"
                             android:layout_width="match_parent"
@@ -231,7 +365,6 @@
                             android:hint="Intervals.icu API key"
                             android:imeOptions="actionNext"
                             android:saveEnabled="true"/>
-
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- API key Input - to be stored in encrypted shared prefs -->
@@ -239,7 +372,7 @@
                         android:id="@+id/tilDuration_icu"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="0.8"
                         android:paddingStart="4dp"
                         android:saveEnabled="true"
                         app:boxCornerRadiusBottomEnd="12dp"
@@ -248,10 +381,11 @@
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="@color/textbox_stroke"
                         app:cursorColor="?attr/colorAccent"
-                        app:endIconCheckable="true"
-                        app:endIconDrawable="@drawable/check_24"
-                        app:hintEnabled="false">
-
+                        app:endIconMode="none"
+                        app:hintEnabled="false"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etDuration_icu"
                             android:layout_width="match_parent"
@@ -262,8 +396,28 @@
                             android:maxLines="1"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="0dp"
-                            android:saveEnabled="true" />
+                            android:saveEnabled="true"/>
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/saveAPIDetails"
+                        android:layout_width="58dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:text="Save"
+                        android:padding="2dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:layout_marginStart="8dp"
+                        android:includeFontPadding="false"
+                        app:backgroundTint="@color/white"
+                        android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
+                        android:letterSpacing="0.1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorOnSurface"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="?attr/colorPrimaryVariant"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
@@ -275,25 +429,6 @@
                     android:textSize="12sp"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginTop="4dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/saveAPIDetails"
-                    android:layout_width="58dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="end"
-                    android:text="Save"
-                    android:padding="2dp"
-                    android:includeFontPadding="false"
-                    app:backgroundTint="@color/white"
-                    android:elevation="2dp"
-                    android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
-                    android:letterSpacing="0.1"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="?attr/colorOnSurface"
-                    android:layout_toStartOf="@id/save_routine_btn"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="?attr/colorPrimaryVariant"
-                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -418,7 +553,7 @@
                         android:paddingVertical="0dp"
                         android:paddingHorizontal="12dp"
                         android:inputType="number"
-                        android:textAlignment="center"
+                        android:layout_gravity="center"
                         android:imeOptions="actionDone"
                         android:maxLines="1"
                         android:saveEnabled="true"/>
@@ -474,7 +609,7 @@
 
                     <ImageButton
                         android:id="@+id/Exp_S_Data"
-                        android:layout_width="48dp"
+                        android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:padding="9dp"
                         android:alpha="0.7"
@@ -489,7 +624,7 @@
 
                     <ImageButton
                         android:id="@+id/Imp_S_Data"
-                        android:layout_width="48dp"
+                        android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:padding="9dp"
                         android:alpha="0.7"
