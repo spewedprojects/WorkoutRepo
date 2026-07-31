@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="a" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 660">
+  <defs>
+    <style>
+      .b, .c, .d, .e, .f, .g, .h, .i, .j {
+        stroke: #37376f;
+        stroke-linecap: round;
+      }
+
+      .b, .c, .d, .e, .f, .h, .i, .j {
+        stroke-linejoin: round;
+      }
+
+      .b, .c, .d, .e, .f, .i, .j {
+        fill: #fff;
+      }
+
+      .b, .h {
+        stroke-width: 15px;
+      }
+
+      .c {
+        stroke-width: 13.28px;
+      }
+
+      .d {
+        stroke-width: 12.45px;
+      }
+
+      .k {
+        fill: rgba(222, 246, 252, .86);
+      }
+
+      .e {
+        stroke-width: 12px;
+      }
+
+      .f {
+        stroke-width: 15.29px;
+      }
+
+      .g {
+        fill: #37376f;
+        stroke-miterlimit: 10;
+        stroke-width: 6.94px;
+      }
+
+      .h {
+        fill: none;
+      }
+
+      .i {
+        stroke-width: 10.79px;
+      }
+
+      .j {
+        stroke-width: 13px;
+      }
+    </style>
+  </defs>
+  <circle class="k" cx="330" cy="330" r="330"/>
+  <g>
+    <line class="f" x1="42" y1="262.78" x2="617" y2="262.42"/>
+    <rect class="d" x="101.32" y="212.31" width="46.68" height="101.66" rx="15.81" ry="15.81"/>
+    <rect class="i" x="68.69" y="229.31" width="32.53" height="68.84" rx="11.02" ry="11.02"/>
+    <rect class="g" x="152.91" y="253.42" width="9.33" height="21.44"/>
+    <rect class="c" x="512.14" y="211.46" width="46.68" height="101.66" rx="15.81" ry="15.81"/>
+    <rect class="i" x="559.47" y="228.46" width="32.53" height="68.84" rx="11.02" ry="11.02"/>
+    <rect class="g" x="497.01" y="253.16" width="9.33" height="21.44"/>
+  </g>
+  <g>
+    <ellipse class="j" cx="330" cy="205.27" rx="27.23" ry="36.32"/>
+    <path class="b" d="M363.08,402.93l-16.51,10.95c-11.01,4.08-23.12,4.04-34.1-.12l-15.55-10.82-13-139.86h92.16l-13,139.86Z"/>
+  </g>
+  <g>
+    <polygon class="h" points="280.32 263.07 240.67 330.24 216.24 263.07 280.32 263.07"/>
+    <ellipse class="e" cx="216.24" cy="261.35" rx="15.17" ry="12.86"/>
+  </g>
+  <g>
+    <polygon class="h" points="439.16 263.07 423.99 330 375.08 263.07 439.16 263.07"/>
+    <ellipse class="e" cx="439.16" cy="262.1" rx="15.17" ry="12.86"/>
+  </g>
+  <g>
+    <polyline class="h" points="294.92 402.93 221.28 362.61 266.07 485.88 237.2 485.88"/>
+    <polyline class="h" points="365.17 402.93 438.81 362.61 394.03 485.88 422.89 485.88"/>
+  </g>
+</svg>
