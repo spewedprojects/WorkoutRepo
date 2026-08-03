@@ -1,5 +1,6 @@
-## Latest: v11.2.0
-- Minor finishing touches remain.
+## Latest: v12.2.0
+**Next:**
+- A comprehensive system to manage the local archive.
 
 ### App progression so far:
 ![readmescreen](https://github.com/user-attachments/assets/8759738e-f082-4915-b4e1-30787bcb334f)

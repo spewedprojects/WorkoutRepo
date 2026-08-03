@@ -30,7 +30,7 @@
             android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
             android:textStyle="italic"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/import_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,6 +38,8 @@
             android:paddingHorizontal="24dp"
             android:paddingVertical="14dp"
             android:text="Import Routine"
+            app:icon="@drawable/download_icon"
+            app:iconSize="24dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
             android:textSize="18sp"
             android:textStyle="bold|italic"

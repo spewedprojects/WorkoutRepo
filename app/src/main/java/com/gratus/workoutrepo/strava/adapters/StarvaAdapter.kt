@@ -1,5 +1,6 @@
 package com.gratus.workoutrepo.strava.adapters
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
@@ -12,17 +13,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gratus.workoutrepo.R
 import com.gratus.workoutrepo.archive.model.ArchiveActivity
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import androidx.core.net.toUri
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.util.Locale
 
 class StravaAdapter(private var items: List<ArchiveActivity>,
                     private val onActivityClick: (String) -> Unit // <--- callback
     ) : RecyclerView.Adapter<StravaAdapter.ViewHolder>() {
+
+    private var spanCount: Int = 1
+
+    fun setSpanCount(spanCount: Int) {
+        this.spanCount = spanCount
+    }
+
+    private fun dpToPx(dp: Double, context: Context): Int {
+        return (dp * context.resources.displayMetrics.density).toInt()
+    }
 
     // --- NEW: Track which item is loading ---
     private var loadingActivityId: String? = null
@@ -71,6 +76,27 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+
+        (holder.itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.let { lp ->
+            val outer = dpToPx(12.0, holder.itemView.context)
+            val inner = dpToPx(6.0, holder.itemView.context)
+
+            if (spanCount == 1) {
+                lp.marginStart = outer
+                lp.marginEnd = outer
+            } else {
+                if (position % spanCount == 0) {
+                    // Left column
+                    lp.marginStart = outer
+                    lp.marginEnd = inner
+                } else {
+                    // Right column
+                    lp.marginStart = inner
+                    lp.marginEnd = outer
+                }
+            }
+            holder.itemView.layoutParams = lp
+        }
 
         // Set stroke color according to activity source
         val strokeColorRes = if (item.source == com.gratus.workoutrepo.archive.model.SourceProvider.INTERVALS_ICU) {
@@ -155,35 +181,7 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
         holder.details.text = parts.joinToString(" • ")
 
         // 4. Set Date - Date Formatting
-        val dateInput = item.startDateLocal // e.g. "2026-02-22T14:05:00Z" or "2026-02-22T14:05:00" or "2026-02-22"
-
-        val dateOutput = try {
-            // Try parsing an ISO date-time with offset first and convert to local system zone
-            val odt = OffsetDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
-                .atZoneSameInstant(ZoneId.systemDefault())
-            val fmt = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
-            odt.format(fmt)
-        } catch (e1: Exception) {
-            try {
-                // Try parsing a local date-time without offset
-                val ldt = LocalDateTime.parse(dateInput, DateTimeFormatter.ISO_DATE_TIME)
-                val fmt = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
-                ldt.format(fmt)
-            } catch (e2: Exception) {
-                try {
-                    // If it's date-only, show date and no time (or append 0000 if you prefer)
-                    val ld = LocalDate.parse(dateInput, DateTimeFormatter.ISO_DATE)
-                    val fmtDateOnly = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
-                    // append 0000 as time when only date is available
-                    ld.atStartOfDay().format(fmtDateOnly)
-                } catch (e3: Exception) {
-                    // final fallback: raw string
-                    dateInput
-                }
-            }
-        }
-
-        holder.date.text = dateOutput
+        holder.date.text = com.gratus.workoutrepo.archive.utils.DateTimeUtils.formatActivityDate(item.startDateLocal)
 
         // 5. Dynamic Icon Logic (With Race Support)
         val isRace = item.workoutType == 1 || item.workoutType == 11

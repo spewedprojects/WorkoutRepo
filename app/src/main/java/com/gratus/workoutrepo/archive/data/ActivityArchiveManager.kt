@@ -167,20 +167,7 @@ object ActivityArchiveManager {
     }
 
     private fun parseToLocalDateTime(dateStr: String?): LocalDateTime? {
-        if (dateStr == null || dateStr.length < 10) return null
-        return try {
-            java.time.OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME).toLocalDateTime()
-        } catch (e1: Exception) {
-            try {
-                LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME)
-            } catch (e2: Exception) {
-                try {
-                    java.time.LocalDate.parse(dateStr.take(10), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
-                } catch (e3: Exception) {
-                    null
-                }
-            }
-        }
+        return com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDateTime(dateStr)
     }
 
     /**

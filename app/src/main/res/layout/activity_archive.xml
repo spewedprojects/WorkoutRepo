@@ -550,7 +550,6 @@
         android:layout_marginTop="-10dp"
         android:layout_marginBottom="12dp"
         android:clipToPadding="false"
-        android:requiresFadingEdge="vertical"
-        app:layout_constraintHeight_max="600dp" />
+        android:requiresFadingEdge="vertical"/>
 
 </LinearLayout>

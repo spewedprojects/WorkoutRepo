@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -62,6 +63,7 @@ class StravaListManager(
     // State Variables
     private var allActivities: List<ArchiveActivity> = emptyList()
     private var currentSearchQuery: String = ""
+    private var spanCount: Int = 1
     private var currentFilterType: String? = null
     private var currentDateStart: LocalDate? = null
     private var currentDateEnd: LocalDate? = null
@@ -97,7 +99,11 @@ class StravaListManager(
     // --- MAIN SETUP ---
     fun setup() {
         EditorBottomSheet.clearFocusOnKeyboardHide(activitySearchInput, rootView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        val metrics = context.resources.displayMetrics
+        val screenWidthDp = metrics.widthPixels / metrics.density
+        val desiredItemWidthDp = 400
+        spanCount = 1.coerceAtLeast((screenWidthDp / desiredItemWidthDp).toInt())
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         statsManager = StravaStatsManager(rootView)
 
         val prefs = context.getSharedPreferences(BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
@@ -375,9 +381,13 @@ class StravaListManager(
     // Simple function to bind items to the list
     private fun bindList(list: List<ArchiveActivity>, forceHardRedraw: Boolean = false) {
         if (recyclerView.adapter == null || forceHardRedraw) {
-            recyclerView.adapter = StravaAdapter(list, ::onActivityClick) // Safe to reference here
+            val adapter = StravaAdapter(list, ::onActivityClick)
+            adapter.setSpanCount(spanCount)
+            recyclerView.adapter = adapter
         } else {
-            (recyclerView.adapter as StravaAdapter).updateList(list)
+            val adapter = recyclerView.adapter as StravaAdapter
+            adapter.setSpanCount(spanCount)
+            adapter.updateList(list)
         }
     }
 
@@ -397,14 +407,8 @@ class StravaListManager(
         var listFiltered = filtered
         if (currentDateStart != null && currentDateEnd != null) {
             listFiltered = filtered.filter { item ->
-                try {
-                    // Fix: Parse safely without relying on strict Instant.parse formats
-                    val cleanDateStr = item.startDateLocal.take(10) // Extracts "yyyy-MM-dd" safely
-                    val itemDate = LocalDate.parse(cleanDateStr)
-                    !itemDate.isBefore(currentDateStart) && !itemDate.isAfter(currentDateEnd)
-                } catch (e: Exception) {
-                    false
-                }
+                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal)
+                itemDate != null && !itemDate.isBefore(currentDateStart) && !itemDate.isAfter(currentDateEnd)
             }
         }
 
@@ -415,14 +419,8 @@ class StravaListManager(
             val startOfThisMonth = now.withDayOfMonth(1)
             val endOfThisMonth = now.withDayOfMonth(now.lengthOfMonth())
             filtered.filter { item ->
-                try {
-                    // Fix: Parse safely without relying on strict Instant.parse formats
-                    val cleanDateStr = item.startDateLocal.take(10) // Extracts "yyyy-MM-dd" safely
-                    val itemDate = LocalDate.parse(cleanDateStr)
-                    !itemDate.isBefore(startOfThisMonth) && !itemDate.isAfter(endOfThisMonth)
-                } catch (e: Exception) {
-                    false
-                }
+                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal)
+                itemDate != null && !itemDate.isBefore(startOfThisMonth) && !itemDate.isAfter(endOfThisMonth)
             }
         }
 

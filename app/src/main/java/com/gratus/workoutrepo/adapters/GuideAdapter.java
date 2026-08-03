@@ -97,7 +97,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (currentlyStrava) {
                     clearSyncSource(sHolder, prefs);
                 } else {
-                    showKeywordDialog(sHolder, prefs);
+                    setSyncSource(sHolder, prefs, SourceProvider.STRAVA.name());
                 }
             });
 
@@ -363,7 +363,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         hideKeyboard(v);
     }
 
-    private void confirmCredentialChange(Context context, SettingsViewHolder sHolder, Runnable onConfirm) {
+    private void confirmCredentialChange(Context context, SettingsViewHolder sHolder, boolean isStravaSource, Runnable onConfirm) {
         if (!com.gratus.workoutrepo.archive.data.ActivityArchiveManager.INSTANCE.getActivities(context).isEmpty()) {
             Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.dialog_athlete_warning);
@@ -377,6 +377,8 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
 
             if (btnSameAthlete != null) {
+                int colorRes = isStravaSource ? R.color.strava_color : R.color.intervals_icu_color;
+                btnSameAthlete.setBackgroundTintList(androidx.core.content.ContextCompat.getColorStateList(context, colorRes));
                 btnSameAthlete.setOnClickListener(v -> {
                     dialog.dismiss();
                     onConfirm.run();
@@ -426,7 +428,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         };
 
         if (isChanged) {
-            confirmCredentialChange(context, sHolder, performSave);
+            confirmCredentialChange(context, sHolder, true, performSave);
         } else {
             performSave.run();
         }
@@ -465,7 +467,7 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         };
 
         if (isKeyChanged) {
-            confirmCredentialChange(context, sHolder, performSave);
+            confirmCredentialChange(context, sHolder, false, performSave);
         } else {
             performSave.run();
         }
@@ -482,50 +484,6 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         tv.setText(isEnabled ? "Sync enabled" : "Sync disabled");
     }
 
-    private void showKeywordDialog(SettingsViewHolder sHolder, SharedPreferences prefs) {
-        Context context = sHolder.itemView.getContext();
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_stravakeyword);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-
-        MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
-        MaterialButton btnProceed = dialog.findViewById(R.id.btnProceed);
-        com.google.android.material.textfield.TextInputLayout tilKeyword = dialog.findViewById(R.id.tilKeyword);
-        TextInputEditText etKeyword = dialog.findViewById(R.id.etKeyword);
-
-        if (etKeyword != null && tilKeyword != null) {
-            etKeyword.addTextChangedListener(new android.text.TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override public void onTextChanged(CharSequence s, int start, int before, int count) { tilKeyword.setError(null); }
-                @Override public void afterTextChanged(android.text.Editable s) {}
-            });
-        }
-
-        if (btnProceed != null) {
-            btnProceed.setOnClickListener(v -> {
-                String input = (etKeyword != null && etKeyword.getText() != null) ? etKeyword.getText().toString().trim() : "";
-                if (TokenManager.INSTANCE.getAccessKeyword().equals(input)) {
-                    setSyncSource(sHolder, prefs, SourceProvider.STRAVA.name());
-                    if (etKeyword != null) hideKeyboard(etKeyword);
-                    dialog.dismiss();
-                } else {
-                    if (tilKeyword != null) tilKeyword.setError("Incorrect keyword");
-                }
-            });
-        }
-
-        if (btnCancel != null) {
-            btnCancel.setOnClickListener(v -> {
-                if (etKeyword != null) hideKeyboard(etKeyword);
-                dialog.dismiss();
-            });
-        }
-
-        dialog.show();
-    }
 
     private void updateSwitchText(TextView tv, boolean isLongClickArchive, String activeSource) {
         String sourceName = SourceProvider.STRAVA.name().equals(activeSource) ? "Strava" : "Intervals.icu";

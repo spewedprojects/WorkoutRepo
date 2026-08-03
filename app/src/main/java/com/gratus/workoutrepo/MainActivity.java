@@ -107,7 +107,45 @@ public class MainActivity extends BaseActivity {
 
         importLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
             if (uri != null) {
-                StravaArchiveManager.importData(this, uri);
+                if (!com.gratus.workoutrepo.archive.data.ActivityArchiveManager.INSTANCE.getActivities(this).isEmpty()) {
+                    android.app.Dialog dialog = new android.app.Dialog(this);
+                    dialog.setContentView(R.layout.dialog_import_option);
+                    if (dialog.getWindow() != null) {
+                        dialog.getWindow().setLayout(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    }
+
+                    com.google.android.material.button.MaterialButton btnMergeArchive = dialog.findViewById(R.id.btnMergeArchive);
+                    com.google.android.material.button.MaterialButton btnReplaceArchive = dialog.findViewById(R.id.btnReplaceArchive);
+                    com.google.android.material.button.MaterialButton btnCancel = dialog.findViewById(R.id.btnCancel);
+
+                    if (btnMergeArchive != null) {
+                        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                        String activeSource = prefs.getString("ActiveSyncSource", "STRAVA");
+                        int colorRes = "INTERVALS_ICU".equals(activeSource) ? R.color.intervals_icu_color : R.color.strava_color;
+                        btnMergeArchive.setBackgroundTintList(androidx.core.content.ContextCompat.getColorStateList(this, colorRes));
+
+                        btnMergeArchive.setOnClickListener(v -> {
+                            dialog.dismiss();
+                            StravaArchiveManager.importData(this, uri, true);
+                        });
+                    }
+
+                    if (btnReplaceArchive != null) {
+                        btnReplaceArchive.setOnClickListener(v -> {
+                            dialog.dismiss();
+                            StravaArchiveManager.importData(this, uri, false);
+                        });
+                    }
+
+                    if (btnCancel != null) {
+                        btnCancel.setOnClickListener(v -> dialog.dismiss());
+                    }
+
+                    dialog.show();
+                } else {
+                    StravaArchiveManager.importData(this, uri, true);
+                }
             }
         });
 

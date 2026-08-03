@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:scaleY="1"
+    android:scaleX="1"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageButton
+        android:id="@+id/addBlank_btn"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_margin="20dp"
+        android:src="@drawable/add_500dp_large"
+        android:background="@drawable/round_button_bg"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textSize="15sp"
+        android:letterSpacing="0.04"
+        android:text="Add a blank routine"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+        android:textStyle="italic"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/import_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="14dp"
+        android:text="Import Routine"
+        app:icon="@drawable/download_icon"
+        app:iconSize="24dp"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        android:letterSpacing="0.04"
+        app:strokeColor="?attr/colorOnSurface"
+        app:strokeWidth="1.5dp"
+        android:backgroundTint="?attr/colorPrimaryVariant"
+        app:cornerRadius="12dp"/>
+
+</LinearLayout>

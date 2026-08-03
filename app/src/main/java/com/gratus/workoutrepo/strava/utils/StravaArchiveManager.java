@@ -39,6 +39,10 @@ public class StravaArchiveManager {
     }
 
     public static void importData(Context context, Uri uri) {
+        importData(context, uri, true);
+    }
+
+    public static void importData(Context context, Uri uri, boolean isMerge) {
         executor.execute(() -> {
             try (InputStream is = context.getContentResolver().openInputStream(uri);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
@@ -49,12 +53,13 @@ public class StravaArchiveManager {
                     sb.append(line);
                 }
 
-                // Pass the string to your Kotlin Repository for merging
-                boolean success = StravaRepository.INSTANCE.importArchive(context, sb.toString());
+                // Pass the string to Kotlin Repository with merge preference
+                boolean success = StravaRepository.INSTANCE.importArchive(context, sb.toString(), isMerge);
 
                 mainHandler.post(() -> {
                     if (success) {
-                        Toast.makeText(context, "Archive imported and merged!", Toast.LENGTH_LONG).show();
+                        String msg = isMerge ? "Archive imported and merged!" : "New archive loaded successfully!";
+                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(context, "Invalid archive file.", Toast.LENGTH_SHORT).show();
                     }

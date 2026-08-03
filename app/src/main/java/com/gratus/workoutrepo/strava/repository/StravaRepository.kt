@@ -255,7 +255,8 @@ object StravaRepository {
         return com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(cacheData)
     }
 
-    fun importArchive(context: Context, jsonString: String): Boolean {
+    @JvmOverloads
+    fun importArchive(context: Context, jsonString: String, isMerge: Boolean = true): Boolean {
         return try {
             val gson = com.google.gson.GsonBuilder().create()
             val jsonElement = com.google.gson.JsonParser.parseString(jsonString)
@@ -310,36 +311,39 @@ object StravaRepository {
 
             if (importedActivities.isEmpty()) return false
 
-            var addedCount = 0
-            for (imported in importedActivities) {
-                val match = ActivityArchiveManager.findExistingMatch(imported, currentArchive)
-                if (match != null) {
-                    val index = currentArchive.indexOf(match)
-                    val isMatchPlaceholder = match.isPlaceholder()
-                    val isImportedPlaceholder = imported.isPlaceholder()
+            val finalArchive = if (isMerge) {
+                for (imported in importedActivities) {
+                    val match = ActivityArchiveManager.findExistingMatch(imported, currentArchive)
+                    if (match != null) {
+                        val index = currentArchive.indexOf(match)
+                        val isMatchPlaceholder = match.isPlaceholder()
+                        val isImportedPlaceholder = imported.isPlaceholder()
 
-                    val updated = if (isMatchPlaceholder && !isImportedPlaceholder) {
-                        imported.copy(
-                            stravaActivityId = imported.stravaActivityId ?: match.stravaActivityId,
-                            intervalsActivityId = imported.intervalsActivityId ?: match.intervalsActivityId,
-                            description = if (!imported.description.isNullOrBlank()) imported.description else match.description
-                        )
+                        val updated = if (isMatchPlaceholder && !isImportedPlaceholder) {
+                            imported.copy(
+                                stravaActivityId = imported.stravaActivityId ?: match.stravaActivityId,
+                                intervalsActivityId = imported.intervalsActivityId ?: match.intervalsActivityId,
+                                description = if (!imported.description.isNullOrBlank()) imported.description else match.description
+                            )
+                        } else {
+                            match.copy(
+                                stravaActivityId = match.stravaActivityId ?: imported.stravaActivityId,
+                                intervalsActivityId = match.intervalsActivityId ?: imported.intervalsActivityId,
+                                description = if (!match.description.isNullOrBlank()) match.description else imported.description
+                            )
+                        }
+                        currentArchive[index] = updated
                     } else {
-                        match.copy(
-                            stravaActivityId = match.stravaActivityId ?: imported.stravaActivityId,
-                            intervalsActivityId = match.intervalsActivityId ?: imported.intervalsActivityId,
-                            description = if (!match.description.isNullOrBlank()) match.description else imported.description
-                        )
+                        currentArchive.add(imported)
                     }
-                    currentArchive[index] = updated
-                } else {
-                    currentArchive.add(imported)
-                    addedCount++
                 }
+                currentArchive
+            } else {
+                importedActivities
             }
 
-            currentArchive.sortByDescending { it.startDateLocal }
-            ActivityArchiveManager.saveActivities(context, currentArchive)
+            finalArchive.sortByDescending { it.startDateLocal }
+            ActivityArchiveManager.saveActivities(context, finalArchive)
             true
         } catch (e: Exception) {
             Log.e("StravaRepo", "Import failed", e)

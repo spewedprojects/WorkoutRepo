@@ -12,24 +12,25 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
         <ImageButton
             android:id="@+id/guide_btn"
-            android:layout_width="58dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="12dp"
-            android:contentDescription="@string/guide_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginBottom="4dp"
+            android:alpha="0.2"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/info_38dp"
-            android:alpha="0.2"/>
+            android:contentDescription="@string/guide_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/info_38dp" />
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -40,7 +41,7 @@
             android:letterSpacing="0.05"
             android:foregroundGravity="center"
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="WR"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="22dp"
             android:textStyle="bold"
@@ -52,17 +53,17 @@
 
         <ScrollView
             android:id="@+id/btn_scroll"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintTop_toTopOf="parent"
-            android:scrollbars="none"
-            android:requiresFadingEdge="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="2dp"
             android:fadingEdgeLength="12dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:orientation="vertical"
+            android:requiresFadingEdge="vertical"
+            android:scrollbars="none"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.5">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -151,37 +152,38 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/guide_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/weekPager"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintVertical_bias="0"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:descendantFocusability="afterDescendants"
-        android:visibility="visible"/>
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/weekPager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/weekPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/buttonBar"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintStart_toEndOf="@id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonBar"
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <LinearLayout
         android:id="@+id/buttonBar"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="26dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginVertical="4dp"
+        android:layout_marginStart="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/weekPager"
@@ -190,24 +192,24 @@
 
         <ImageButton
             android:id="@+id/browseWorkouts"
-            android:layout_width="0dp"
+            android:layout_width="52dp"
             android:layout_weight="3"
-            android:layout_height="48dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginVertical="6dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginHorizontal="6dp"
             android:background="@drawable/rounded_corners"
             android:elevation="2dp"
             app:srcCompat="@drawable/list_38dp"/>
 
         <ImageButton
             android:id="@+id/stravaAccess"
-            android:layout_width="0dp"
+            android:layout_width="52dp"
             android:layout_weight="2"
-            android:layout_height="48dp"
-            android:layout_marginStart="17dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginVertical="6dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginHorizontal="6dp"
             app:srcCompat="@drawable/strava_2"
             android:background="@drawable/rounded_corners_strava"
             android:elevation="2dp"
@@ -215,12 +217,12 @@
 
         <ImageButton
             android:id="@+id/intervalsICUAccess"
-            android:layout_width="0dp"
+            android:layout_width="52dp"
             android:layout_weight="2"
-            android:layout_height="48dp"
-            android:layout_marginStart="17dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginVertical="6dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginHorizontal="6dp"
             app:srcCompat="@drawable/intervals_icu_2"
             android:background="@drawable/rounded_corners_intervalsicu"
             android:elevation="2dp"

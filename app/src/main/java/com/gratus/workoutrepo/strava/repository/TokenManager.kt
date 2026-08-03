@@ -20,7 +20,6 @@ object TokenManager {
     @JvmField
     var accessToken: String? = null
 
-    var accessKeyword = "Hobdy"
 
     private fun getSecurePrefs(context: Context) = EncryptedSharedPreferences.create(
         PREFS_FILENAME,
