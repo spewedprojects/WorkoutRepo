@@ -30,7 +30,7 @@ android {
         resValue(
             type = "string",
             name = "app_version",
-            value = "v" + versionName!! + " (" + versionCode!! + ")"
+            value = "v${versionName}(${versionCode})"
         )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -48,6 +48,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            resValue ("string", "app_version", "v${defaultConfig.versionName}(${defaultConfig.versionCode})${versionNameSuffix}")
         }
     }
     compileOptions {

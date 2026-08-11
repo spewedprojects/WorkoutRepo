@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class BaseActivity extends AppCompatActivity {
 
     public static final String PREFS_NAME = "WorkoutRepoAppSettings";
+    public static final String PREF_USE_DIALOG = "use_dialog_over_bottomsheet";
     protected static final String THEME_KEY = "SelectedTheme";
 
     @Override

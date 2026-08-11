@@ -79,12 +79,19 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
         setCancelable(true);
     }
 
+    private boolean isUseDialog() {
+        if (getContext() == null) return false;
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences(BaseActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        return prefs.getBoolean(BaseActivity.PREF_USE_DIALOG, false);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottomsheet_editor, container, false);
+        int layoutRes = isUseDialog() ? R.layout.dialog_editor : R.layout.bottomsheet_editor;
+        View view = inflater.inflate(layoutRes, container, false);
 
         TextView title = view.findViewById(R.id.editorTitle);
         title.setText("Edit " + day + " " + fieldKey);
@@ -115,7 +122,12 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Dialog dialog;
+        if (isUseDialog()) {
+            dialog = new androidx.appcompat.app.AppCompatDialog(requireContext(), getTheme());
+        } else {
+            dialog = super.onCreateDialog(savedInstanceState);
+        }
         
         dialog.setOnKeyListener((dialogInterface, keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
@@ -125,21 +137,28 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
             return false;
         });
 
-        dialog.setOnShowListener(dialogInterface -> {
-            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
-            View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-
-            if (bottomSheetInternal != null) {
-                // 1. Remove the default background color/drawable of the internal container
-                bottomSheetInternal.setBackgroundResource(android.R.color.transparent);
-
-                // 2. Disable clipping on the parent container to allow the shadow to show
-                if (bottomSheetInternal.getParent() instanceof ViewGroup parent) {
-                    parent.setClipChildren(false);
-                    parent.setClipToPadding(false);
-                }
+        if (isUseDialog()) {
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
-        });
+        } else {
+            dialog.setOnShowListener(dialogInterface -> {
+                if (dialogInterface instanceof BottomSheetDialog bottomSheetDialog) {
+                    View bottomSheetInternal = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+                    if (bottomSheetInternal != null) {
+                        // 1. Remove the default background color/drawable of the internal container
+                        bottomSheetInternal.setBackgroundResource(android.R.color.transparent);
+
+                        // 2. Disable clipping on the parent container to allow the shadow to show
+                        if (bottomSheetInternal.getParent() instanceof ViewGroup parent) {
+                            parent.setClipChildren(false);
+                            parent.setClipToPadding(false);
+                        }
+                    }
+                }
+            });
+        }
         return dialog;
     }
 

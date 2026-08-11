@@ -8,8 +8,8 @@ import java.util.Locale
 
 object DateTimeUtils {
 
-    private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE '৹' HH:mm", Locale.getDefault())
-    private val DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("d MMM yyyy',' EEE", Locale.getDefault())
+    private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM yy',' EEE '৹' HH:mm", Locale.getDefault())
+    private val DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("d MMM yy',' EEE", Locale.getDefault())
 
     /**
      * Parses an ISO date/time string (from Strava or Intervals.icu) into a LocalDateTime.
@@ -64,8 +64,8 @@ object DateTimeUtils {
 
     /**
      * Formats an activity date string for UI display.
-     * Displays time (e.g., "6 Mar 2026, Fri ৹ 06:09") ONLY when real time information is present.
-     * If time is 00:00 (or date-only), displays "6 Mar 2026, Fri" to avoid misleading "00:00" times.
+     * Displays time (e.g., "6 Mar 26, Fri ৹ 06:09") ONLY when real time information is present.
+     * If time is 00:00 (or date-only), displays "6 Mar 26, Fri" to avoid misleading "00:00" times.
      */
     fun formatActivityDate(dateStr: String?): String {
         if (dateStr.isNullOrBlank()) return ""

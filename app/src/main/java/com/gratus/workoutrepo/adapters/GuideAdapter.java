@@ -1,6 +1,7 @@
 package com.gratus.workoutrepo.adapters;
 
 import static com.gratus.workoutrepo.BaseActivity.PREFS_NAME;
+import com.gratus.workoutrepo.BaseActivity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -263,6 +264,16 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 prefs.edit().putBoolean(PREF_ENABLE_AUTO_REFRESH, isChecked).apply();
                 sHolder.tilAutoRefresh.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             });
+
+            // --- DIALOG OVER BOTTOMSHEET TOGGLE ---
+            if (sHolder.switchDialogBtmSheet != null) {
+                boolean useDialog = prefs.getBoolean(BaseActivity.PREF_USE_DIALOG, false);
+                sHolder.switchDialogBtmSheet.setOnCheckedChangeListener(null);
+                sHolder.switchDialogBtmSheet.setChecked(useDialog);
+                sHolder.switchDialogBtmSheet.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    prefs.edit().putBoolean(BaseActivity.PREF_USE_DIALOG, isChecked).apply();
+                });
+            }
 
             // --- AUTO REFRESH DURATION ---
             long savedDuration = prefs.getLong(PREF_CACHE_DURATION_HOURS, 48);
@@ -532,6 +543,8 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         com.google.android.material.textfield.TextInputLayout tilAutoRefresh;
         TextInputEditText etAutoRefresh;
 
+        MaterialSwitch switchDialogBtmSheet;
+
         ImageButton btnExport, btnImport;
 
         SettingsViewHolder(View v) {
@@ -570,6 +583,8 @@ public class GuideAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             switchAutoRefresh = v.findViewById(R.id.switch_enableautorefresh);
             tilAutoRefresh = v.findViewById(R.id.tilAutoRefresh);
             etAutoRefresh = v.findViewById(R.id.etAutoRefresh);
+
+            switchDialogBtmSheet = v.findViewById(R.id.switch_DialogBtmSheet);
 
             btnExport = v.findViewById(R.id.Exp_S_Data);
             btnImport = v.findViewById(R.id.Imp_S_Data);

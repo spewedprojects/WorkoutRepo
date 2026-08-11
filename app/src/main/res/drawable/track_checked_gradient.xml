@@ -1,7 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
-        android:startColor="@color/intervals_icu_color"
-        android:endColor="@color/strava_color"
+        android:startColor="@color/strava_color_0.4"
+        android:endColor="@color/intervals_icu_color_0.4"
         android:angle="0" />
 </shape>
