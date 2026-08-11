@@ -157,6 +157,12 @@ object IntervalsRepository {
                 val mappedType = if (isStravaSource) "Strava" else SportTypeMapper.mapIntervalsType(intervalsAct.type ?: "Unknown")
                 val fallbackName = if (isStravaSource) "Strava Activity" else "$mappedType Activity"
 
+                val resolvedStartDate = when {
+                    !intervalsAct.startDateLocal.isNullOrBlank() -> intervalsAct.startDateLocal
+                    !intervalsAct.startDate.isNullOrBlank() -> intervalsAct.startDate
+                    else -> ""
+                }
+
                 ArchiveActivity(
                     stravaActivityId = extractedStravaId,
                     intervalsActivityId = intervalsAct.id,
@@ -164,13 +170,13 @@ object IntervalsRepository {
                     name = if (!intervalsAct.name.isNullOrBlank()) intervalsAct.name else fallbackName,
                     distance = intervalsAct.distance ?: 0f,
                     movingTime = intervalsAct.movingTime ?: 0,
-                    startDateLocal = intervalsAct.startDateLocal ?: "",
+                    startDateLocal = resolvedStartDate,
                     averageWatts = intervalsAct.averageWatts,
                     averageHeartrate = intervalsAct.averageHeartrate,
                     totalElevationGain = intervalsAct.totalElevationGain,
                     type = if (!intervalsAct.type.isNullOrBlank()) SportTypeMapper.mapIntervalsType(intervalsAct.type) else mappedType,
                     workoutType = null,
-                    description = intervalsAct.description,
+                    description = null, // Prune description during bulk sync to prevent archive bloat
                     lastModifiedLocal = System.currentTimeMillis()
                 )
             }
@@ -189,13 +195,13 @@ object IntervalsRepository {
                         newEntry.copy(
                             stravaActivityId = newEntry.stravaActivityId ?: match.stravaActivityId,
                             intervalsActivityId = newEntry.intervalsActivityId ?: match.intervalsActivityId,
-                            description = if (!newEntry.description.isNullOrBlank()) newEntry.description else match.description
+                            description = match.description
                         )
                     } else {
                         match.copy(
                             intervalsActivityId = match.intervalsActivityId ?: newEntry.intervalsActivityId,
                             stravaActivityId = match.stravaActivityId ?: newEntry.stravaActivityId,
-                            description = if (!match.description.isNullOrBlank()) match.description else newEntry.description,
+                            description = match.description,
                             name = if (isMatchPlaceholder && !isNewPlaceholder) newEntry.name else match.name,
                             type = if (isMatchPlaceholder && !isNewPlaceholder) newEntry.type else match.type
                         )
@@ -241,7 +247,11 @@ object IntervalsRepository {
                             name = intervalsAct.name ?: "$mappedType Activity",
                             distance = intervalsAct.distance ?: 0f,
                             movingTime = intervalsAct.movingTime ?: 0,
-                            startDateLocal = intervalsAct.startDateLocal ?: "",
+                            startDateLocal = when {
+                                !intervalsAct.startDateLocal.isNullOrBlank() -> intervalsAct.startDateLocal
+                                !intervalsAct.startDate.isNullOrBlank() -> intervalsAct.startDate
+                                else -> ""
+                            },
                             averageWatts = intervalsAct.averageWatts,
                             averageHeartrate = intervalsAct.averageHeartrate,
                             totalElevationGain = intervalsAct.totalElevationGain,

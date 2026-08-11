@@ -106,6 +106,28 @@ class StravaListManager(
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         statsManager = StravaStatsManager(rootView)
 
+        val btnScrollToTop = rootView.findViewById<View>(R.id.btnScrollToTop)
+        btnScrollToTop?.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+        }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(rv, dx, dy)
+                val lm = rv.layoutManager as? LinearLayoutManager
+                val firstVisible = lm?.findFirstVisibleItemPosition() ?: 0
+                if (firstVisible > 2) {
+                    if (btnScrollToTop?.visibility != View.VISIBLE) {
+                        btnScrollToTop?.visibility = View.VISIBLE
+                    }
+                } else {
+                    if (btnScrollToTop?.visibility != View.GONE) {
+                        btnScrollToTop?.visibility = View.GONE
+                    }
+                }
+            }
+        })
+
         val prefs = context.getSharedPreferences(BaseActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val isStatsVisible = prefs.getBoolean("StravaStatsVisible", false)
         rootStats?.visibility = if (isStatsVisible) View.VISIBLE else View.GONE

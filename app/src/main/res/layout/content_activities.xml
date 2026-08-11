@@ -223,15 +223,34 @@
         android:indeterminateTint="#80fc4c02"
         android:indeterminateBehavior="cycle"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvActivities"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintHeight_max="600dp"
-        android:clipToPadding="false"
         android:layout_gravity="center"
-        android:layout_marginTop="-10dp"
-        android:requiresFadingEdge="vertical"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginTop="-14dp"
+        app:layout_constraintHeight_max="600dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvActivities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:requiresFadingEdge="vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnScrollToTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/chevron_line_up_24"
+            android:contentDescription="Scroll to top"
+            android:visibility="visible"
+            app:fabCustomSize="48dp"
+            app:maxImageSize="24dp"
+            app:backgroundTint="@color/white_black" />
+    </FrameLayout>
 </LinearLayout>
