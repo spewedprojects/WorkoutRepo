@@ -1,4 +1,4 @@
-## Latest: v12.2.0
+## Latest: v12.3.1
 **Next:**
 - A comprehensive system to manage the local archive.
 

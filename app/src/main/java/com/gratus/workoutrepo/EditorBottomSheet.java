@@ -3,9 +3,12 @@ package com.gratus.workoutrepo;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -140,6 +143,10 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
         if (isUseDialog()) {
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                // 🔹 Force full width here
+                dialog.setOnShowListener(d -> {
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                });
             }
         } else {
             dialog.setOnShowListener(dialogInterface -> {

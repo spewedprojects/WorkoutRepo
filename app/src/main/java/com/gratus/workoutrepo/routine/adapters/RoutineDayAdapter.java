@@ -55,12 +55,14 @@ public class RoutineDayAdapter extends RecyclerView.Adapter<RoutineDayAdapter.Da
         holder.textNotes.setText(TextFormatUtils.formatNotesForDisplay(day.notes));
 
         if (isEditMode) {
+            holder.workoutType.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "workoutType", day.workoutType));
             holder.majorLabel.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "majorLabel", day.majorLabel == null || day.majorLabel.isEmpty() ? "Major:" : day.majorLabel));
             holder.minorLabel.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "minorLabel", day.minorLabel == null || day.minorLabel.isEmpty() ? "Minor:" : day.minorLabel));
             holder.textMajor.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "workoutsMajor", day.majorWorkouts));
             holder.textMinor.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "workoutsMinor", day.minorWorkouts));
             holder.textNotes.setOnClickListener(v -> listener.onEditRoutineField(routine, day.dayName, "notes", day.notes));
         } else {
+            holder.workoutType.setOnClickListener(null);
             holder.majorLabel.setOnClickListener(null);
             holder.minorLabel.setOnClickListener(null);
             holder.textMajor.setOnClickListener(null);

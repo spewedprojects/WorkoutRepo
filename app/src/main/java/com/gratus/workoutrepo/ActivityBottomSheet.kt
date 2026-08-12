@@ -1,11 +1,13 @@
 package com.gratus.workoutrepo
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -22,12 +24,22 @@ class ActivityBottomSheet(
         return prefs?.getBoolean(BaseActivity.PREF_USE_DIALOG, false) ?: false
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): android.app.Dialog {
-        return if (isUseDialog()) {
-            androidx.appcompat.app.AppCompatDialog(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = if (isUseDialog()) {
+            AppCompatDialog(requireContext(), theme)
         } else {
             super.onCreateDialog(savedInstanceState)
         }
+
+        // Force full width after the dialog is created
+        dialog.setOnShowListener {
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        return dialog
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

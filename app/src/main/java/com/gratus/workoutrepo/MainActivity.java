@@ -3,6 +3,7 @@ package com.gratus.workoutrepo;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -218,6 +219,12 @@ public class MainActivity extends BaseActivity {
         ImageButton githubicon = findViewById(R.id.githubIcon);
         ImageButton stravaaccess = findViewById(R.id.stravaAccess);
         ImageButton intervalsICUAccess = findViewById(R.id.intervalsICUAccess);
+
+        githubicon.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://www.github.com/spewedprojects/WorkoutRepo"));
+            v.getContext().startActivity(intent);
+        });
 
         // Define the actions
         Runnable openSheetAction = () -> {

@@ -108,6 +108,7 @@ class StravaListManager(
 
         val btnScrollToTop = rootView.findViewById<View>(R.id.btnScrollToTop)
         btnScrollToTop?.setOnClickListener {
+            recyclerView.scrollToPosition(20)
             recyclerView.smoothScrollToPosition(0)
         }
 

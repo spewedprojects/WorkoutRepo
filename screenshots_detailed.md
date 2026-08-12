@@ -49,13 +49,21 @@ Dialogs and Bottomsheets - Confirmation, API change, Deletion, Editing
   <tr>
     <td width="25%">Confirm Delete</td>
     <td width="25%">Confirm Discard</td>
-    <td width="25%">Athelet change warning</td>
-    <td width="25%">Workout edit</td>
+    <td width="25%">Athlete change warning</td>
   </tr>
   <tr>
     <td><img src="docs/screenshots/dialogs/dialog_01_delete.png" width="100%"></td>
     <td><img src="docs/screenshots/dialogs/dialog_02_discard.png" width="100%"></td>
     <td><img src="docs/screenshots/dialogs/dialog_03_APIchange.png" width="100%"></td>
+  </tr>
+    <tr>
+    <td width="25%">Bottomsheet editor</td>
+    <td width="25%">Dialog editor</td>
+    <td width="25%">Dialog Archive</td>
+  </tr>
+  <tr>
     <td><img src="docs/screenshots/dialogs/dialog_04_editbottomsheet.png" width="100%"></td>
+    <td><img src="docs/screenshots/dialogs/dialog_05_edit.png" width="100%"></td>
+    <td><img src="docs/screenshots/dialogs/dialog_06_archive.png" width="100%"></td>
   </tr>
 </table>

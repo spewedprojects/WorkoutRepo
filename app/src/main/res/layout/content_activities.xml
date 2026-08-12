@@ -249,7 +249,7 @@
             android:src="@drawable/chevron_line_up_24"
             android:contentDescription="Scroll to top"
             android:visibility="visible"
-            app:fabCustomSize="48dp"
+            app:fabCustomSize="52dp"
             app:maxImageSize="24dp"
             app:backgroundTint="@color/white_black" />
     </FrameLayout>
