@@ -67,8 +67,16 @@ public class RoutinesActivity extends BaseActivity {
         });
 
         routinesRecycler = findViewById(R.id.routinesPager);
-        // 1. Setup Horizontal Layout
-        routinesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        // 1. Setup Horizontal Layout (Locked when in Edit Mode)
+        routinesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public boolean canScrollHorizontally() {
+                if (adapter != null && adapter.getEditingRoutineId() != null) {
+                    return false;
+                }
+                return super.canScrollHorizontally();
+            }
+        });
 
         // 2. Add "Magnet" Snapping (This makes it feel like ViewPager)
         PagerSnapHelper snapHelper = new PagerSnapHelper();

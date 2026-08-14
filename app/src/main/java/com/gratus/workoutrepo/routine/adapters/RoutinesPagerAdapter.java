@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.gratus.workoutrepo.R;
 import com.gratus.workoutrepo.RoutinesActivity;
+import com.gratus.workoutrepo.routine.data.RoutineRepository;
 import com.gratus.workoutrepo.routine.model.Routine;
 import com.gratus.workoutrepo.utils.ExpandableNoteHelper;
 
@@ -138,12 +139,24 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
         // Update bind method
         void bind(Routine routine, String activeId, RoutinesActivity.RoutineActionListener listener, boolean isEditMode, RoutinesPagerAdapter adapter) {
             title.setText(routine.title);
-            ExpandableNoteHelper.setupNoteState(notesDetails, btnExpand, routine.notes);
+            ExpandableNoteHelper.setupNoteState(notesDetails, btnExpand, routine.notes, routine.isNoteExpanded);
 
-            btnExpand.setOnClickListener(v -> ExpandableNoteHelper.toggleNote(notesDetails, btnExpand));
+            btnExpand.setOnClickListener(v -> {
+                boolean isExpanded = ExpandableNoteHelper.toggleNote(notesDetails, btnExpand);
+                routine.isNoteExpanded = isExpanded;
+                RoutineRepository.saveRoutineToLibrary(v.getContext(), routine);
+                Routine active = RoutineRepository.getActiveRoutine(v.getContext());
+                if (active != null && active.id.equals(routine.id)) {
+                    RoutineRepository.saveActiveRoutine(v.getContext(), routine);
+                }
+            });
             //notesDetails.setText(TextFormatUtils.formatNotesForDisplay(routine.notes));
-            RoutineDayAdapter dayAdapter = new RoutineDayAdapter(routine, isEditMode, listener);
-            dayList.setAdapter(dayAdapter);
+            if (dayList.getAdapter() instanceof RoutineDayAdapter) {
+                ((RoutineDayAdapter) dayList.getAdapter()).update(routine, isEditMode);
+            } else {
+                RoutineDayAdapter dayAdapter = new RoutineDayAdapter(routine, isEditMode, listener);
+                dayList.setAdapter(dayAdapter);
+            }
 
             if (isEditMode) {
                 btnDelete.setEnabled(false);

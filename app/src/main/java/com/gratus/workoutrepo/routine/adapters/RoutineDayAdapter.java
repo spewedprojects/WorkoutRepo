@@ -18,16 +18,23 @@ import java.util.List;
 
 public class RoutineDayAdapter extends RecyclerView.Adapter<RoutineDayAdapter.DayViewHolder> {
 
-    private final Routine routine;
-    private final boolean isEditMode;
+    private Routine routine;
+    private boolean isEditMode;
     private final RoutinesActivity.RoutineActionListener listener;
-    private final List<DayWorkout> days;
+    private List<DayWorkout> days;
 
     public RoutineDayAdapter(Routine routine, boolean isEditMode, RoutinesActivity.RoutineActionListener listener) {
         this.routine = routine;
         this.isEditMode = isEditMode;
         this.listener = listener;
         this.days = routine.days;
+    }
+
+    public void update(Routine routine, boolean isEditMode) {
+        this.routine = routine;
+        this.isEditMode = isEditMode;
+        this.days = routine.days;
+        notifyDataSetChanged();
     }
 
     @NonNull

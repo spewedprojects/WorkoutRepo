@@ -12,6 +12,7 @@ public class Routine {
     public String id;
     public String title;
     public String notes;
+    public boolean isNoteExpanded;
     public List<DayWorkout> days;
 
 
@@ -20,6 +21,7 @@ public class Routine {
         this.title = "New Routine";
         this.timestamp = System.currentTimeMillis(); // Auto-set creation time
         this.notes = "";
+        this.isNoteExpanded = false;
         this.days = new ArrayList<>();
         String[] weekDays = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};
         for (String day : weekDays) {

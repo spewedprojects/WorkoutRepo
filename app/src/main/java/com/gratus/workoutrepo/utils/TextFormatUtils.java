@@ -249,11 +249,11 @@ public class TextFormatUtils {
             return formatNotesForDisplay(raw);
         }
 
-        // Take the first 5 lines
+        int count = Math.min(lines.length, Math.max(1, maxLines));
         StringBuilder collapsed = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < count; i++) {
             collapsed.append(lines[i]);
-            if (i < 4) collapsed.append("\n");
+            if (i < count - 1) collapsed.append("\n");
         }
         collapsed.append("..."); // The visual indicator
 
