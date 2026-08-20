@@ -156,6 +156,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="1"
             app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintHeight_max="500dp"
+            app:layout_constrainedHeight="true"
             android:animateLayoutChanges="true">
 
             <com.google.android.material.divider.MaterialDivider
@@ -177,20 +179,26 @@
                 android:textColor="?attr/colorOnSurface"
                 android:alpha="0.7"/>
 
-            <TextView
-                android:id="@+id/notesDetails"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="20dp"
-                android:filterTouchesWhenObscured="false"
-                android:focusableInTouchMode="true"
-                android:fontFamily="@font/atkinsonhyperlegiblenext_italic"
-                android:hint="Long tap to add notes"
-                android:textColor="?attr/colorAccent"
-                android:textSize="16sp"
-                android:longClickable="true"
-                android:gravity="start"/>
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/notesDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="20dp"
+                    android:filterTouchesWhenObscured="false"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="@font/atkinsonhyperlegiblenext_italic"
+                    android:hint="Long tap to add notes"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="16sp"
+                    android:longClickable="true"
+                    android:gravity="start"/>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

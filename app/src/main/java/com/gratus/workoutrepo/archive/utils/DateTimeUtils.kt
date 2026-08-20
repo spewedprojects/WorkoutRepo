@@ -1,5 +1,6 @@
 package com.gratus.workoutrepo.archive.utils
 
+import com.gratus.workoutrepo.archive.model.SourceProvider
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,22 +16,51 @@ object DateTimeUtils {
     private val DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("d MMM yy',' EEE", Locale.getDefault())
 
     /**
-     * Parses an ISO date/time string (from Strava or Intervals.icu) into a LocalDateTime.
-     * If the string has an explicit UTC 'Z' or offset, it is converted to the local device system timezone.
-     * Otherwise, the local wall clock time is preserved.
+     * Parses a Strava ISO date/time string into a LocalDateTime.
+     * Strava's `start_date_local` is already in local wall-clock time (even though it may end with 'Z').
+     * Strips any trailing 'Z' or offset indicator so no timezone conversion or shifting is applied.
      */
-    fun parseToLocalDateTime(dateStr: String?): LocalDateTime? {
+    fun parseStravaDateTime(dateStr: String?): LocalDateTime? {
         if (dateStr.isNullOrBlank() || dateStr.length < 10) return null
+        val normalized = dateStr.trim()
 
+        return try {
+            if (normalized.contains("T")) {
+                val cleanIso = if (normalized.endsWith("Z", ignoreCase = true)) {
+                    normalized.substring(0, normalized.length - 1)
+                } else if (normalized.indexOf('+', 10) != -1) {
+                    normalized.substring(0, normalized.indexOf('+', 10))
+                } else if (normalized.lastIndexOf('-') > 10 && normalized.lastIndexOf('-') > normalized.indexOf('T')) {
+                    normalized.substring(0, normalized.lastIndexOf('-'))
+                } else {
+                    normalized
+                }
+                LocalDateTime.parse(cleanIso, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            } else {
+                LocalDate.parse(normalized.take(10), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
+            }
+        } catch (e: Exception) {
+            try {
+                LocalDate.parse(normalized.take(10), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay()
+            } catch (e2: Exception) {
+                null
+            }
+        }
+    }
+
+    /**
+     * Parses an Intervals.icu ISO date/time string into a LocalDateTime.
+     * If the string has an explicit UTC 'Z' or offset, it is converted to the local device system timezone.
+     */
+    fun parseIntervalsDateTime(dateStr: String?): LocalDateTime? {
+        if (dateStr.isNullOrBlank() || dateStr.length < 10) return null
         val normalized = dateStr.trim()
 
         return try {
             if (normalized.endsWith("Z", ignoreCase = true)) {
-                // Parse UTC instant and convert to device's default timezone (e.g., IST +5:30)
                 Instant.parse(normalized).atZone(ZoneId.systemDefault()).toLocalDateTime()
             } else if (normalized.contains("T")) {
                 if (normalized.indexOf('+', 10) != -1 || (normalized.lastIndexOf('-') > 10 && normalized.lastIndexOf('-') > normalized.indexOf('T'))) {
-                    // Parse with offset and convert to device's default timezone
                     OffsetDateTime.parse(normalized, DateTimeFormatter.ISO_DATE_TIME)
                         .atZoneSameInstant(ZoneId.systemDefault())
                         .toLocalDateTime()
@@ -56,14 +86,25 @@ object DateTimeUtils {
     }
 
     /**
+     * Parses an ISO date/time string into a LocalDateTime, choosing the appropriate parser based on source.
+     */
+    fun parseToLocalDateTime(dateStr: String?, source: SourceProvider? = null): LocalDateTime? {
+        return when (source) {
+            SourceProvider.STRAVA -> parseStravaDateTime(dateStr)
+            SourceProvider.INTERVALS_ICU -> parseIntervalsDateTime(dateStr)
+            else -> parseStravaDateTime(dateStr) ?: parseIntervalsDateTime(dateStr)
+        }
+    }
+
+    /**
      * Parses an ISO date string into a LocalDate.
      */
-    fun parseToLocalDate(dateStr: String?): LocalDate? {
+    fun parseToLocalDate(dateStr: String?, source: SourceProvider? = null): LocalDate? {
         if (dateStr.isNullOrBlank() || dateStr.length < 10) return null
         return try {
             LocalDate.parse(dateStr.take(10), DateTimeFormatter.ISO_LOCAL_DATE)
         } catch (e: Exception) {
-            parseToLocalDateTime(dateStr)?.toLocalDate()
+            parseToLocalDateTime(dateStr, source)?.toLocalDate()
         }
     }
 
@@ -101,10 +142,10 @@ object DateTimeUtils {
      * Displays time (e.g., "6 Mar 26, Fri ৹ 06:09 IST") ONLY when real time information is present.
      * If time is 00:00 (or date-only), displays "6 Mar 26, Fri" to avoid misleading "00:00" times.
      */
-    fun formatActivityDate(dateStr: String?): String {
+    fun formatActivityDate(dateStr: String?, source: SourceProvider? = null): String {
         if (dateStr.isNullOrBlank()) return ""
 
-        val ldt = parseToLocalDateTime(dateStr) ?: return dateStr
+        val ldt = parseToLocalDateTime(dateStr, source) ?: return dateStr
 
         // Check if string originally had specific time (contains 'T' and not 00:00:00)
         val hasTime = dateStr.contains("T") && !(ldt.hour == 0 && ldt.minute == 0 && ldt.second == 0)

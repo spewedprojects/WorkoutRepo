@@ -166,8 +166,8 @@ object ActivityArchiveManager {
         }
     }
 
-    private fun parseToLocalDateTime(dateStr: String?): LocalDateTime? {
-        return com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDateTime(dateStr)
+    private fun parseToLocalDateTime(dateStr: String?, source: SourceProvider? = null): LocalDateTime? {
+        return com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDateTime(dateStr, source)
     }
 
     /**
@@ -182,7 +182,7 @@ object ActivityArchiveManager {
         }
         if (strictMatch != null) return strictMatch
 
-        val candidateTime = parseToLocalDateTime(candidate.startDateLocal)
+        val candidateTime = parseToLocalDateTime(candidate.startDateLocal, candidate.source)
 
         // Heuristic matching
         return archive.find { existing ->
@@ -191,7 +191,7 @@ object ActivityArchiveManager {
                               candidate.isPlaceholder()
             if (!typeMatches) return@find false
 
-            val existingTime = parseToLocalDateTime(existing.startDateLocal)
+            val existingTime = parseToLocalDateTime(existing.startDateLocal, existing.source)
 
             if (candidateTime != null && existingTime != null) {
                 val hoursDiff = abs(ChronoUnit.HOURS.between(candidateTime, existingTime))

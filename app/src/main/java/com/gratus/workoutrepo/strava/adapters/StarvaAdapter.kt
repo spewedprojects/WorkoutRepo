@@ -181,7 +181,7 @@ class StravaAdapter(private var items: List<ArchiveActivity>,
         holder.details.text = parts.joinToString(" • ")
 
         // 4. Set Date - Date Formatting
-        holder.date.text = com.gratus.workoutrepo.archive.utils.DateTimeUtils.formatActivityDate(item.startDateLocal)
+        holder.date.text = com.gratus.workoutrepo.archive.utils.DateTimeUtils.formatActivityDate(item.startDateLocal, item.source)
 
         // 5. Dynamic Icon Logic (With Race Support)
         val isRace = item.workoutType == 1 || item.workoutType == 11

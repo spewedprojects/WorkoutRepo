@@ -10,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center|top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rv_day_items"
+        app:layout_constraintHeight_max="500dp"
+        app:layout_constrainedHeight="true">
 
         <TextView
             android:id="@+id/routineId"
@@ -68,20 +70,30 @@
             android:alpha="0.7"
             android:layout_below="@id/dashed_divider"/>
 
-        <TextView
-            android:id="@+id/notesDetails"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="8dp"
-            android:filterTouchesWhenObscured="false"
-            android:focusableInTouchMode="true"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_italic"
-            android:hint="Long tap to add notes"
-            android:textColor="?attr/colorAccent"
-            android:textSize="16sp"
-            android:longClickable="true"
-            android:layout_below="@id/notes"/>
+            android:layout_below="@id/notes"
+            android:fillViewport="true"
+            android:layout_marginHorizontal="6dp"
+            android:scrollbars="vertical"
+            android:scrollbarSize="3dp"
+            android:fadeScrollbars="true">
+
+            <TextView
+                android:id="@+id/notesDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginBottom="8dp"
+                android:filterTouchesWhenObscured="false"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/atkinsonhyperlegiblenext_italic"
+                android:hint="Long tap to add notes"
+                android:textColor="?attr/colorAccent"
+                android:textSize="16sp"
+                android:longClickable="true"/>
+        </androidx.core.widget.NestedScrollView>
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -113,13 +125,14 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/apply_routine_btn"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="44dp"
             android:text="APPLY"
             android:insetBottom="2dp"
             android:insetTop="0dp"
             android:insetRight="8dp"
+            android:padding="0dp"
             android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
-            android:letterSpacing="0.1"
+            android:letterSpacing="0.03"
             app:strokeWidth="1dp"
             app:strokeColor="?attr/colorOnSurface"
             android:layout_toStartOf="@id/save_routine_btn"
@@ -156,17 +169,19 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_routine_btn"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
-            android:letterSpacing="0.1"
-            android:insetBottom="2dp"
-            android:insetTop="0dp"
-            android:text="EXPORT"
-            app:strokeWidth="1dp"
-            app:strokeColor="?attr/colorOnSurface"
+            android:layout_height="44dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="1dp"
+            android:backgroundTint="?attr/colorPrimaryVariant"
+            android:fontFamily="@font/atkinsonhyperlegiblenext_semibold"
+            android:insetTop="0dp"
+            android:insetBottom="2dp"
+            android:padding="0dp"
+            android:letterSpacing="0.03"
+            android:text="EXPORT"
             app:cornerRadius="12dp"
-            android:backgroundTint="?attr/colorPrimaryVariant"/>
+            app:strokeColor="?attr/colorOnSurface"
+            app:strokeWidth="1dp" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

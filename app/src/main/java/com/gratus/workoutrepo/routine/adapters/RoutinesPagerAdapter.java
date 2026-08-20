@@ -1,10 +1,14 @@
 package com.gratus.workoutrepo.routine.adapters; //class moved
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +25,7 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private String activeRoutineId; // New field
     private String editingRoutineId = null; // Edit mode state
+    private boolean hasUnsavedChanges = false;
     private List<Routine> routines;
     private final RoutinesActivity.RoutineActionListener listener;
     private static final int TYPE_ROUTINE = 0;
@@ -41,11 +46,18 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.editingRoutineId = id;
     }
 
+    public boolean hasUnsavedChanges() {
+        return hasUnsavedChanges;
+    }
+
+    public void setHasUnsavedChanges(boolean hasChanges) {
+        this.hasUnsavedChanges = hasChanges;
+    }
+
     public void exitEditMode() {
-        if (editingRoutineId != null) {
-            editingRoutineId = null;
-            notifyDataSetChanged();
-        }
+        this.editingRoutineId = null;
+        this.hasUnsavedChanges = false;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -162,7 +174,7 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 btnDelete.setEnabled(false);
                 btnDelete.setAlpha(0.3f);
                 btnApply.setEnabled(false);
-                btnApply.setAlpha(0.3f);
+                btnApply.setVisibility(VISIBLE);
                 btnSave.setText("CONFIRM");
                 btnSave.setOnClickListener(v -> {
                     adapter.editingRoutineId = null;
@@ -174,8 +186,10 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 btnDelete.setEnabled(true);
                 btnDelete.setAlpha(1.0f);
+                btnApply.setEnabled(true);
+                btnApply.setVisibility(VISIBLE);
                 btnApply.setAlpha(1.0f);
-                btnSave.setText("EXPORT");
+                btnSave.setText("SAVE");
                 btnSave.setOnClickListener(v -> listener.onExport(routine));
                 if (btnEdit != null) {
                     btnEdit.setBackgroundResource(android.R.color.transparent);
@@ -190,7 +204,7 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
                     btnApply.setText("APPLIED");
                     btnApply.setEnabled(false);
                 } else {
-                    btnDelete.setVisibility(View.VISIBLE);
+                    btnDelete.setVisibility(VISIBLE);
                     btnDelete.setOnClickListener(v -> listener.onDelete(routine));
 
                     btnApply.setText("APPLY");
@@ -202,11 +216,16 @@ public class RoutinesPagerAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (btnEdit != null) {
                 btnEdit.setOnClickListener(v -> {
                     if (isEditMode) {
-                        adapter.editingRoutineId = null;
+                        if (adapter.hasUnsavedChanges()) {
+                            Toast.makeText(v.getContext(), "Tap CONFIRM to save changes, or BACK to discard.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            adapter.exitEditMode();
+                        }
                     } else {
-                        adapter.editingRoutineId = routine.id;
+                        adapter.setEditingRoutineId(routine.id);
+                        adapter.setHasUnsavedChanges(false);
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 });
             }
 

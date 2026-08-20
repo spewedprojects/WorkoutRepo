@@ -291,8 +291,10 @@ public class MainActivity extends BaseActivity {
             // Check current state by ID or Progress
             if (motionLayout.getCurrentState() == R.id.end_visible) {
                 motionLayout.transitionToStart(); // Animates to guide_hidden
+                guideBtn.setBackgroundResource(android.R.color.transparent);
             } else {
                 motionLayout.transitionToEnd(); // Animates to guide_visible
+                guideBtn.setBackgroundResource(R.drawable.bg_active_info);
             }
         });
     }

@@ -430,7 +430,7 @@ class StravaListManager(
         var listFiltered = filtered
         if (currentDateStart != null && currentDateEnd != null) {
             listFiltered = filtered.filter { item ->
-                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal)
+                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal, item.source)
                 itemDate != null && !itemDate.isBefore(currentDateStart) && !itemDate.isAfter(currentDateEnd)
             }
         }
@@ -442,7 +442,7 @@ class StravaListManager(
             val startOfThisMonth = now.withDayOfMonth(1)
             val endOfThisMonth = now.withDayOfMonth(now.lengthOfMonth())
             filtered.filter { item ->
-                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal)
+                val itemDate = com.gratus.workoutrepo.archive.utils.DateTimeUtils.parseToLocalDate(item.startDateLocal, item.source)
                 itemDate != null && !itemDate.isBefore(startOfThisMonth) && !itemDate.isAfter(endOfThisMonth)
             }
         }

@@ -21,15 +21,16 @@
 
         <ImageButton
             android:id="@+id/guide_btn"
-            android:layout_width="58dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="12dp"
+            android:paddingHorizontal="18dp"
             android:contentDescription="@string/guide_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/info_38dp"
-            android:alpha="0.2"/>
+            android:alpha="0.4"/>
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -55,7 +56,7 @@
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintTop_toTopOf="parent"

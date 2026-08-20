@@ -85,8 +85,9 @@ public class RoutinesActivity extends BaseActivity {
         if (savedInstanceState != null) {
             String json = savedInstanceState.getString("loaded_routines_json");
             String editingId = savedInstanceState.getString("editing_routine_id");
+            boolean hasChanges = savedInstanceState.getBoolean("has_unsaved_changes", false);
             int position = savedInstanceState.getInt("current_scroll_position", -1);
-            loadData(json, editingId, position);
+            loadData(json, editingId, position, hasChanges);
         } else {
             loadData();
         }
@@ -95,17 +96,21 @@ public class RoutinesActivity extends BaseActivity {
             @Override
             public void handleOnBackPressed() {
                 if (adapter != null && adapter.getEditingRoutineId() != null) {
-                    ConfirmationDialogHelper.showConfirmationDialog(
-                            RoutinesActivity.this,
-                            "Are you sure you want to discard changes made in current routine?",
-                            new ConfirmationDialogHelper.ConfirmationListener() {
-                                @Override
-                                public void onYesClicked() {
-                                    loadData(); // Discard memory changes
-                                    adapter.exitEditMode();
+                    if (adapter.hasUnsavedChanges()) {
+                        ConfirmationDialogHelper.showConfirmationDialog(
+                                RoutinesActivity.this,
+                                "Are you sure you want to discard changes made in current routine?",
+                                new ConfirmationDialogHelper.ConfirmationListener() {
+                                    @Override
+                                    public void onYesClicked() {
+                                        loadData(); // Discard memory changes
+                                        adapter.exitEditMode();
+                                    }
                                 }
-                            }
-                    );
+                        );
+                    } else {
+                        adapter.exitEditMode();
+                    }
                 } else {
                     setEnabled(false);
                     getOnBackPressedDispatcher().onBackPressed();
@@ -120,6 +125,7 @@ public class RoutinesActivity extends BaseActivity {
         super.onSaveInstanceState(outState);
         if (adapter != null) {
             outState.putString("editing_routine_id", adapter.getEditingRoutineId());
+            outState.putBoolean("has_unsaved_changes", adapter.hasUnsavedChanges());
         }
         if (routinesRecycler != null && routinesRecycler.getLayoutManager() instanceof LinearLayoutManager) {
             LinearLayoutManager lm = (LinearLayoutManager) routinesRecycler.getLayoutManager();
@@ -135,10 +141,10 @@ public class RoutinesActivity extends BaseActivity {
     }
 
     private void loadData() {
-        loadData(null, null, -1);
+        loadData(null, null, -1, false);
     }
 
-    private void loadData(String restoredRoutinesJson, String restoredEditingId, int restoredPosition) {
+    private void loadData(String restoredRoutinesJson, String restoredEditingId, int restoredPosition, boolean restoredHasChanges) {
         Routine activeRoutine = RoutineRepository.getActiveRoutine(this);
 
         if (restoredRoutinesJson != null) {
@@ -156,6 +162,7 @@ public class RoutinesActivity extends BaseActivity {
         adapter = new RoutinesPagerAdapter(loadedRoutines, activeRoutine.id, actionListener);
         if (restoredEditingId != null) {
             adapter.setEditingRoutineId(restoredEditingId);
+            adapter.setHasUnsavedChanges(restoredHasChanges);
         }
         routinesRecycler.setAdapter(adapter);
 
@@ -296,13 +303,47 @@ public class RoutinesActivity extends BaseActivity {
                     }
                 }
                 if (dWorkout != null) {
+                    boolean changed = false;
                     switch (fieldKey) {
-                        case "workoutType": dWorkout.workoutType = finalText; break;
-                        case "workoutsMajor": dWorkout.majorWorkouts = finalText; break;
-                        case "workoutsMinor": dWorkout.minorWorkouts = finalText; break;
-                        case "majorLabel": dWorkout.majorLabel = finalText; break;
-                        case "minorLabel": dWorkout.minorLabel = finalText; break;
-                        case "notes": dWorkout.notes = finalText; break;
+                        case "workoutType":
+                            if (!java.util.Objects.equals(dWorkout.workoutType, finalText)) {
+                                dWorkout.workoutType = finalText;
+                                changed = true;
+                            }
+                            break;
+                        case "workoutsMajor":
+                            if (!java.util.Objects.equals(dWorkout.majorWorkouts, finalText)) {
+                                dWorkout.majorWorkouts = finalText;
+                                changed = true;
+                            }
+                            break;
+                        case "workoutsMinor":
+                            if (!java.util.Objects.equals(dWorkout.minorWorkouts, finalText)) {
+                                dWorkout.minorWorkouts = finalText;
+                                changed = true;
+                            }
+                            break;
+                        case "majorLabel":
+                            if (!java.util.Objects.equals(dWorkout.majorLabel, finalText)) {
+                                dWorkout.majorLabel = finalText;
+                                changed = true;
+                            }
+                            break;
+                        case "minorLabel":
+                            if (!java.util.Objects.equals(dWorkout.minorLabel, finalText)) {
+                                dWorkout.minorLabel = finalText;
+                                changed = true;
+                            }
+                            break;
+                        case "notes":
+                            if (!java.util.Objects.equals(dWorkout.notes, finalText)) {
+                                dWorkout.notes = finalText;
+                                changed = true;
+                            }
+                            break;
+                    }
+                    if (changed && adapter != null) {
+                        adapter.setHasUnsavedChanges(true);
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -317,6 +358,9 @@ public class RoutinesActivity extends BaseActivity {
             if (active != null && active.id.equals(routine.id)) {
                 RoutineRepository.saveActiveRoutine(RoutinesActivity.this, routine);
                 com.gratus.workoutrepo.widgets.WorkoutsWidgetProvider.Companion.sendRefreshBroadcast(RoutinesActivity.this);
+            }
+            if (adapter != null) {
+                adapter.setHasUnsavedChanges(false);
             }
             Toast.makeText(RoutinesActivity.this, "Routine changes saved!", Toast.LENGTH_SHORT).show();
             adapter.notifyDataSetChanged(); // Just refresh view

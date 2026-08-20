@@ -41,4 +41,6 @@
     <color name="strava_color_0.4">#26FC4C02</color>
     <color name="buttonDisabled">#26000000</color>
 
+    <color name="guideBtnActiveBG">#33000000</color>
+
 </resources>
