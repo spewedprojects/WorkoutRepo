@@ -105,7 +105,8 @@
                 android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
                 android:textSize="17sp"
                 android:maxLines="1"
-                android:imeOptions="actionDone"/>
+                android:imeOptions="actionSearch"
+                android:imeActionLabel="Search"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton

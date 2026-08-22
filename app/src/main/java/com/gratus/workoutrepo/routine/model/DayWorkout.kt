@@ -1,24 +1,16 @@
-package com.gratus.workoutrepo.routine.model; //class moved
+package com.gratus.workoutrepo.routine.model
 
-import androidx.annotation.Keep;
-
-@Keep // Add this annotation
-public class DayWorkout {
-    public String dayName; // "MONDAY", etc.
-    public String workoutType;
-    public String majorWorkouts;
-    public String minorWorkouts;
-    public String majorLabel;
-    public String minorLabel;
-    public String notes;
-
-    public DayWorkout(String dayName) {
-        this.dayName = dayName;
-        this.workoutType = "";
-        this.majorWorkouts = "";
-        this.minorWorkouts = "";
-        this.majorLabel = "";
-        this.minorLabel = "";
-        this.notes = "";
-    }
+import androidx.annotation.Keep
+@Keep
+class DayWorkout(// "MONDAY", etc.
+    @JvmField var dayName: String?
+) {
+    @JvmField var workoutType: String? = ""
+    @JvmField var majorWorkouts: String? = ""
+    @JvmField var minorWorkouts: String? = ""
+    @JvmField var majorLabel: String? = ""
+    @JvmField var minorLabel: String? = ""
+    @JvmField var notes: String? = ""
 }
+
+// TODO -> Dynamic workout related functions and methods here

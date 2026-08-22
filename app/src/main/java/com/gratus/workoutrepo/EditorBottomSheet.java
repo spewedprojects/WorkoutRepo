@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.gratus.workoutrepo.utils.ConfirmationDialogHelper;
+import com.gratus.workoutrepo.utils.TextFormatUtils;
 
 public class EditorBottomSheet extends BottomSheetDialogFragment {
 
@@ -106,6 +108,40 @@ public class EditorBottomSheet extends BottomSheetDialogFragment {
 
         MaterialButton cancel = view.findViewById(R.id.cancelBtn);
         MaterialButton save = view.findViewById(R.id.saveBtn);
+
+        ImageButton btnBold = view.findViewById(R.id.btnBold);
+        ImageButton btnBulletList = view.findViewById(R.id.btnBulletList);
+        ImageButton btnNumbList = view.findViewById(R.id.btnNumbList);
+        ImageButton btnIndentIncrease = view.findViewById(R.id.btnIndentIncrease);
+
+        if (btnBold != null) btnBold.setOnClickListener(v -> TextFormatUtils.applyBold(editText));
+        if (btnBulletList != null) btnBulletList.setOnClickListener(v -> TextFormatUtils.applyBulletList(editText));
+        if (btnIndentIncrease != null) btnIndentIncrease.setOnClickListener(v -> TextFormatUtils.applyIndentIncrease(editText));
+        if (btnNumbList != null) btnNumbList.setOnClickListener(v -> TextFormatUtils.applyNumberedList(editText));
+
+        // Visibility handling for formatting toolbar vs workout guide
+        View formatHelpContainer = view.findViewById(R.id.formatHelpContainer);
+        TextView tvNewWorkoutGuide = view.findViewById(R.id.tvNewWorkoutGuide);
+
+        boolean isNotes = fieldKey != null && fieldKey.equalsIgnoreCase("notes");
+        boolean isWorkouts = fieldKey != null && (
+                fieldKey.equalsIgnoreCase("workoutsMajor") ||
+                fieldKey.equalsIgnoreCase("workoutsMinor") ||
+                fieldKey.equalsIgnoreCase("Major Workouts") ||
+                fieldKey.equalsIgnoreCase("Minor Workouts")
+        );
+
+        if (isNotes) {
+            if (formatHelpContainer != null) formatHelpContainer.setVisibility(View.VISIBLE);
+            if (tvNewWorkoutGuide != null) tvNewWorkoutGuide.setVisibility(View.GONE);
+        } else if (isWorkouts) {
+            if (formatHelpContainer != null) formatHelpContainer.setVisibility(View.GONE);
+            if (tvNewWorkoutGuide != null) tvNewWorkoutGuide.setVisibility(View.VISIBLE);
+        } else {
+            // workoutType ("Type"), minorLabel ("Minor Label"), majorLabel ("Major Label"), routine title ("Title"), etc.
+            if (formatHelpContainer != null) formatHelpContainer.setVisibility(View.GONE);
+            if (tvNewWorkoutGuide != null) tvNewWorkoutGuide.setText("No formatting needed or applied here");
+        }
 
         cancel.setOnClickListener(v -> attemptExit());
 

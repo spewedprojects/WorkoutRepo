@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.StyleSpan;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +141,7 @@ public class TextFormatUtils {
                             yield SUB_BULLET_INDENT;
                         }
                         default -> { // More than 3 dashes (----... )
-                            bulletChar = "\u09F9"; // hollow bullet for deeper levels
+                            bulletChar = "\u09F9";
                             yield SUB_BULLET_INDENT + (dashCount - 3) * 20;
                         }
                     };
@@ -258,5 +259,221 @@ public class TextFormatUtils {
         collapsed.append("..."); // The visual indicator
 
         return formatNotesForDisplay(collapsed.toString());
+    }
+
+    // =========================================================================================
+    // INTERACTIVE EDITOR FORMATTING HELPERS
+    // =========================================================================================
+
+    public static void applyBold(EditText editText) {
+        if (editText == null) return;
+        android.text.Editable editable = editText.getText();
+        if (editable == null) return;
+
+        int selStart = editText.getSelectionStart();
+        int selEnd = editText.getSelectionEnd();
+        int start = Math.min(selStart, selEnd);
+        int end = Math.max(selStart, selEnd);
+
+        if (start < 0) start = 0;
+        if (end < 0) end = 0;
+
+        if (start == end) {
+            // No selection: insert **** and position cursor between asterisks
+            editable.insert(start, "****");
+            editText.setSelection(start + 2);
+        } else {
+            String selected = editable.subSequence(start, end).toString();
+            // Check if selected text already starts and ends with **
+            if (selected.startsWith("**") && selected.endsWith("**") && selected.length() >= 4) {
+                String unbolded = selected.substring(2, selected.length() - 2);
+                editable.replace(start, end, unbolded);
+                editText.setSelection(start, start + unbolded.length());
+            } else if (start >= 2 && end <= editable.length() - 2 &&
+                    editable.subSequence(start - 2, start).toString().equals("**") &&
+                    editable.subSequence(end, end + 2).toString().equals("**")) {
+                editable.delete(end, end + 2);
+                editable.delete(start - 2, start);
+                editText.setSelection(start - 2, end - 2);
+            } else {
+                String bolded = "**" + selected + "**";
+                editable.replace(start, end, bolded);
+                editText.setSelection(start, start + bolded.length());
+            }
+        }
+    }
+
+    public static void applyBulletList(EditText editText) {
+        if (editText == null) return;
+        android.text.Editable editable = editText.getText();
+        if (editable == null) return;
+
+        int selStart = editText.getSelectionStart();
+        int selEnd = editText.getSelectionEnd();
+        int start = Math.min(selStart, selEnd);
+        int end = Math.max(selStart, selEnd);
+
+        if (start < 0) start = 0;
+        if (end < 0) end = 0;
+
+        String text = editable.toString();
+        int lineStart = (start > 0) ? text.lastIndexOf('\n', start - 1) + 1 : 0;
+        int lineEnd = text.indexOf('\n', end);
+        if (lineEnd == -1) lineEnd = text.length();
+
+        String block = text.substring(lineStart, lineEnd);
+        String[] lines = block.split("\n", -1);
+        StringBuilder sb = new StringBuilder();
+
+        Pattern dashPattern = Pattern.compile("^(-+ )");
+        Pattern numPattern = Pattern.compile("^(\\s*\\d+[.)]\\s*)");
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            Matcher dashMatcher = dashPattern.matcher(line);
+            Matcher numMatcher = numPattern.matcher(line);
+
+            if (dashMatcher.find()) {
+                if (line.startsWith("- ")) {
+                    // Toggle off
+                    sb.append(line.substring(2));
+                } else {
+                    // Reset multi-dash to single dash bullet
+                    sb.append("- ").append(line.substring(dashMatcher.end()));
+                }
+            } else if (numMatcher.find()) {
+                sb.append("- ").append(line.substring(numMatcher.end()));
+            } else {
+                sb.append("- ").append(line);
+            }
+
+            if (i < lines.length - 1) sb.append("\n");
+        }
+
+        String result = sb.toString();
+        editable.replace(lineStart, lineEnd, result);
+        editText.setSelection(Math.min(lineStart + result.length(), editable.length()));
+    }
+
+    public static void applyIndentIncrease(EditText editText) {
+        if (editText == null) return;
+        android.text.Editable editable = editText.getText();
+        if (editable == null) return;
+
+        int selStart = editText.getSelectionStart();
+        int selEnd = editText.getSelectionEnd();
+        int start = Math.min(selStart, selEnd);
+        int end = Math.max(selStart, selEnd);
+
+        if (start < 0) start = 0;
+        if (end < 0) end = 0;
+
+        String text = editable.toString();
+        int lineStart = (start > 0) ? text.lastIndexOf('\n', start - 1) + 1 : 0;
+        int lineEnd = text.indexOf('\n', end);
+        if (lineEnd == -1) lineEnd = text.length();
+
+        String block = text.substring(lineStart, lineEnd);
+        String[] lines = block.split("\n", -1);
+        StringBuilder sb = new StringBuilder();
+        boolean modified = false;
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            int dashCount = 0;
+            while (dashCount < line.length() && line.charAt(dashCount) == '-') {
+                dashCount++;
+            }
+
+            // Must have >= 1 dash and followed by space (e.g., "- ", "-- ")
+            if (dashCount >= 1 && dashCount < line.length() && line.charAt(dashCount) == ' ') {
+                sb.append("-").append(line);
+                modified = true;
+            } else {
+                sb.append(line);
+            }
+
+            if (i < lines.length - 1) sb.append("\n");
+        }
+
+        if (modified) {
+            String result = sb.toString();
+            editable.replace(lineStart, lineEnd, result);
+            editText.setSelection(Math.min(lineStart + result.length(), editable.length()));
+        }
+    }
+
+    public static void applyNumberedList(EditText editText) {
+        if (editText == null) return;
+        android.text.Editable editable = editText.getText();
+        if (editable == null) return;
+
+        int selStart = editText.getSelectionStart();
+        int selEnd = editText.getSelectionEnd();
+        int start = Math.min(selStart, selEnd);
+        int end = Math.max(selStart, selEnd);
+
+        if (start < 0) start = 0;
+        if (end < 0) end = 0;
+
+        String text = editable.toString();
+        int lineStart = (start > 0) ? text.lastIndexOf('\n', start - 1) + 1 : 0;
+        int lineEnd = text.indexOf('\n', end);
+        if (lineEnd == -1) lineEnd = text.length();
+
+        // Check preceding line to determine current starting number and delimiter style (1. vs 1))
+        int nextNumber = 1;
+        char delimiter = '.';
+
+        if (lineStart > 0) {
+            int prevLineEnd = lineStart - 1;
+            int prevLineStart = text.lastIndexOf('\n', prevLineEnd - 1) + 1;
+            String prevLine = text.substring(prevLineStart, prevLineEnd).trim();
+            Pattern prevNumPattern = Pattern.compile("^(\\d+)([.)])\\s*");
+            Matcher prevMatcher = prevNumPattern.matcher(prevLine);
+            if (prevMatcher.find()) {
+                try {
+                    nextNumber = Integer.parseInt(prevMatcher.group(1)) + 1;
+                    delimiter = prevMatcher.group(2).charAt(0);
+                } catch (NumberFormatException ignored) {}
+            }
+        }
+
+        String block = text.substring(lineStart, lineEnd);
+        String[] lines = block.split("\n", -1);
+        StringBuilder sb = new StringBuilder();
+
+        Pattern dashPattern = Pattern.compile("^(-+ )");
+        Pattern numPattern = Pattern.compile("^(\\s*\\d+[.)]\\s*)");
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            Matcher dashMatcher = dashPattern.matcher(line);
+            Matcher numMatcher = numPattern.matcher(line);
+
+            String prefix = nextNumber + "" + delimiter + " ";
+
+            if (numMatcher.find()) {
+                // If it already has exact prefix, toggle off
+                if (line.startsWith(prefix)) {
+                    sb.append(line.substring(numMatcher.end()));
+                } else {
+                    sb.append(prefix).append(line.substring(numMatcher.end()));
+                    nextNumber++;
+                }
+            } else if (dashMatcher.find()) {
+                sb.append(prefix).append(line.substring(dashMatcher.end()));
+                nextNumber++;
+            } else {
+                sb.append(prefix).append(line);
+                nextNumber++;
+            }
+
+            if (i < lines.length - 1) sb.append("\n");
+        }
+
+        String result = sb.toString();
+        editable.replace(lineStart, lineEnd, result);
+        editText.setSelection(Math.min(lineStart + result.length(), editable.length()));
     }
 }

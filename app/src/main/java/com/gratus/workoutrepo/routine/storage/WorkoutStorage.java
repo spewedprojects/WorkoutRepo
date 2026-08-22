@@ -9,6 +9,7 @@ public class WorkoutStorage {
 
     private static DayWorkout getDay(Routine routine, String dayKey) {
         for (DayWorkout d : routine.days) {
+            assert d.dayName != null;
             if (d.dayName.equalsIgnoreCase(dayKey)) return d;
         }
         return null;

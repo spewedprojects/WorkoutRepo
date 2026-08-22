@@ -34,22 +34,83 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editorEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:maxHeight="400dp"
+            android:hint="Add notes or workouts"
             android:inputType="textMultiLine|textCapSentences"
             android:gravity="top|start"
             android:fontFamily="@font/atkinsonhyperlegiblenext_medium"
-            android:scrollbars="vertical"
-            android:overScrollMode="always"/>
+            android:scrollbars="vertical"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
+        android:id="@+id/tvNewWorkoutGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A bullet point is automatically created for each new line"
+        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+        android:textSize="16sp"
+        android:padding="8dp"/>
+
+    <HorizontalScrollView
         android:id="@+id/formatHelpContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Use ** to make the text bold\nUse '\'- text'\' to create a bullet list"
-        android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
-        android:textSize="16sp"
-        android:layout_marginHorizontal="4dp"/>
+        android:scrollbars="horizontal"
+        android:scrollbarSize="2dp"
+        android:requiresFadingEdge="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Format selection: "
+                android:fontFamily="@font/atkinsonhyperlegiblenext_regular"
+                android:textSize="16sp"
+                android:layout_marginEnd="0dp"/>
+
+            <ImageButton
+                android:id="@+id/btnBold"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/format_bold"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Bold selection"/>
+
+            <ImageButton
+                android:id="@+id/btnBulletList"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/format_list_bulleted"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Bullet list"
+                android:layout_marginStart="8dp"/>
+
+            <ImageButton
+                android:id="@+id/btnNumbList"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/format_list_numbered"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Numbered list"
+                android:layout_marginStart="8dp"/>
+
+            <ImageButton
+                android:id="@+id/btnIndentIncrease"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/format_indent_increase"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Italicize selection"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:id="@+id/actionButtons"
@@ -72,7 +133,7 @@
             android:textColor="?attr/colorOnPrimary"
             app:cornerRadius="12dp"
             app:strokeColor="@color/black_white"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="0dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveBtn"

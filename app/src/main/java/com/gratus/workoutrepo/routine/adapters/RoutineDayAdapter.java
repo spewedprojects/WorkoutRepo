@@ -49,6 +49,7 @@ public class RoutineDayAdapter extends RecyclerView.Adapter<RoutineDayAdapter.Da
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
         DayWorkout day = days.get(position);
         holder.dayTitle.setText(day.dayName);
+        assert day.workoutType != null;
         holder.workoutType.setText(day.workoutType.isEmpty() ? "(type)" : day.workoutType);
 
         // Bind dynamic labels
